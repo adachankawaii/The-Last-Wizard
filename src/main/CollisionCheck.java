@@ -1,7 +1,7 @@
 package main;
 
 import entity.Entity;
-
+import tile.*;
 public class CollisionCheck {
     GamePanel gp;
 
@@ -10,9 +10,12 @@ public class CollisionCheck {
     }
 
     public void checkTile(Entity entity) {
-        int entityLX = entity.worldX + entity.rect.x;
-        int entityRX = entity.worldX + entity.rect.x + entity.rect.width;
-        int entityUY = entity.worldY + entity.rect.y;
-        int entityDY = entity.worldY + entity.rect.y + entity.rect.height;
+        // Lấy các vị trí trên bản đồ
+        int entityLeftX = entity.worldX + entity.rect.x;
+        int entityRightX = entity.worldX + entity.rect.x + entity.rect.width;
+        int entityTopY = entity.worldY + entity.rect.y;
+        int entityBottomY = entity.worldY + entity.rect.y + entity.rect.height;
+
+
     }
 }

@@ -22,7 +22,6 @@ public class TileManager {
 
     public void getTileImage() {
         try {
-
             tile[0] = new Tile();
             tile[0].image = ImageIO.read(new File("res/tiles/grass.png"));
 
@@ -97,5 +96,10 @@ public class TileManager {
                 worldRow++;
             }
         }
+    }
+    public Tile getTileAt(int col, int row) {
+        // Trả về tile tại cột và hàng tương ứng
+        int i = mapTile[col][row];
+        return tile[i];
     }
 }

@@ -1,5 +1,6 @@
 package entity;
 
+import main.CollisionCheck;
 import main.KeyHandler;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -9,11 +10,11 @@ import java.awt.Rectangle;
 import main.GamePanel;
 
 public class Player extends Entity{
-
+    private CollisionCheck collisionCheck;
     GamePanel gp;
     KeyHandler keyHandler;
 
-    public Player(GamePanel gp, KeyHandler keyHandler) {
+    public Player(GamePanel gp, KeyHandler keyHandler, CollisionCheck collisionCheck) {
         this.gp = gp;
         this.keyHandler = keyHandler;
 
@@ -25,7 +26,7 @@ public class Player extends Entity{
         rect.y = 16;
         rect.width = 32;
         rect.height = 32;
-
+        this.collisionCheck = collisionCheck;
         setDefautValue();
         getPlayerImage();
     }
@@ -38,7 +39,7 @@ public class Player extends Entity{
     }
 
     public void getPlayerImage() {
-        try{
+        /*try{
             up1 = ImageIO.read(new File("res/player/boy_up_1.png"));
             up2 = ImageIO.read(new File("res/player/boy_up_2.png"));
             down1 = ImageIO.read(new File("res/player/boy_down_1.png"));
@@ -49,7 +50,11 @@ public class Player extends Entity{
             right2 = ImageIO.read(new File("res/player/boy_right_2.png"));       
         }catch(Exception e) {
             e.printStackTrace();
-        }
+        }*/
+        importEachImage(new String[]{"/player/boy_up_1.png","/player/boy_up_2.png"}, true);
+        importEachImage(new String[]{"/player/boy_down_1.png","/player/boy_down_2.png"}, true);
+        importEachImage(new String[]{"/player/boy_left_1.png","/player/boy_left_2.png"}, true);
+        importEachImage(new String[]{"/player/boy_right_1.png","/player/boy_right_2.png"}, true);
     }
 
     public void update() {
@@ -70,11 +75,14 @@ public class Player extends Entity{
                 direction = "left";
                 worldX -= speed;
             }
-            
+            collisionCheck.checkTile(this);
+
+            // Gọi hàm move() để thực hiện di chuyển nếu không có va chạm
+
             spriteCounter++;
-            if(spriteCounter > 10) {
-                if(spriteNum == 1) spriteNum = 2;
-                else if(spriteNum == 2) spriteNum = 1;
+            if(spriteCounter > 5) {
+                spriteNum++;
+                if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
                 spriteCounter = 0;
             }
 
@@ -85,25 +93,22 @@ public class Player extends Entity{
     }
 
     public void draw(Graphics2D g2d) {
-        BufferedImage image = null;
+
         switch(direction) {
             case "up":
-                if(spriteNum == 1) image = up1;
-                if (spriteNum == 2) image = up2;
+                aniCount = 0;
                 break;
             case "down":
-                if(spriteNum == 1) image = down1;
-                if (spriteNum == 2) image = down2;
+                aniCount = 1;
                 break;
             case "left":
-                if(spriteNum == 1) image = left1;
-                if (spriteNum == 2) image = left2;
+                aniCount = 2;
                 break;
             case "right":
-                if(spriteNum == 1) image = right1;
-                if (spriteNum == 2) image = right2;
+                aniCount = 3;
                 break;           
         }
+        BufferedImage image = animations.get(aniCount).get(spriteNum);
         g2d.drawImage(image, screenX, screenY, gp.titleSize, gp.titleSize, null);
     }
 }
