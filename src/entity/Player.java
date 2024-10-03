@@ -1,11 +1,8 @@
 package entity;
 
-import main.CollisionCheck;
 import main.KeyHandler;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
 import java.awt.Rectangle;
 import main.GamePanel;
 
@@ -57,20 +54,23 @@ public class Player extends Entity{
 
     public void update() {
         if(keyHandler.up || keyHandler.down || keyHandler.left || keyHandler.right) {
-            if(keyHandler.up) {
+            if (keyHandler.up && keyHandler.left) {
+                direction = "up-left";
+            } else if (keyHandler.up && keyHandler.right) {
+                direction = "up-right";
+            } else if (keyHandler.down && keyHandler.left) {
+                direction = "down-left";
+            } else if (keyHandler.down && keyHandler.right) {
+                direction = "down-right";
+            } else if (keyHandler.up) {
                 direction = "up";
-            }
-            if(keyHandler.down) {
+            } else if (keyHandler.down) {
                 direction = "down";
-            }
-            if(keyHandler.right) {
+            } else if (keyHandler.left) {
+                direction = "left";
+            } else if (keyHandler.right) {
                 direction = "right";
             }
-            if(keyHandler.left) {
-                direction = "left";
-            }
-
-            // Gọi hàm move() để thực hiện di chuyển nếu không có va chạm
 
             spriteCounter++;
             if(spriteCounter > 5) {
@@ -95,6 +95,22 @@ public class Player extends Entity{
                     case "right":
                         worldX += speed;
                         break;
+                    case "up-left":
+                        worldY -= (speed * 0.75); // 0.75 là căn bậc hai của 2 chia cho 2, để giữ tốc độ chéo nhất quán
+                        worldX -= (speed * 0.75);
+                        break;
+                    case "up-right":
+                        worldY -= speed * 0.75;
+                        worldX += speed * 0.75;
+                        break;
+                    case "down-left":
+                        worldY += speed * 0.75;
+                        worldX -= speed * 0.75;
+                        break;
+                    case "down-right":
+                        worldY += speed * 0.75;
+                        worldX += speed * 0.75;
+                        break;
                 }
             }
         }
@@ -114,7 +130,19 @@ public class Player extends Entity{
                 break;
             case "right":
                 aniCount = 3;
-                break;           
+                break;  
+            case "up-left":
+                aniCount = 0; // Có thể dùng hoạt ảnh cho di chuyển lên
+                break;
+            case "up-right":
+                aniCount = 0; // Có thể dùng hoạt ảnh cho di chuyển lên
+                break;
+            case "down-left":
+                aniCount = 1; // Có thể dùng hoạt ảnh cho di chuyển xuống
+                break;
+            case "down-right":
+                aniCount = 1; // Có thể dùng hoạt ảnh cho di chuyển xuống
+                break;         
         }
         BufferedImage image = animations.get(aniCount).get(spriteNum);
         g2d.drawImage(image, screenX, screenY, gp.titleSize, gp.titleSize, null);
