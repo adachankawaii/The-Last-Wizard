@@ -9,8 +9,8 @@ import main.GamePanel;
 
 public class TileManager {
     GamePanel gp;
-    Tile[] tile;
-    int[][] mapTile;
+    public Tile[] tile;
+    public int[][] mapTile;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;

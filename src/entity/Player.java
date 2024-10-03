@@ -10,11 +10,10 @@ import java.awt.Rectangle;
 import main.GamePanel;
 
 public class Player extends Entity{
-    private CollisionCheck collisionCheck;
     GamePanel gp;
     KeyHandler keyHandler;
 
-    public Player(GamePanel gp, KeyHandler keyHandler, CollisionCheck collisionCheck) {
+    public Player(GamePanel gp, KeyHandler keyHandler) {
         this.gp = gp;
         this.keyHandler = keyHandler;
 
@@ -22,11 +21,10 @@ public class Player extends Entity{
         screenY = gp.screenHeight / 2 - gp.titleSize/2;
 
         rect = new Rectangle();
-        rect.x = 8;
-        rect.y = 16;
+        rect.x = 6;
+        rect.y = 6;
         rect.width = 32;
         rect.height = 32;
-        this.collisionCheck = collisionCheck;
         setDefautValue();
         getPlayerImage();
     }
@@ -34,7 +32,7 @@ public class Player extends Entity{
     public void setDefautValue() {
         worldX = gp.titleSize * 23;
         worldY = gp.titleSize * 21;
-        speed = 5;
+        speed = 4;
         direction = "down";
     }
 
@@ -61,21 +59,16 @@ public class Player extends Entity{
         if(keyHandler.up || keyHandler.down || keyHandler.left || keyHandler.right) {
             if(keyHandler.up) {
                 direction = "up";
-                worldY -= speed;
             }
             if(keyHandler.down) {
                 direction = "down";
-                worldY += speed;
             }
             if(keyHandler.right) {
                 direction = "right";
-                worldX += speed;           
             }
             if(keyHandler.left) {
                 direction = "left";
-                worldX -= speed;
             }
-            collisionCheck.checkTile(this);
 
             // Gọi hàm move() để thực hiện di chuyển nếu không có va chạm
 
@@ -88,7 +81,22 @@ public class Player extends Entity{
 
             collisionOn = false;
             gp.collision.checkTile(this);
-            
+            if(!collisionOn){
+                switch (direction){
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
+            }
         }
     }
 
