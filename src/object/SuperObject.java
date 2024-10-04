@@ -1,18 +1,22 @@
-package entity;
+package object;
 
 import javax.imageio.ImageIO;
+import main.GamePanel;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.Vector;
 
-public class Entity {
+public class SuperObject {
     public int worldX, worldY, screenX, screenY, speed;
+
     public String direction;
 
     public int spriteNum = 0;
     public int spriteCounter = 0;
-    
+    public String name;
+    public boolean collision = false;
     public Rectangle rect;
     public boolean collisionOn = false;
     BufferedImage source;
@@ -59,4 +63,13 @@ public class Entity {
             }
         }
     }
+    public void draw(Graphics2D g2d, GamePanel gamePanel) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'draw'");
+    }
+    public void update() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
 }
