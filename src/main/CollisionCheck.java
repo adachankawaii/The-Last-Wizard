@@ -107,22 +107,22 @@ public class CollisionCheck {
 
         int index = 999;
 
-        for (int i = 0; i < gp.obj.length; i++) {
-            if(gp.obj[i] != null) {
+        for (int i = 0; i < gp.obj.size(); i++) {
+            if(gp.obj.get(i) != null) {
 
                 // Get entity's solid area position
                 entity.rect.x = entity.worldX + entity.rect.x;
                 entity.rect.y = entity.worldY + entity.rect.y;
             
                 // Get the object's solid area position
-                gp.obj[i].rect.x = gp.obj[i].worldX + gp.obj[i].rect.x;
-                gp.obj[i].rect.y = gp.obj[i].worldY + gp.obj[i].rect.y;
+                gp.obj.get(i).rect.x = gp.obj.get(i).worldX + gp.obj.get(i).rect.x;
+                gp.obj.get(i).rect.y = gp.obj.get(i).worldY + gp.obj.get(i).rect.y;
             
                 switch(entity.direction) {
                     case "up":
                         entity.rect.y -= entity.speed;
-                        if (entity.rect.intersects(gp.obj[i].rect)) {
-                            if (gp.obj[i].collision) {
+                        if (entity.rect.intersects(gp.obj.get(i).rect)) {
+                            if (gp.obj.get(i).collision) {
                                 entity.collisionOn = true;
                             }
                             if (player) index = i;
@@ -130,8 +130,8 @@ public class CollisionCheck {
                         break;
                     case "down":
                         entity.rect.y += entity.speed;
-                        if (entity.rect.intersects(gp.obj[i].rect)) {
-                            if (gp.obj[i].collision) {
+                        if (entity.rect.intersects(gp.obj.get(i).rect)) {
+                            if (gp.obj.get(i).collision) {
                                 entity.collisionOn = true;
                             }
                             if (player) index = i;
@@ -139,8 +139,8 @@ public class CollisionCheck {
                         break;
                     case "left":
                         entity.rect.x -= entity.speed;
-                        if (entity.rect.intersects(gp.obj[i].rect)) {
-                            if (gp.obj[i].collision) {
+                        if (entity.rect.intersects(gp.obj.get(i).rect)) {
+                            if (gp.obj.get(i).collision) {
                                 entity.collisionOn = true;
                             }
                             if (player) index = i;
@@ -148,8 +148,8 @@ public class CollisionCheck {
                         break;
                     case "right":
                         entity.rect.x += entity.speed;
-                        if (entity.rect.intersects(gp.obj[i].rect)) {
-                            if (gp.obj[i].collision) {
+                        if (entity.rect.intersects(gp.obj.get(i).rect)) {
+                            if (gp.obj.get(i).collision) {
                                 entity.collisionOn = true;
                             }
                             if (player) index = i;
@@ -158,8 +158,8 @@ public class CollisionCheck {
                 }
                 entity.rect.x = entity.solidAreaDefaultX;
                 entity.rect.y = entity.solidAreaDefaultY;
-                gp.obj[i].rect.x = gp.obj[i].solidAreaDefaultY;
-                gp.obj[i].rect.y = gp.obj[i].solidAreaDefaultY;
+                gp.obj.get(i).rect.x = gp.obj.get(i).solidAreaDefaultY;
+                gp.obj.get(i).rect.y = gp.obj.get(i).solidAreaDefaultY;
             }            
         }
         return index;

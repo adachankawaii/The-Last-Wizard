@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import entity.Player;
 import object.SuperObject;
+import object.bullet.bullet;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable{
@@ -34,9 +36,10 @@ public class GamePanel extends JPanel implements Runnable{
     public Player player = new Player(this, key);
     public TileManager tileMng = new TileManager(this);
     public CollisionCheck collision = new CollisionCheck(this);
-    public SuperObject[] obj = new SuperObject[10];
+    public ArrayList<SuperObject> obj = new ArrayList<>();
+    public int top = 0;
     public AssetSetter aSetter = new AssetSetter(this);
-
+    public int mouseX = 0, mouseY = 0;
     int FPS = 60; // Frames per second
 
     public GamePanel() {
@@ -45,6 +48,7 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);  // Enable double buffering for smoother rendering
         this.addKeyListener(key);
         this.setFocusable(true); // Allow focus on the panel to capture user input
+        addMouseListener(new MouseHandler(this));
     }
 
    // Method to start the game loop thread
@@ -82,22 +86,25 @@ public class GamePanel extends JPanel implements Runnable{
     // Method to update the game state (e.g., player position, collision detection)
     public void update() {
         player.update();
-        for (int i = 0; i < obj.length; i++) {
-            if (obj[i] != null) {
-                obj[i].update();
+        for (int i = 0; i < obj.size(); i++) {
+            if (obj.get(i) != null) {
+                obj.get(i).update();
             }
         }
     }
+    public void onClick(){
+        bullet b = new bullet("/bullet/bullet.png", 4, 2, player.worldX, player.worldY,50,null);
 
+    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // Call parent class's method to ensure proper rendering
         Graphics2D g2d = (Graphics2D)g;
         tileMng.draw(g2d);
 
-        for (int i = 0; i < obj.length; i++) {
-            if (obj[i] != null) {
-                obj[i].draw(g2d, this);
+        for (int i = 0; i < obj.size(); i++) {
+            if (obj.get(i) != null) {
+                obj.get(i).draw(g2d, this);
             }
         }
 
