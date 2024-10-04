@@ -2,13 +2,18 @@ package object;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
+import java.awt.Color;
 import main.GamePanel;
 
 public class OBJ_Slime extends SuperObject{
     public OBJ_Slime() {
         name = "Slime";
         getPlayerImage();
+        rect.x = 0;
+        rect.y = 0;
+        rect.width = 48;
+        rect.height = 48;
+        collision = true;
     }
     public void getPlayerImage() {
         importEachImage(new String[]{"/enemy/frame_0.png",
@@ -36,6 +41,8 @@ public class OBJ_Slime extends SuperObject{
             && worldY - gp.titleSize < gp.player.worldY + gp.player.screenY) {
                 BufferedImage image = animations.get(aniCount).get(spriteNum);
                 g2d.drawImage(image, screenX, screenY, gp.titleSize, gp.titleSize, null);
+                g2d.setColor(Color.red);
+                g2d.drawRect(screenX + rect.x, screenY + rect.y, rect.width, rect.height);
             }
     }
 }

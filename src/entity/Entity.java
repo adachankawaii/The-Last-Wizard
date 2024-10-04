@@ -14,11 +14,16 @@ public class Entity {
     public int spriteCounter = 0;
     
     public Rectangle rect;
+    public int solidAreaDefaultX;
+    public int solidAreaDefaultY;
+
     public boolean collisionOn = false;
     BufferedImage source;
     BufferedImage img;
     public Vector<Vector<BufferedImage>> animations = new Vector<>();
     public int aniCount = 0;
+
+    
     public void importAndSlice(String path, int count, int x, int y){
         Vector<BufferedImage> a = new Vector<>();
         try(InputStream is = getClass().getResourceAsStream(path)){
@@ -33,6 +38,7 @@ public class Entity {
         }
         animations.add(a);
     }
+
     public void importEachImage(String[] path, boolean newAnimation){
         if(newAnimation){
             Vector<BufferedImage> a = new Vector<>();

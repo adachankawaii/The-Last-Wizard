@@ -21,6 +21,7 @@ public class CollisionCheck {
         int entityTopRow = entityTopY / tileSize;
         int entityBottomRow = entityBottomY / tileSize;
         int tileNum1, tileNum2;
+        
         switch (entity.direction) {
             case "up":
                 // Kiểm tra va chạm khi thực thể di chuyển lên
@@ -101,6 +102,66 @@ public class CollisionCheck {
                 }
                 break;    
         }
+    }
+    public int checkObject(Entity entity, boolean player) {
 
+        int index = 999;
+
+        for (int i = 0; i < gp.obj.length; i++) {
+            if(gp.obj[i] != null) {
+
+                // Get entity's solid area position
+                entity.rect.x = entity.worldX + entity.rect.x;
+                entity.rect.y = entity.worldY + entity.rect.y;
+            
+                // Get the object's solid area position
+                gp.obj[i].rect.x = gp.obj[i].worldX + gp.obj[i].rect.x;
+                gp.obj[i].rect.y = gp.obj[i].worldY + gp.obj[i].rect.y;
+            
+                switch(entity.direction) {
+                    case "up":
+                        entity.rect.y -= entity.speed;
+                        if (entity.rect.intersects(gp.obj[i].rect)) {
+                            if (gp.obj[i].collision) {
+                                entity.collisionOn = true;
+                            }
+                            if (player) index = i;
+                        }
+                        break;
+                    case "down":
+                        entity.rect.y += entity.speed;
+                        if (entity.rect.intersects(gp.obj[i].rect)) {
+                            if (gp.obj[i].collision) {
+                                entity.collisionOn = true;
+                            }
+                            if (player) index = i;
+                        }
+                        break;
+                    case "left":
+                        entity.rect.x -= entity.speed;
+                        if (entity.rect.intersects(gp.obj[i].rect)) {
+                            if (gp.obj[i].collision) {
+                                entity.collisionOn = true;
+                            }
+                            if (player) index = i;
+                        }
+                        break;
+                    case "right":
+                        entity.rect.x += entity.speed;
+                        if (entity.rect.intersects(gp.obj[i].rect)) {
+                            if (gp.obj[i].collision) {
+                                entity.collisionOn = true;
+                            }
+                            if (player) index = i;
+                        }
+                        break;
+                }
+                entity.rect.x = entity.solidAreaDefaultX;
+                entity.rect.y = entity.solidAreaDefaultY;
+                gp.obj[i].rect.x = gp.obj[i].solidAreaDefaultY;
+                gp.obj[i].rect.y = gp.obj[i].solidAreaDefaultY;
+            }            
+        }
+        return index;
     }
 }

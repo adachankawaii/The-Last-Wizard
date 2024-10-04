@@ -23,8 +23,8 @@ public class GamePanel extends JPanel implements Runnable{
     public final int screenHeight = maxScreenRow * titleSize;  // Total screen height in pixels
 
     // World settings
-    public final int maxWorldCol = 100;  // Max world columns
-    public final int maxWorldRow = 100;  // Max world rows
+    public final int maxWorldCol = 50;  // Max world columns
+    public final int maxWorldRow = 50;  // Max world rows
     public final int worldWidth = maxWorldCol * titleSize;    // World width in pixels
     public final int worldHeight = maxWorldRow * titleSize;   // World height in pixels
 
@@ -82,28 +82,6 @@ public class GamePanel extends JPanel implements Runnable{
     // Method to update the game state (e.g., player position, collision detection)
     public void update() {
         player.update();
-
-        // Giới hạn vị trí camera
-        int maxCameraX = worldWidth - screenWidth; // Giới hạn bên phải của camera
-        int maxCameraY = worldHeight - screenHeight; // Giới hạn bên dưới của camera
-        
-        // Cập nhật vị trí camera dựa trên vị trí của nhân vật
-        int cameraX = player.worldX - player.screenX + (titleSize / 2);
-        int cameraY = player.worldY - player.screenY + (titleSize / 2);
-
-        // Giới hạn vị trí camera
-        if (cameraX < 0) {
-            cameraX = 0; // Giới hạn bên trái
-        } else if (cameraX > maxCameraX) {
-            cameraX = maxCameraX; // Giới hạn bên phải
-        }
-
-        if (cameraY < 0) {
-            cameraY = 0; // Giới hạn trên
-        } else if (cameraY > maxCameraY) {
-            cameraY = maxCameraY; // Giới hạn dưới
-        }
-
         for (int i = 0; i < obj.length; i++) {
             if (obj[i] != null) {
                 obj[i].update();

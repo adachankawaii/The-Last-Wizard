@@ -10,14 +10,16 @@ import java.util.Vector;
 
 public class SuperObject {
     public int worldX, worldY, screenX, screenY, speed;
-
+    public int solidAreaDefaultX, solidAreaDefaultY;
     public String direction;
 
     public int spriteNum = 0;
     public int spriteCounter = 0;
     public String name;
     public boolean collision = false;
-    public Rectangle rect;
+
+    public Rectangle rect = new Rectangle();
+
     public boolean collisionOn = false;
     BufferedImage source;
     BufferedImage img;
