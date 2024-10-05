@@ -1,35 +1,37 @@
-package object.bullet;
+package object.effect;
 
 import main.GamePanel;
 import object.SuperObject;
-import object.effect.effect;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-public class bullet extends SuperObject {
+public class effect extends SuperObject {
     GamePanel gp;
-    public int timer = 0;
-    public int lifeTime = 0;
-    double angle = 0;
-    double scaleX, scaleY;
-    public bullet(String path,int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY){
+    int lifeTime = 0;
+
+    public effect(String path,int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int speed, int scaleX, int scaleY){
         this.rect = new Rectangle();
-        importAndSlice(path, 4, 0,w);
+        importAndSlice(path, 4, 0,0);
         this.rect.x = rectX;
         this.rect.y = rectY;
         this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;
-        angle = Math.atan2(gp.mouseY - worldY, gp.mouseX - worldX);
         aniCount = 0;
         this.lifeTime = lifeTime;
         collision = true;
-        this.speed = speed;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+        this.speed = speed;
+        angle = Math.atan2(gp.mouseY - worldY, gp.mouseX - worldX);
     }
+    public int timer = 0;
+    double angle = 0;
+    double scaleX, scaleY;
+    int speed =0;
+
     @Override
     public void draw(Graphics2D g, GamePanel gp) {
         // Tính toán vị trí trên màn hình
@@ -57,7 +59,7 @@ public class bullet extends SuperObject {
         g.rotate(angle);
 
         // Lật hình ảnh theo trục Ox (nếu cần)
-        g.scale(-1, 1);
+        //g.scale(-1, 1);
 
         // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
         g.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth*scaleX), (int)(imageHeight*scaleY), null);
@@ -77,18 +79,13 @@ public class bullet extends SuperObject {
             spriteCounter = 0;
         }
         collisionOn = false;
-
         if (timer <= 60) {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));
         }
-
-        if(timer > lifeTime || collisionOn) {
-            effect a = new effect("/effect/effect1.png", 0,0,this.worldX,this.worldY,10, gp, 0, 2,2);
-            gp.obj.add(a);
+        if(timer >= lifeTime) {
             gp.obj.remove(this);
         }
-
 
         timer++;
 

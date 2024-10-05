@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import entity.Player;
 import object.SuperObject;
 import object.bullet.bullet;
+import object.effect.effect;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable{
@@ -41,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable{
     public AssetSetter aSetter = new AssetSetter(this);
     public int mouseX = 0, mouseY = 0;
     int FPS = 60; // Frames per second
+    int reloadTime = 0;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -91,9 +93,16 @@ public class GamePanel extends JPanel implements Runnable{
                 obj.get(i).update();
             }
         }
+        reloadTime --;
     }
     public void onClick(){
-        bullet b = new bullet("/bullet/bullet.png", 4, 2, player.worldX, player.worldY,50,null);
+        if(reloadTime <= 0){
+            bullet b = new bullet("/bullet/bullet.png", 4, 2, player.worldX, player.worldY,50,this ,0, 7, 1.5, 1.5);
+            effect c = new effect("/effect/Blue Effect Bullet Impact Explosion 32x32.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 2,2);
+            obj.add(c);
+            obj.add(b);
+            reloadTime = 20;
+        }
 
     }
     @Override
