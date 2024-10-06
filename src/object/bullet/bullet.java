@@ -7,16 +7,37 @@ import object.effect.effect;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Random;
+import java.util.Vector;
 
 public class bullet extends SuperObject {
     GamePanel gp;
     public int timer = 0;
     public int lifeTime = 0;
     double angle = 0;
+    int animationDelay = 2;
     double scaleX, scaleY;
     public bullet(String path,String name, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY){
         this.rect = new Rectangle();
-        importAndSlice(path, 4, 0,w);
+        animationDelay = 2;
+        if(path != null) importAndSlice(path, 4, 0,w);
+        else{
+            BufferedImage image = new BufferedImage(rectX, rectY, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = image.createGraphics();
+
+
+            int b = 255; // Giá trị ngẫu nhiên cho Blue
+
+            Color randomColor = new Color(0, 160, b); // Tạo màu ngẫu nhiên từ RGB
+            g2d.setColor(randomColor);
+            g2d.fillRect(0, 0, rectX, rectY); // Vẽ hình chữ nhật đỏ kích thước 100x100
+
+            // Giải phóng đối tượng Graphics2D sau khi vẽ
+            g2d.dispose();
+            Vector<BufferedImage> tmp = new Vector<>();
+            tmp.add(image);
+            animations.add(tmp);
+        }
         this.rect.x = 0;
         this.rect.y = 0;
         this.rect.width = rectX;
@@ -78,10 +99,11 @@ public class bullet extends SuperObject {
     @Override
     public void update() {
         spriteCounter++;
-        if(spriteCounter > 2) {
+        if(spriteCounter > animationDelay) {
             spriteNum++;
             if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
             spriteCounter = 0;
+            specialMethod();
         }
 
         collisionOn = false;
@@ -101,13 +123,19 @@ public class bullet extends SuperObject {
         }
 
         if(timer > lifeTime || collisionOn) {
-            effect a = new effect("/effect/effect1.png", 0,0,this.worldX,this.worldY,10, gp, 0, 2,2);
-            gp.obj.add(a);
+            if(collisionOn){
+                effect a = new effect("/effect/effect2.png", 0,0,this.worldX,this.worldY,10, gp, 0, 1,1);
+                gp.obj.add(a);
+            }
+
             gp.obj.remove(this);
         }
 
 
         timer++;
+
+    }
+    public void specialMethod(){
 
     }
 }

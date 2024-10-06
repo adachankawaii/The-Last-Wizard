@@ -6,16 +6,37 @@ import object.SuperObject;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Random;
+import java.util.Vector;
 
 public class effect extends SuperObject {
     GamePanel gp;
     int lifeTime = 0;
 
-    public effect(String path,int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int speed, int scaleX, int scaleY){
+    public effect(String path,int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int speed, double scaleX, double scaleY){
         this.rect = new Rectangle();
-        importAndSlice(path, 4, 0,0);
-        this.rect.width = rectX;
-        this.rect.height = rectY;
+        if(path != null) importAndSlice(path, 4, 0,0);
+        else{
+            BufferedImage image = new BufferedImage(rectX/8, rectY/8, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = image.createGraphics();
+
+            // Thiết lập màu và vẽ hình chữ nhật màu đỏ
+            Random rand = new Random();
+
+            int b = 255; // Giá trị ngẫu nhiên cho Blue
+
+            Color randomColor = new Color(0, 200, b); // Tạo màu ngẫu nhiên từ RGB
+            g2d.setColor(randomColor);
+            g2d.fillRect(0, 0, rectX/8, rectY/8); // Vẽ hình chữ nhật đỏ kích thước 100x100
+
+            // Giải phóng đối tượng Graphics2D sau khi vẽ
+            g2d.dispose();
+            Vector<BufferedImage> tmp = new Vector<>();
+            tmp.add(image);
+            animations.add(tmp);
+        }
+        this.rect.width = 0;
+        this.rect.height = 0;
         this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;

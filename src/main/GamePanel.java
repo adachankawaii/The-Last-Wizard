@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import entity.Player;
 import object.SuperObject;
 import object.bullet.bullet;
+import object.bullet.normalBullet;
 import object.effect.effect;
 import tile.TileManager;
 
@@ -97,8 +98,8 @@ public class GamePanel extends JPanel implements Runnable{
     }
     public void onClick(){
         if(reloadTime <= 0){
-            bullet b = new bullet("/bullet/bullet.png","bullet", 16, 16, player.worldX, player.worldY,50,this ,0, 7, 1.5, 1.5);
-            effect c = new effect("/effect/Blue Effect Bullet Impact Explosion 32x32.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 2,2);
+            normalBullet b = new normalBullet("/bullet/bullet.png","bullet", 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1);
+            effect c = new effect("/effect/Blue Effect Bullet Impact Explosion 32x32.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5);
             obj.add(c);
             obj.add(b);
             reloadTime = 20;
