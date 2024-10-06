@@ -14,14 +14,14 @@ public class effect extends SuperObject {
     public effect(String path,int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int speed, int scaleX, int scaleY){
         this.rect = new Rectangle();
         importAndSlice(path, 4, 0,0);
-        this.rect.x = rectX;
-        this.rect.y = rectY;
+        this.rect.width = rectX;
+        this.rect.height = rectY;
         this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;
         aniCount = 0;
         this.lifeTime = lifeTime;
-        collision = true;
+        collision = false;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.speed = speed;
@@ -45,8 +45,8 @@ public class effect extends SuperObject {
         AffineTransform old = g.getTransform();
 
         // Kích thước của hình ảnh
-        int imageWidth = image.getWidth();
-        int imageHeight = image.getHeight();
+        int imageWidth = (int) (image.getWidth() * scaleX);
+        int imageHeight = (int) (image.getHeight() * scaleY);
 
         // Tính toán chính xác tâm của hình ảnh
         int centerX = screenX + gp.titleSize / 2;
@@ -62,7 +62,7 @@ public class effect extends SuperObject {
         //g.scale(-1, 1);
 
         // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
-        g.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth*scaleX), (int)(imageHeight*scaleY), null);
+        g.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth), (int)(imageHeight), null);
 
         // Khôi phục lại trạng thái ban đầu của Graphics2D
         g.setTransform(old);

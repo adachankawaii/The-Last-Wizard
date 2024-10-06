@@ -14,21 +14,26 @@ public class bullet extends SuperObject {
     public int lifeTime = 0;
     double angle = 0;
     double scaleX, scaleY;
-    public bullet(String path,int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY){
+    public bullet(String path,String name, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY){
         this.rect = new Rectangle();
         importAndSlice(path, 4, 0,w);
-        this.rect.x = rectX;
-        this.rect.y = rectY;
+        this.rect.x = 0;
+        this.rect.y = 0;
+        this.rect.width = rectX;
+        this.rect.height = rectY;
         this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;
         angle = Math.atan2(gp.mouseY - worldY, gp.mouseX - worldX);
         aniCount = 0;
+        solidAreaDefaultX = rect.x;
+        solidAreaDefaultY = rect.y;
         this.lifeTime = lifeTime;
         collision = true;
         this.speed = speed;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+        this.name = name;
     }
     @Override
     public void draw(Graphics2D g, GamePanel gp) {
@@ -43,11 +48,11 @@ public class bullet extends SuperObject {
         AffineTransform old = g.getTransform();
 
         // Kích thước của hình ảnh
-        int imageWidth = image.getWidth();
-        int imageHeight = image.getHeight();
+        int imageWidth = (int) (image.getWidth() * scaleX);
+        int imageHeight = (int) (image.getHeight() * scaleY);
 
         // Tính toán chính xác tâm của hình ảnh
-        int centerX = screenX + gp.titleSize / 2;
+        int centerX = screenX + gp.titleSize / 2 ;
         int centerY = screenY + gp.titleSize / 2;
 
         // Dịch hệ tọa độ đến tâm của vật thể (tâm của hình ảnh)
@@ -60,10 +65,12 @@ public class bullet extends SuperObject {
         g.scale(-1, 1);
 
         // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
-        g.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth*scaleX), (int)(imageHeight*scaleY), null);
-
+        g.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth), (int)(imageHeight), null);
         // Khôi phục lại trạng thái ban đầu của Graphics2D
+
+
         g.setTransform(old);
+
     }
 
 
@@ -76,8 +83,18 @@ public class bullet extends SuperObject {
             if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
             spriteCounter = 0;
         }
+
         collisionOn = false;
 
+        if(Math.toDegrees(angle) > -45 && Math.toDegrees(angle) <= 45) direction = "right";
+        if(Math.toDegrees(angle) > 45 && Math.toDegrees(angle) <= 135) direction = "down";
+        if(Math.toDegrees(angle) > 135 || Math.toDegrees(angle) <= -135) direction = "left";
+        if(Math.toDegrees(angle) > -135 && Math.toDegrees(angle) <= -45) direction = "up";
+        int i = gp.collision.checkObjectForObj(this);
+        if(i != 999){
+            gp.obj.remove(i);
+        }
+        gp.collision.checkTileForObj(this);
         if (timer <= 60) {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));

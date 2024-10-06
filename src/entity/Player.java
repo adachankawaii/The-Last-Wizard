@@ -115,16 +115,19 @@ public class Player extends Entity{
     public void pickUpObj(int i) {
         if(i != 999) {
             String objName = gp.obj.get(i).name;
-            switch (objName) {
-                case "Slime":
-                    hasKey++;
-                    gp.obj.remove(gp.obj.get(i));
-                    System.out.println(objName + " " + hasKey);
-                    break;
-            
-                default:
-                    break;
+            if(objName != null){
+                switch (objName) {
+                    case "Slime":
+                        hasKey++;
+                        gp.obj.remove(gp.obj.get(i));
+                        System.out.println(objName + " " + hasKey);
+                        break;
+
+                    default:
+                        break;
+                }
             }
+
         }
     }
     public void draw(Graphics2D g2d) {
