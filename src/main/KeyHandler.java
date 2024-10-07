@@ -5,44 +5,45 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener{
 
-    public boolean up, down, left, right;
-
+    public boolean upPressed, downPressed, leftPressed, rightPressed;
+    
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e) { // Khi nhấn phím
         int code = e.getKeyCode();
+
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-            up = true;
+            upPressed = true;
         }
         if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-            left = true;
+            leftPressed = true;
         }
         if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-            down = true;
+            downPressed = true;
         }
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-            right = true;
+            rightPressed = true;
         }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e) { // Khi nhả phím
         int code = e.getKeyCode();
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-            up = false;
+            upPressed = false;
         }
         if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-            left = false;
+            leftPressed = false;
         }
         if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-            down = false;
+            downPressed = false;
         }
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-            right = false;
+            rightPressed = false;
         }
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-    }
-    
+        
+    }  
 }

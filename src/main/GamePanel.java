@@ -1,94 +1,131 @@
 package main;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import javax.swing.JPanel;
-import entity.Player;
-import object.SuperObject;
-import object.bullet.bullet;
-import object.bullet.normalBullet;
-import object.effect.effect;
+import collision.CollisionCheck;
+import entity.Entity;
+import entity.player.Player;
 import tile.TileManager;
-
+import entity.effect.Effect;
+import entity.bullet.NormalBullet;
 public class GamePanel extends JPanel implements Runnable{
 
-    // Constants for tile sizes and world dimensions
-    final int originalTitleSize = 16;  // Original size of a tile
-    final int scale = 3;               // Scale factor
-    public final int titleSize = originalTitleSize * scale;  // Final tile size after scaling
+    // SCREEN SETTING
+    // Cài đặt tile size
+    public final int originalTitleSize = 16;  // Size gốc của 1 tile
+    public final int scale = 3;               // Chỉ số scale
+    public final int tileSize = originalTitleSize * scale;  // Size 1 tile sau khi scale
 
-    // Screen size and world size parameters
-    public final int maxScreenCol = 25;  // Number of columns on the screen
-    public final int maxScreenRow = 15;  // Number of rows on the screen
-    public final int screenWidth = maxScreenCol * titleSize;  // Total screen width in pixels
-    public final int screenHeight = maxScreenRow * titleSize;  // Total screen height in pixels
+    // Cài đặt size màn hình
+    public final int maxScreenCol = 25;  // Số cột hiện ở màn hình (Width)
+    public final int maxScreenRow = 15;  // Số hàng hiện ở màn hình (Height)
+    public final int screenWidth = maxScreenCol * tileSize;  // Width tính theo pixel
+    public final int screenHeight = maxScreenRow * tileSize;  // Height tính theo pixel
 
-    // World settings
+    // Cài đặt Map
     public final int maxWorldCol = 50;  // Max world columns
     public final int maxWorldRow = 50;  // Max world rows
-    public final int worldWidth = maxWorldCol * titleSize;    // World width in pixels
-    public final int worldHeight = maxWorldRow * titleSize;   // World height in pixels
+    public final int worldWidth = maxWorldCol * tileSize;
+    public final int worldHeight = maxWorldRow * tileSize;
 
-    // Game objects and entities
+    // Cài đặt FPS
+    public final int FPS = 60;
+
+    // CONSTRUCTOR
+    public GamePanel() {
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // Set size màn hình
+        this.setDoubleBuffered(true); // Chất lượng render tốt hơn
+        this.addKeyListener(keyH); // Thêm vào để game detect key input
+        this.addMouseListener(mouseH); // Detect Mouse input
+        this.setFocusable(true); // Tập trung vào nhận diện và xử lí key input
+    }
+
+    // TẠO THREAD
     Thread gameThread;
-    KeyHandler key = new KeyHandler();
-    public Player player = new Player(this, key);
+    public void startGameThread() { // Chạy luồng mới cho logic game
+        gameThread = new Thread(this);
+        gameThread.start(); // Chạy run()
+    }
+
+    // TẠO KEY HANDLER
+    public KeyHandler keyH = new KeyHandler();
+
+    // Tạo PLAYER
+    public Player player = new Player(this, keyH);
+
+    // TẠO TILE MANAGER
     public TileManager tileMng = new TileManager(this);
-    public CollisionCheck collision = new CollisionCheck(this);
-    public ArrayList<SuperObject> obj = new ArrayList<>();
-    public int top = 0;
-    public AssetSetter aSetter = new AssetSetter(this);
+
+    // TẠO COLLISION
+    public CollisionCheck cCheck = new CollisionCheck(this);
+
+    // TẠO ARRAY LƯU OBJ
+    public ArrayList<Entity> obj = new ArrayList<>();
+
+    // TẠO SET OBJECT
+    AssetSetter aSetter = new AssetSetter(this);
+
+    // MOUSE
+    MouseHandler mouseH = new MouseHandler(this);
     public int mouseX = 0, mouseY = 0;
-    int FPS = 60; // Frames per second
     int reloadTime = 0;
 
-    public GamePanel() {
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.BLACK);
-        this.setDoubleBuffered(true);  // Enable double buffering for smoother rendering
-        this.addKeyListener(key);
-        this.setFocusable(true); // Allow focus on the panel to capture user input
-        addMouseListener(new MouseHandler(this));
-    }
-
-   // Method to start the game loop thread
-    public void startGameThread() {
-        gameThread = new Thread(this);
-        gameThread.start();
-    }
-
+    // Setup các sự vật trong game
     public void setupGame() {
-        aSetter.setObject();
+
+        // Đọc đường dẫn tới file thông tin và nhập
+        String url = "res/maps/set_obj.txt";
+        aSetter.setObject(url);
     }
 
+    // CHẠY GAME
     @Override
     public void run() {
 
-        // Game loop logic (fixed time-step for consistent FPS)
-        double drawInterval = 1000000000/FPS;
+        // SETTING FPS BẰNG DELTA TIME
+        double drawInterval = 1000000000.0 / FPS; // Khoảng thời gian giữa mỗi khung hình (nanosecond)
+        // Ví dụ, với 60 FPS, mỗi khung hình cần có thời gian là 16.67 ms
         double delta = 0;
-        long currentTime;
-        long lastTime = System.nanoTime();
+        long lastTime = System.nanoTime(); // Thời điểm bắt đầu của vòng lặp
+        long currentTime; // Thời điểm hiện tại trong vòng lặp
+        // long timer = 0;
+        // int count = 0;
 
-        while(gameThread != null) {
-            currentTime = System.nanoTime();
-            delta += ((currentTime - lastTime) / drawInterval);
+        while (gameThread != null) {
+            currentTime = System.nanoTime(); // Theo dõi thời gian đã trôi qua 
+            // và xác định khi nào nên cập nhật logic và vẽ lại trò chơi
+
+            delta += (currentTime - lastTime) / drawInterval; // Tính khoảng thời gian trôi qua
+            // timer += (currentTime - lastTime);
             lastTime = currentTime;
 
-            if(delta >= 1) {
+            if (delta >= 1) { // Đủ thời gian đã trôi qua để vẽ một khung hình mới
+                // 1. Cập nhật logic trò chơi
                 update();
+                // 2. Vẽ lại màn hình
                 repaint();
-                delta--;
+                delta--; // Giảm delta để tiếp tục điều chỉnh tốc độ
+                // count++;
             }
+
+            // if (timer >= 1000000000) {
+            //     System.out.println("FPS: " + count);
+            //     count = 0;
+            //     timer = 0;
+            // }
         }
+
     }
 
-    // Method to update the game state (e.g., player position, collision detection)
+    // NƠI CHỨA UPDATE NÈ
     public void update() {
+        // Update các animation của nhân vật
         player.update();
+
+        // Update các animation của object
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
                 obj.get(i).update();
@@ -96,30 +133,40 @@ public class GamePanel extends JPanel implements Runnable{
         }
         reloadTime --;
     }
+
     public void onClick(){
         if(reloadTime <= 0){
-            normalBullet b = new normalBullet("/bullet/bullet.png","bullet", 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1);
-            effect c = new effect("/effect/Blue Effect Bullet Impact Explosion 32x32.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5);
+            NormalBullet b = new NormalBullet("/bullet/bullet.png","bullet", 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1);
+            Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5);
             obj.add(c);
             obj.add(b);
             reloadTime = 20;
         }
-
     }
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g); // Call parent class's method to ensure proper rendering
-        Graphics2D g2d = (Graphics2D)g;
-        tileMng.draw(g2d);
 
+    // NƠI CHỨA VẼ NÈ
+    public void draw(Graphics2D g2) {
+
+        // Vẽ Map
+        tileMng.draw(g2);
+
+        // Vẽ Obj
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
-                obj.get(i).draw(g2d, this);
+                obj.get(i).draw(g2, this);
             }
         }
 
-        // Draw tiles and player
-        player.draw(g2d);
-        g2d.dispose(); // Dispose graphics context to free resources
+        // Vẽ nhân vật
+        player.draw(g2);
+    }
+
+    // VẼ OBJ Ở ĐÂY
+    @Override
+    public void paintComponent(Graphics g) { // Ghi đè lại method, muốn vẽ gì thì cho vô đây
+        super.paintComponent(g); // Clear bề mặt của component trước khi nó được vẽ lại
+        Graphics2D g2 = (Graphics2D) g; // Cast g từ Graphics thành Graphics2D để tận dụng nhiều tính năng hơn
+        draw(g2); // Vẽ các obj
+        g2.dispose(); // Nên sử dụng để giải phóng tài nguyên, đặc biệt khi dùng BufferedImage
     }
 }

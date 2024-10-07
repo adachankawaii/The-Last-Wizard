@@ -9,19 +9,23 @@ import main.GamePanel;
 
 public class TileManager {
     GamePanel gp;
+
+    // Khai báo tile và mảng map chứa các tile
     public Tile[] tile;
     public int[][] mapTile;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
-        tile = new Tile[10];
-        mapTile = new int[gp.maxWorldCol][gp.maxWorldRow];
-        getTileImage();
-        loadMap("res/maps/world01.txt");
+
+        tile = new Tile[10]; // Mảng lưu trữ các tile cần dùng
+        mapTile = new int[gp.maxWorldCol][gp.maxWorldRow]; // Tạo mảng map
+        getTileImage(); // Lấy tile từ res
+        loadMap("res/maps/world01.txt"); // Match với ma trận ở file txt
     }
 
+    // LẤY MẪU TILE
     public void getTileImage() {
-        try {
+        try { // Lấy các tile
             tile[0] = new Tile();
             tile[0].image = ImageIO.read(new File("res/tiles/grass.png"));
 
@@ -48,6 +52,7 @@ public class TileManager {
         }
     }
 
+    // LOAD MAP
     public void loadMap(String mapPath) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(mapPath));
@@ -72,22 +77,24 @@ public class TileManager {
         }
     }
 
+    // VẼ MAP
     public void draw(Graphics2D gd) {
 
         int worldRow = 0, worldCol = 0;
         while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
             int num = mapTile[worldCol][worldRow];
 
-            int worldX = worldCol * gp.titleSize;
-            int worldY = worldRow * gp.titleSize; 
+            int worldX = worldCol * gp.tileSize;
+            int worldY = worldRow * gp.tileSize; 
             int screenX = worldX - gp.player.worldX + gp.player.screenX;
             int screenY = worldY - gp.player.worldY + gp.player.screenY;
         
-            if(worldX + gp.titleSize > gp.player.worldX - gp.player.screenX
-            && worldX - gp.titleSize < gp.player.worldX + gp.player.screenX
-            && worldY + gp.titleSize > gp.player.worldY - gp.player.screenY
-            && worldY - gp.titleSize < gp.player.worldY + gp.player.screenY) {
-                gd.drawImage(tile[num].image, screenX, screenY, gp.titleSize, gp.titleSize, null);
+            // Chỉ render phần trong khung camera
+            if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
+            && worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
+            && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
+            && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+                gd.drawImage(tile[num].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
             }
             worldCol++;
 
@@ -97,6 +104,8 @@ public class TileManager {
             }
         }
     }
+
+    // TRẢ VỀ TILE THEO MA TRẬN
     public Tile getTileAt(int col, int row) {
         // Trả về tile tại cột và hàng tương ứng
         int i = mapTile[col][row];
