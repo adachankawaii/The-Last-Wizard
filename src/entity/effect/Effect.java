@@ -26,7 +26,7 @@ public class Effect extends Entity {
 
             int b = 255; // Giá trị ngẫu nhiên cho Blue
 
-            Color randomColor = new Color(0, 200, b); // Tạo màu ngẫu nhiên từ RGB
+            Color randomColor = new Color(0, 250, b); // Tạo màu ngẫu nhiên từ RGB
             g2d.setColor(randomColor);
             g2d.fillRect(0, 0, rectX/8, rectY/8); // Vẽ hình chữ nhật đỏ kích thước 100x100
 

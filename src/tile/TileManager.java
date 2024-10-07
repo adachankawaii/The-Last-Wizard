@@ -106,9 +106,5 @@ public class TileManager {
     }
 
     // TRẢ VỀ TILE THEO MA TRẬN
-    public Tile getTileAt(int col, int row) {
-        // Trả về tile tại cột và hàng tương ứng
-        int i = mapTile[col][row];
-        return tile[i];
-    }
+
 }

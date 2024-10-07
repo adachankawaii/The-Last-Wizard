@@ -15,9 +15,16 @@ public class MouseHandler implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        int mouseInfo = 0;
+        if(e.getButton() == MouseEvent.BUTTON1){
+            mouseInfo = 1;
+        }
+        else if(e.getButton() == MouseEvent.BUTTON3){
+            mouseInfo = 2;
+        }
         gp.mouseX = e.getX() + gp.player.worldX - gp.player.screenX;
         gp.mouseY = e.getY() + gp.player.worldY - gp.player.screenY;
-        gp.onClick();
+        gp.onClick(mouseInfo);
     }
 
     @Override

@@ -16,6 +16,7 @@ public class Bullet extends Entity {
     public int lifeTime = 0;
     double angle = 0;
     int animationDelay = 2;
+    public boolean death = true;
     double scaleX, scaleY;
     public Bullet(String path, String name, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY){
         this.solidArea = new Rectangle();
@@ -27,7 +28,7 @@ public class Bullet extends Entity {
 
             int b = 255; // Giá trị ngẫu nhiên cho Blue
 
-            Color randomColor = new Color(0, 160, b); // Tạo màu ngẫu nhiên từ RGB
+            Color randomColor = new Color(0, 250, b); // Tạo màu ngẫu nhiên từ RGB
             g2d.setColor(randomColor);
             g2d.fillRect(0, 0, rectX, rectY); // Vẽ hình chữ nhật đỏ kích thước 100x100
 
@@ -39,8 +40,8 @@ public class Bullet extends Entity {
         }
         this.solidArea.x = 0;
         this.solidArea.y = 0;
-        this.solidArea.width = rectX - 2;
-        this.solidArea.height = rectY - 2;
+        this.solidArea.width = (int)((rectX)*scaleX);
+        this.solidArea.height = (int)((rectY)*scaleY);
         this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;
@@ -118,13 +119,12 @@ public class Bullet extends Entity {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));
         }
-
-        if(timer > lifeTime || collisionOn) {
-            if(collisionOn){
-                Effect a = new Effect("/effect/effect2.png", 0,0,this.worldX,this.worldY,10, gp, 0, 1,1);
-                gp.obj.add(a);
-            }
-
+        if(collisionOn && death){
+            Effect a = new Effect("/effect/effect2.png", 0,0,this.worldX,this.worldY,10, gp, 0, 1,1);
+            gp.obj.add(a);
+            gp.obj.remove(this);
+        }
+        if(timer > lifeTime) {
             gp.obj.remove(this);
         }
         timer++;

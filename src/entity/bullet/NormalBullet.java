@@ -9,7 +9,7 @@ public class NormalBullet extends Bullet{
     public NormalBullet(String path, String name, int rectX, int rectY, int worldX, int worldY,
     int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY) {
         super(path, name, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY);
-        animationDelay = 5;
+        animationDelay = 0;
     }
     @Override
     public void specialMethod(){

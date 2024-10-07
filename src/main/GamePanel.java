@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import collision.CollisionCheck;
 import entity.Entity;
+import entity.bullet.ThrowingObj;
 import entity.player.Player;
 import tile.TileManager;
 import entity.effect.Effect;
@@ -52,30 +53,22 @@ public class GamePanel extends JPanel implements Runnable{
 
     // TẠO KEY HANDLER
     public KeyHandler keyH = new KeyHandler();
-
     // Tạo PLAYER
     public Player player = new Player(this, keyH);
-
     // TẠO TILE MANAGER
     public TileManager tileMng = new TileManager(this);
-
     // TẠO COLLISION
     public CollisionCheck cCheck = new CollisionCheck(this);
-
     // TẠO ARRAY LƯU OBJ
     public ArrayList<Entity> obj = new ArrayList<>();
-
     // TẠO SET OBJECT
     AssetSetter aSetter = new AssetSetter(this);
-
     // MOUSE
     MouseHandler mouseH = new MouseHandler(this);
     public int mouseX = 0, mouseY = 0;
     int reloadTime = 0;
-
     // Setup các sự vật trong game
     public void setupGame() {
-
         // Đọc đường dẫn tới file thông tin và nhập
         String url = "res/maps/set_obj.txt";
         aSetter.setObject(url);
@@ -95,9 +88,8 @@ public class GamePanel extends JPanel implements Runnable{
         // int count = 0;
 
         while (gameThread != null) {
-            currentTime = System.nanoTime(); // Theo dõi thời gian đã trôi qua 
+            currentTime = System.nanoTime(); // Theo dõi thời gian đã trôi qua
             // và xác định khi nào nên cập nhật logic và vẽ lại trò chơi
-
             delta += (currentTime - lastTime) / drawInterval; // Tính khoảng thời gian trôi qua
             // timer += (currentTime - lastTime);
             lastTime = currentTime;
@@ -110,21 +102,18 @@ public class GamePanel extends JPanel implements Runnable{
                 delta--; // Giảm delta để tiếp tục điều chỉnh tốc độ
                 // count++;
             }
-
             // if (timer >= 1000000000) {
             //     System.out.println("FPS: " + count);
             //     count = 0;
             //     timer = 0;
             // }
         }
-
     }
 
     // NƠI CHỨA UPDATE NÈ
     public void update() {
         // Update các animation của nhân vật
         player.update();
-
         // Update các animation của object
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
@@ -133,23 +122,26 @@ public class GamePanel extends JPanel implements Runnable{
         }
         reloadTime --;
     }
-
-    public void onClick(){
+    public void onClick(int mouseInfo){
         if(reloadTime <= 0){
-            NormalBullet b = new NormalBullet("/bullet/bullet.png","bullet", 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1);
-            Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5);
-            obj.add(c);
-            obj.add(b);
+            if(mouseInfo == 1){
+                NormalBullet b = new NormalBullet(null,"bullet", 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1);
+                obj.add(b);
+                Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5);
+                obj.add(c);
+            }
+            else if(mouseInfo == 2){
+                ThrowingObj b = new ThrowingObj(null,"bullet", 8, 8, player.worldX, player.worldY,30,this ,0, 7, 1, 1);
+                obj.add(b);
+            }
             reloadTime = 20;
         }
     }
 
     // NƠI CHỨA VẼ NÈ
     public void draw(Graphics2D g2) {
-
         // Vẽ Map
         tileMng.draw(g2);
-
         // Vẽ Obj
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
@@ -160,7 +152,6 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ nhân vật
         player.draw(g2);
     }
-
     // VẼ OBJ Ở ĐÂY
     @Override
     public void paintComponent(Graphics g) { // Ghi đè lại method, muốn vẽ gì thì cho vô đây
