@@ -56,7 +56,7 @@ public class AssetSetter {
     public Entity createObject(String objectType) {
         switch (objectType) {
             case "Slime":
-                return new Slime();
+                return new Slime(gp);
             case "NPC":
                 return new NPC();
             default:

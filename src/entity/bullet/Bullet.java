@@ -7,6 +7,7 @@ import entity.effect.Effect;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Vector;
 
@@ -18,7 +19,8 @@ public class Bullet extends Entity {
     int animationDelay = 2;
     public boolean death = true;
     double scaleX, scaleY;
-    public Bullet(String path, String name, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY){
+    int targetX, targetY;
+    public Bullet(String path, String name, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY){
         this.solidArea = new Rectangle();
         animationDelay = 2;
         if(path != null) importAndSlice(path, 4, 0,w);
@@ -45,8 +47,10 @@ public class Bullet extends Entity {
         this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;
-        angle = Math.atan2(gp.mouseY - worldY, gp.mouseX - worldX);
+        angle = Math.atan2(targetY - worldY, targetX - worldX);
         aniCount = 0;
+        this.targetX = targetX;
+        this.targetY = targetY;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         this.lifeTime = lifeTime;
@@ -112,15 +116,18 @@ public class Bullet extends Entity {
         if(Math.toDegrees(angle) > -135 && Math.toDegrees(angle) <= -45) direction = "up";
         int i = gp.cCheck.checkObjectForObj(this);
         if(i != 999){
-            gp.obj.remove(i);
+            if("Slime".equals(gp.obj.get(i).objName) && !this.objName.equals("Slime")){
+                gp.obj.remove(i);
+            }
         }
+
         gp.cCheck.checkTileForObj(this);
         if (timer <= 60) {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));
         }
         if(collisionOn && death){
-            Effect a = new Effect("/effect/effect2.png", 0,0,this.worldX,this.worldY,10, gp, 0, 1,1);
+            Effect a = new Effect("/effect/effect2.png", 0,0,this.worldX,this.worldY,10, gp, 0, 1,1, targetX, targetY);
             gp.obj.add(a);
             gp.obj.remove(this);
         }

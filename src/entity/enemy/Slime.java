@@ -2,14 +2,16 @@ package entity.enemy;
 
 import java.awt.Graphics2D;
 import entity.Entity;
+import entity.bullet.ThrowingObj;
 import main.GamePanel;
 
 public class Slime extends Entity {
-    public Slime() {
+    int timer = 0;
+    public Slime(GamePanel gp) {
 
         objName = "Slime";
         collision = true;
-
+        this.gp = gp;
         rectGet(0, 0, 48, 48);
         getSlimeImage();
     }
@@ -38,7 +40,12 @@ public class Slime extends Entity {
             if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
             spriteCounter = 0;
         }       
-
+        timer++;
+        if(timer >= 50){
+            ThrowingObj b = new ThrowingObj(null,"bullet", 8, 8, this.worldX, this.worldY,30,gp ,0, 7, 1, 1, gp.player.worldX, gp.player.worldY);
+            gp.obj.add(b);
+            timer = 0;
+        }
     }
 
     @Override

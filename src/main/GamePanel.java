@@ -125,13 +125,13 @@ public class GamePanel extends JPanel implements Runnable{
     public void onClick(int mouseInfo){
         if(reloadTime <= 0){
             if(mouseInfo == 1){
-                NormalBullet b = new NormalBullet(null,"bullet", 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1);
+                NormalBullet b = new NormalBullet(null,"bullet", 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1, mouseX, mouseY);
                 obj.add(b);
-                Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5);
+                Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5, mouseX, mouseY);
                 obj.add(c);
             }
             else if(mouseInfo == 2){
-                ThrowingObj b = new ThrowingObj(null,"bullet", 8, 8, player.worldX, player.worldY,30,this ,0, 7, 1, 1);
+                ThrowingObj b = new ThrowingObj(null,"bullet", 8, 8, player.worldX, player.worldY,30,this ,0, 7, 1, 1, mouseX, mouseY);
                 obj.add(b);
             }
             reloadTime = 20;

@@ -9,16 +9,19 @@ public class ThrowingObj extends Bullet {
         int x0, y0;
         double vx, vy, gravity = 0.98; // Giá trị trọng lực
 
-        public ThrowingObj(String path, String name, int rectX, int rectY, int worldX, int worldY, int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY) {
-            super(path, name, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY);
+        public ThrowingObj(String path, String name, int rectX, int rectY, int worldX, int worldY, int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int TtargetX, int TtargetY) {
+            super(path, name, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY, TtargetX, TtargetY);
             x0 = this.worldX;
             y0 = this.worldY;
-
+            int stargetX = (targetX-x0)/gp.tileSize;
+            int stargetY = (targetY - y0)/gp.tileSize;
+            if(Math.abs(stargetX) >= 7) stargetX = (stargetX/Math.abs(stargetX))*7;
+            if(Math.abs(stargetY) >= 7) stargetY = (stargetY/Math.abs(stargetY))*7;
             // Tính toán vận tốc theo trục x và y
-            vx = (double) (gp.mouseX - x0) / lifeTime;
+            vx = (double) (stargetX*gp.tileSize) / lifeTime;
 
             // Tính toán vận tốc theo trục y với sự điều chỉnh trọng lực (ngược với chiều y trong Swing)
-            vy = (double) (gp.mouseY - y0 - 0.5 * gravity * lifeTime * lifeTime) / lifeTime;
+            vy = (stargetY*gp.tileSize - 0.5 * gravity * lifeTime * lifeTime) / lifeTime;
         }
 
         @Override
@@ -40,14 +43,14 @@ public class ThrowingObj extends Bullet {
 
             // Kiểm tra nếu vượt quá thời gian sống hoặc va chạm
             if (timer >= lifeTime) {
-                Bullet a = new Bullet("/effect/effect1.png","Boom",32,32,this.worldX,this.worldY,10, gp, 0, 0,2, 2);
+                Bullet a = new Bullet("/effect/effect1.png","Boom",32,32,this.worldX,this.worldY,10, gp, 0, 0,2, 2, this.targetX, this.targetY);
                 a.death = false;
                 gp.obj.add(a);
                 gp.obj.remove(this); // Xóa vật thể nếu đã hết thời gian hoặc va chạm
             }
         }
         public void specialMethod(){
-            Effect a = new Effect(null, 16,16,this.worldX ,this.worldY,10, gp, 2, 2,2);
+            Effect a = new Effect(null, 16,16,this.worldX ,this.worldY,10, gp, 2, 2,2, targetX, targetY);
             gp.obj.add(a);
         }
     }

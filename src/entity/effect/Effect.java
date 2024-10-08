@@ -12,9 +12,9 @@ import java.util.Vector;
 public class Effect extends Entity {
     GamePanel gp;
     int lifeTime = 0;
-
+    int targetX, targetY;
     public Effect(String path,int rectX, int rectY, int worldX, int worldY,
-    int lifeTime, GamePanel gp, int speed, double scaleX, double scaleY){
+    int lifeTime, GamePanel gp, int speed, double scaleX, double scaleY,int targetX, int targetY){
         this.solidArea = new Rectangle();
         if(path != null) importAndSlice(path, 4, 0,0);
         else{
@@ -42,12 +42,14 @@ public class Effect extends Entity {
         this.worldX = worldX;
         this.worldY = worldY;
         aniCount = 0;
+        this.targetX = targetX;
+        this.targetY = targetY;
         this.lifeTime = lifeTime;
         collision = false;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.speed = speed;
-        angle = Math.atan2(gp.mouseY - worldY, gp.mouseX - worldX);
+        angle = Math.atan2(targetY - worldY, targetX - worldX);
     }
     public int timer = 0;
     double angle = 0;
