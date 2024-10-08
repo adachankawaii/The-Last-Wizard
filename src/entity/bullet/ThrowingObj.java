@@ -3,8 +3,6 @@ package entity.bullet;
 import entity.effect.Effect;
 import main.GamePanel;
 
-import java.util.Random;
-
 public class ThrowingObj extends Bullet {
         int x0, y0;
         double vx, vy, gravity = 0.98; // Giá trị trọng lực

@@ -7,8 +7,6 @@ import entity.effect.Effect;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.Objects;
-import java.util.Random;
 import java.util.Vector;
 
 public class Bullet extends Entity {

@@ -92,6 +92,6 @@ Hello, đây là nơi mình ghi lại những gì chúng mình đã code đượ
     
     (GamePanel): Tạo int reloadTime để xử lí lặp lại bắn đạn. Thêm vào phần update() để cập nhật
 
-    
+9. Ném bình
 
 

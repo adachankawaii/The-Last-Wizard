@@ -6,7 +6,6 @@ import entity.Entity;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 import java.util.Vector;
 
 public class Effect extends Entity {
@@ -21,8 +20,6 @@ public class Effect extends Entity {
             BufferedImage image = new BufferedImage(rectX/8, rectY/8, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = image.createGraphics();
 
-            // Thiết lập màu và vẽ hình chữ nhật màu đỏ
-            Random rand = new Random();
 
             int b = 255; // Giá trị ngẫu nhiên cho Blue
 
