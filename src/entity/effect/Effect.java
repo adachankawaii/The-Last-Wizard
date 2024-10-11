@@ -99,7 +99,7 @@ public class Effect extends Entity {
             if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
             spriteCounter = 0;
         }
-        collisionOn = false;
+        isTriggerOn = false;
         if (timer <= 60) {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));

@@ -1,10 +1,10 @@
 package main;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.util.ArrayList;
-import javax.swing.JPanel;
+import javax.swing.*;
+
+import UI.Bar;
 import collision.CollisionCheck;
 import entity.Entity;
 import entity.bullet.ThrowingObj;
@@ -13,15 +13,16 @@ import tile.TileManager;
 import entity.effect.Effect;
 import entity.bullet.NormalBullet;
 public class GamePanel extends JPanel implements Runnable{
-
     // SCREEN SETTING
     // Cài đặt tile size
+    public boolean gameOver = false;
+    public boolean running = true;
     public final int originalTitleSize = 16;  // Size gốc của 1 tile
     public final int scale = 3;               // Chỉ số scale
     public final int tileSize = originalTitleSize * scale;  // Size 1 tile sau khi scale
 
     // Cài đặt size màn hình
-    public final int maxScreenCol = 25;  // Số cột hiện ở màn hình (Width)
+    public final int maxScreenCol = 20;  // Số cột hiện ở màn hình (Width)
     public final int maxScreenRow = 15;  // Số hàng hiện ở màn hình (Height)
     public final int screenWidth = maxScreenCol * tileSize;  // Width tính theo pixel
     public final int screenHeight = maxScreenRow * tileSize;  // Height tính theo pixel
@@ -67,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable{
     MouseHandler mouseH = new MouseHandler(this);
     public int mouseX = 0, mouseY = 0;
     int reloadTime = 0;
+    Bar HPbar = new Bar(10,15, 15, 200, 20, this, new Color(255,0,0));
     // Setup các sự vật trong game
     public void setupGame() {
         // Đọc đường dẫn tới file thông tin và nhập
@@ -109,18 +111,45 @@ public class GamePanel extends JPanel implements Runnable{
             // }
         }
     }
-
+    public void resetGame() {
+        // Đặt lại tất cả các thành phần của trò chơi về trạng thái ban đầu
+        player.setDefaultValue(
+                tileSize * 23,
+                tileSize * 21,
+                5,
+                "down");
+        obj.clear(); // Xóa tất cả các object
+        gameOver = false;
+        running = true;
+        player.count = 10;
+        reloadTime = 0;
+        setupGame(); // Gọi lại setup ban đầu của game
+        repaint();
+    }
     // NƠI CHỨA UPDATE NÈ
     public void update() {
-        // Update các animation của nhân vật
+        if (gameOver) {
+            if(keyH.RPressed){
+                System.out.println("isReset");
+                keyH.RPressed = false;
+                resetGame();
+
+            }
+            return;
+        }
         player.update();
-        // Update các animation của object
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
                 obj.get(i).update();
             }
         }
-        reloadTime --;
+        reloadTime--;
+        HPbar.update(player.count);
+
+        // Kiểm tra điều kiện game over (ví dụ: HP <= 0)
+        if (player.count <= 0) {
+            gameOver = true;
+        }
     }
     public void onClick(int mouseInfo){
         if(reloadTime <= 0){
@@ -151,13 +180,25 @@ public class GamePanel extends JPanel implements Runnable{
 
         // Vẽ nhân vật
         player.draw(g2);
+        HPbar.draw(g2);
     }
     // VẼ OBJ Ở ĐÂY
     @Override
-    public void paintComponent(Graphics g) { // Ghi đè lại method, muốn vẽ gì thì cho vô đây
-        super.paintComponent(g); // Clear bề mặt của component trước khi nó được vẽ lại
-        Graphics2D g2 = (Graphics2D) g; // Cast g từ Graphics thành Graphics2D để tận dụng nhiều tính năng hơn
-        draw(g2); // Vẽ các obj
-        g2.dispose(); // Nên sử dụng để giải phóng tài nguyên, đặc biệt khi dùng BufferedImage
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+
+        if (gameOver) {
+            // Vẽ màn hình game over
+            g2.setColor(Color.RED);
+            g2.setFont(new Font("Arial", Font.BOLD, 50));
+            g2.drawString("GAME OVER", screenWidth / 2 - 150, screenHeight / 2);
+            g2.setFont(new Font("Arial", Font.PLAIN, 30));
+            g2.drawString("Press R to Restart", screenWidth / 2 - 130, screenHeight / 2 + 50);
+        } else {
+            // Vẽ game
+            draw(g2);
+        }
+        g2.dispose();
     }
 }

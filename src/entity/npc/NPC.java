@@ -9,9 +9,9 @@ public class NPC extends Entity {
 
     GamePanel gp;
     public NPC() {
-        objName = "NPC";
+        objName = "HP potion";
         collision = true;
-
+        this.isTrigger = true;
         rectGet(0, 0, 48, 48);
         getNPCImage();
     }
@@ -19,7 +19,7 @@ public class NPC extends Entity {
     public void getNPCImage() {
 
         // IMPORT NPC
-        importAnImage("/npc/merchant.png", true);
+        importAnImage("/bullet/HP potion.png", true);
     }
 
     @Override

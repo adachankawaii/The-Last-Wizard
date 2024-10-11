@@ -1,12 +1,11 @@
 package entity;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.Vector;
 import javax.imageio.ImageIO;
-import java.awt.Color;
+
 import main.GamePanel;
 import main.KeyHandler;
 
@@ -14,6 +13,7 @@ public class Entity {
     // BIẾN LƯU
     public int worldX, worldY;
     public int screenX, screenY;
+    public float alpha = 1;
     public int speed;
     public String direction;
     public String objName;
@@ -28,6 +28,8 @@ public class Entity {
     // Dành cho collision
     public boolean collisionOn;
     public boolean collision;
+    public boolean isTrigger;
+    public boolean isTriggerOn = false;
 
     // Dành cho importImage
     protected int aniCount = 0;
@@ -150,8 +152,10 @@ public class Entity {
                 aniCount = 1; // Có thể dùng hoạt ảnh cho di chuyển xuống
                 break;         
         }
+        Composite originalComposite = g2.getComposite();
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         BufferedImage image = animations.get(aniCount).get(spriteNum); // Import ảnh từ Animations
-        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null); 
+        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
     }
     
     public void drawObjImage(Graphics2D g2, GamePanel gp) {

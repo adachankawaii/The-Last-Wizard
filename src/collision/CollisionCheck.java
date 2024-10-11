@@ -250,7 +250,8 @@ public class CollisionCheck {
     
                 if (entity.solidArea.intersects(gp.obj.get(i).solidArea)) {
                     if (gp.obj.get(i).collision) {
-                        entity.collisionOn = true;
+                        if(!entity.isTrigger && !gp.obj.get(i).isTrigger) entity.collisionOn = true;
+                        else entity.isTriggerOn = true;
                     }
                     if (player) index = i;
                 }
@@ -313,7 +314,8 @@ public class CollisionCheck {
     
                 if (entity.solidArea.intersects(gp.obj.get(i).solidArea)) {
                     if (gp.obj.get(i).collision) {
-                        entity.collisionOn = true;
+                        if(!entity.isTrigger && !gp.obj.get(i).isTrigger) entity.collisionOn = true;
+                        else entity.isTriggerOn = true;
                     }
                     index = i;
                 }

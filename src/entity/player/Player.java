@@ -1,16 +1,22 @@
 package entity.player;
 
 import main.KeyHandler;
-import java.awt.Graphics2D;
+
+import java.awt.*;
+import java.sql.Struct;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 
 import entity.Entity;
 import main.GamePanel;
 
 public class Player extends Entity{
-
+    public int count = 10;
+    int timer = 0;
+    ArrayList<Entity> items = new ArrayList<>(8);
+    ArrayList<Integer> counter = new ArrayList<>(8);
     public Player(GamePanel gp, KeyHandler keyH) {
-        
         this.gp = gp;
         this.keyH = keyH;
 
@@ -39,10 +45,31 @@ public class Player extends Entity{
         importEachImage(new String[]{"/player/move/left_0.png","/player/move/left_1.png","/player/move/left_2.png","/player/move/left_3.png"}, true);
         importEachImage(new String[]{"/player/move/right_0.png","/player/move/right_1.png","/player/move/right_2.png","/player/move/right_3.png"}, true);
     }
+    public void drawItems(Graphics2D g2) {
+        // Bắt đầu vẽ từ vị trí góc trái
+        int itemX = 10; // Xác định vị trí X (cạnh trái màn hình)
+        int itemY = 40; // Xác định vị trí Y ban đầu
+        int itemSize = 32; // Kích thước của mỗi item (hoặc bạn có thể lấy kích thước thực của hình ảnh)
+
+        // Lặp qua các item trong danh sách
+        for (int i = 0; i < items.size(); i++) {
+            Entity item = items.get(i); // Lấy item hiện tại
+
+            // Vẽ hình ảnh của item (giả sử item có phương thức drawItem để vẽ hình ảnh của nó)
+            g2.drawImage(item.animations.get(0).get(0), itemX, itemY, itemSize, itemSize, null);
+
+            // Di chuyển Y xuống cho item tiếp theo
+            itemY += itemSize + 10; // Thêm khoảng cách giữa các item
+        }
+    }
     
     public void update() {
-
         // Xử lí di chuyển khi bấm phím
+        int objIndex = gp.cCheck.checkObject(this, true);
+        if(isTriggerOn && gp.obj.get(objIndex).objName.equals("Slime") && timer <= 0){
+            timer = 20;
+            count--;
+        }
         if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
             // Di chuyển chéo
             if (keyH.upPressed && keyH.leftPressed) {
@@ -67,14 +94,7 @@ public class Player extends Entity{
                     direction = "right";
                 }
             }
-
-            // COLLISION
-            collisionOn = false;
-            gp.cCheck.checkTile(this); // Vì Player là subclass của Entity nên truyền player được
-
-            int objIndex = gp.cCheck.checkObject(this, true);
-            pickUpObj(objIndex);
-
+            gp.cCheck.checkTile(this);
             if(!collisionOn) {
                 switch (direction){
                     case "up":
@@ -116,6 +136,22 @@ public class Player extends Entity{
                 spriteCounter = 0; // Reset cho khung hình tiếp theo
             }            
         } else spriteNum = 0; // Nếu không bấm gì thì nhân vật trở về trạng thái cơ bản
+        if(keyH.EPressed) alpha = 0.5f;
+        else alpha = 1;
+        // COLLISION
+        collisionOn = false;
+        isTriggerOn = false;
+        if(objIndex != 999){
+            pickUpObj(objIndex);
+        }
+        if(gp.keyH.i != -1 && !items.isEmpty() && (gp.keyH.i < items.size())) {
+            // Chỉ xóa item tại vị trí gp.keyH.i, không ảnh hưởng đến các phần tử khác
+            System.out.println("Xóa item tại vị trí: " + gp.keyH.i);
+            items.remove(gp.keyH.i);
+            gp.keyH.i = -1; // Đặt lại giá trị để tránh xóa liên tục
+        }
+
+        timer--;
     }
     int hasKey = 0;
 
@@ -131,8 +167,18 @@ public class Player extends Entity{
                         break;
                     case "NPC_1":
                         hasKey--;
-                        gp.obj.remove(gp.obj.get(i));         
-                        System.out.println(objName + " " + hasKey);               
+                        gp.obj.remove(gp.obj.get(i));
+                        System.out.println(objName + " " + hasKey);
+                    case "HP potion":
+                        if(items.size() < 8){
+                            /*for(int j = 0;j<items.size();j++){
+                                if(items.get(j) == gp.obj.get(i)){
+                                    counter.get(i)
+                                }
+                            }*/
+                            items.add(gp.obj.get(i));
+                        }
+                        gp.obj.remove(gp.obj.get(i));
                     default:
                         break;
                 }
@@ -142,6 +188,7 @@ public class Player extends Entity{
     }
     public void draw(Graphics2D g2) {
         detectMoveAndDraw(g2); // Nhận diện chuyển động lên/xuống/trái/phải để vẽ hình tương ứng
+        drawItems(g2);
         rectDraw(g2); // Vẽ ô rect nhận diện collision
     }
 }

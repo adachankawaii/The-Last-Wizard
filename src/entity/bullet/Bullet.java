@@ -43,6 +43,7 @@ public class Bullet extends Entity {
         this.solidArea.width = (int)((rectX)*scaleX);
         this.solidArea.height = (int)((rectY)*scaleY);
         this.gp = gp;
+        this.isTrigger = true;
         this.worldX = worldX;
         this.worldY = worldY;
         angle = Math.atan2(targetY - worldY, targetX - worldX);
@@ -107,25 +108,27 @@ public class Bullet extends Entity {
         }
 
         collisionOn = false;
-
+        isTriggerOn = false;
         if(Math.toDegrees(angle) > -45 && Math.toDegrees(angle) <= 45) direction = "right";
         if(Math.toDegrees(angle) > 45 && Math.toDegrees(angle) <= 135) direction = "down";
         if(Math.toDegrees(angle) > 135 || Math.toDegrees(angle) <= -135) direction = "left";
         if(Math.toDegrees(angle) > -135 && Math.toDegrees(angle) <= -45) direction = "up";
         int i = gp.cCheck.checkObjectForObj(this);
         if(i != 999){
-            if("Slime".equals(gp.obj.get(i).objName) && !this.objName.equals("Slime")){
+            if("Slime".equals(gp.obj.get(i).objName) && !this.objName.equals("enemyBullet") && !this.objName.equals("Slime")){
                 gp.obj.remove(i);
             }
         }
-
         gp.cCheck.checkTileForObj(this);
         if (timer <= 60) {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));
         }
-        if(collisionOn && death){
-            Effect a = new Effect("/effect/effect2.png", 0,0,this.worldX,this.worldY,10, gp, 0, 1,1, targetX, targetY);
+        if(i != 999) if(gp.obj.get(i).objName.contains("ullet")){
+            isTriggerOn = false;
+        }
+        if((collisionOn || isTriggerOn) && death) {
+            Effect a = new Effect("/effect/effect2.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 1, 1, targetX, targetY);
             gp.obj.add(a);
             gp.obj.remove(this);
         }

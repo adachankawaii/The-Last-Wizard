@@ -8,7 +8,7 @@ import main.GamePanel;
 public class Slime extends Entity {
     int timer = 0;
     public Slime(GamePanel gp) {
-
+        this.isTrigger = true;
         objName = "Slime";
         collision = true;
         this.gp = gp;
@@ -39,10 +39,11 @@ public class Slime extends Entity {
             spriteNum++; // Tăng lên để ch
             if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
             spriteCounter = 0;
-        }       
+        }
+        isTriggerOn = false;
         timer++;
-        if(timer >= 50){
-            ThrowingObj b = new ThrowingObj(null,"bullet", 8, 8, this.worldX, this.worldY,30,gp ,0, 7, 1, 1, gp.player.worldX, gp.player.worldY);
+        if(timer >= 60 && Math.abs((gp.player.worldX-this.worldX)/gp.tileSize) <= 7 && Math.abs((gp.player.worldY-this.worldY)/gp.tileSize) <= 7 && gp.player.alpha >= 1){
+            ThrowingObj b = new ThrowingObj(null,"enemyBullet", 8, 8, this.worldX, this.worldY,30,gp ,0, 7, 1, 1, gp.player.worldX, gp.player.worldY);
             gp.obj.add(b);
             timer = 0;
         }
