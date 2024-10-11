@@ -69,6 +69,7 @@ public class GamePanel extends JPanel implements Runnable{
     public int mouseX = 0, mouseY = 0;
     int reloadTime = 0;
     Bar HPbar = new Bar(10,15, 15, 200, 20, this, new Color(255,0,0));
+    Bar EnergyBar = new Bar(200,15, 15+20, 150, 10, this, new Color(0,200,255));
     // Setup các sự vật trong game
     public void setupGame() {
         // Đọc đường dẫn tới file thông tin và nhập
@@ -121,8 +122,10 @@ public class GamePanel extends JPanel implements Runnable{
         obj.clear(); // Xóa tất cả các object
         gameOver = false;
         running = true;
-        player.count = 10;
+        player.HP = 10;
         reloadTime = 0;
+        player.items.clear();
+        player.itemsCount.clear();
         setupGame(); // Gọi lại setup ban đầu của game
         repaint();
     }
@@ -144,10 +147,10 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
         reloadTime--;
-        HPbar.update(player.count);
-
+        HPbar.update(player.HP);
+        EnergyBar.update(player.Energy);
         // Kiểm tra điều kiện game over (ví dụ: HP <= 0)
-        if (player.count <= 0) {
+        if (player.HP <= 0) {
             gameOver = true;
         }
     }
@@ -158,6 +161,7 @@ public class GamePanel extends JPanel implements Runnable{
                 obj.add(b);
                 Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5, mouseX, mouseY);
                 obj.add(c);
+                player.Energy -= 10;
             }
             else if(mouseInfo == 2){
                 ThrowingObj b = new ThrowingObj(null,"bullet", 8, 8, player.worldX, player.worldY,30,this ,0, 7, 1, 1, mouseX, mouseY);
@@ -181,6 +185,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ nhân vật
         player.draw(g2);
         HPbar.draw(g2);
+        EnergyBar.draw(g2);
     }
     // VẼ OBJ Ở ĐÂY
     @Override

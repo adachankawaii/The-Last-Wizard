@@ -6,8 +6,6 @@ import entity.Entity;
 import main.GamePanel;
 
 public class NPC extends Entity {
-
-    GamePanel gp;
     public NPC() {
         objName = "HP potion";
         collision = true;

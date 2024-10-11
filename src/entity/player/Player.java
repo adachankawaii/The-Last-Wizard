@@ -12,10 +12,12 @@ import entity.Entity;
 import main.GamePanel;
 
 public class Player extends Entity{
-    public int count = 10;
+    public int HP = 10;
+    public int Energy = 200;
     int timer = 0;
-    ArrayList<Entity> items = new ArrayList<>(8);
-    ArrayList<Integer> counter = new ArrayList<>(8);
+    public ArrayList<Entity> items = new ArrayList<>(8);
+    public ArrayList<Integer> itemsCount = new ArrayList<>(8);
+    int pointer = 0;
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -48,12 +50,15 @@ public class Player extends Entity{
     public void drawItems(Graphics2D g2) {
         // Bắt đầu vẽ từ vị trí góc trái
         int itemX = 10; // Xác định vị trí X (cạnh trái màn hình)
-        int itemY = 40; // Xác định vị trí Y ban đầu
+        int itemY = 50; // Xác định vị trí Y ban đầu
         int itemSize = 32; // Kích thước của mỗi item (hoặc bạn có thể lấy kích thước thực của hình ảnh)
 
         // Lặp qua các item trong danh sách
         for (int i = 0; i < items.size(); i++) {
             Entity item = items.get(i); // Lấy item hiện tại
+            g2.setFont(new Font("Arial", Font.PLAIN, 20));
+            g2.setColor(Color.black);
+            g2.drawString("x" + itemsCount.get(i), itemX + itemSize + 5, itemY + itemSize / 2);
 
             // Vẽ hình ảnh của item (giả sử item có phương thức drawItem để vẽ hình ảnh của nó)
             g2.drawImage(item.animations.get(0).get(0), itemX, itemY, itemSize, itemSize, null);
@@ -66,9 +71,9 @@ public class Player extends Entity{
     public void update() {
         // Xử lí di chuyển khi bấm phím
         int objIndex = gp.cCheck.checkObject(this, true);
-        if(isTriggerOn && gp.obj.get(objIndex).objName.equals("Slime") && timer <= 0){
+        if(isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime") || gp.obj.get(objIndex).objName.equals("enemyBullet"))&& timer <= 0){
             timer = 20;
-            count--;
+            HP--;
         }
         if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
             // Di chuyển chéo
@@ -146,9 +151,7 @@ public class Player extends Entity{
         }
         if(gp.keyH.i != -1 && !items.isEmpty() && (gp.keyH.i < items.size())) {
             // Chỉ xóa item tại vị trí gp.keyH.i, không ảnh hưởng đến các phần tử khác
-            System.out.println("Xóa item tại vị trí: " + gp.keyH.i);
-            items.remove(gp.keyH.i);
-            gp.keyH.i = -1; // Đặt lại giá trị để tránh xóa liên tục
+            pointer = gp.keyH.i;
         }
 
         timer--;
@@ -162,7 +165,6 @@ public class Player extends Entity{
                 switch (objName) {
                     case "Slime":
                         hasKey++;
-                        gp.obj.remove(gp.obj.get(i));
                         System.out.println(objName + " " + hasKey);
                         break;
                     case "NPC_1":
@@ -171,12 +173,17 @@ public class Player extends Entity{
                         System.out.println(objName + " " + hasKey);
                     case "HP potion":
                         if(items.size() < 8){
-                            /*for(int j = 0;j<items.size();j++){
-                                if(items.get(j) == gp.obj.get(i)){
-                                    counter.get(i)
+                            boolean flag = false;
+                            for(int j = 0;j<items.size();j++){
+                                if(items.get(j).objName.equals(gp.obj.get(i).objName)){
+                                    flag = true;
+                                    itemsCount.add(j, itemsCount.get(j) + 1);
                                 }
-                            }*/
-                            items.add(gp.obj.get(i));
+                            }
+                            if(!flag) {
+                                items.add(gp.obj.get(i));
+                                itemsCount.add(1);
+                            }
                         }
                         gp.obj.remove(gp.obj.get(i));
                     default:
