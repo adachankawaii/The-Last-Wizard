@@ -6,9 +6,9 @@ import entity.effect.Effect;
 import java.util.Random;
 
 public class NormalBullet extends Bullet{
-    public NormalBullet(String path, String name, int rectX, int rectY, int worldX, int worldY,
+    public NormalBullet(String path, String name,int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY,
     int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY) {
-        super(path, name, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY, targetX, targetY);
+        super(path, name,solidAreaX,solidAreaY, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY, targetX, targetY);
         animationDelay = 0;
     }
     @Override

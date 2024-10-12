@@ -123,6 +123,7 @@ public class GamePanel extends JPanel implements Runnable{
         gameOver = false;
         running = true;
         player.HP = 10;
+        player.Energy = 200;
         reloadTime = 0;
         player.items.clear();
         player.itemsCount.clear();
@@ -156,16 +157,20 @@ public class GamePanel extends JPanel implements Runnable{
     }
     public void onClick(int mouseInfo){
         if(reloadTime <= 0){
-            if(mouseInfo == 1){
-                NormalBullet b = new NormalBullet(null,"bullet", 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1, mouseX, mouseY);
+            if(mouseInfo == 1 && player.Energy >= 10){
+                NormalBullet b = new NormalBullet(null,"bullet",20,20, 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1, mouseX, mouseY);
                 obj.add(b);
                 Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5, mouseX, mouseY);
                 obj.add(c);
                 player.Energy -= 10;
             }
-            else if(mouseInfo == 2){
-                ThrowingObj b = new ThrowingObj(null,"bullet", 8, 8, player.worldX, player.worldY,30,this ,0, 7, 1, 1, mouseX, mouseY);
-                obj.add(b);
+            else if(mouseInfo == 2 && !player.items.isEmpty()){
+                player.items.get(player.pointer).effect();
+                player.itemsCount.set(player.pointer, player.itemsCount.get(player.pointer) - 1);
+                if(player.itemsCount.get(player.pointer) <= 0){
+                    player.itemsCount.remove(player.pointer);
+                    player.items.remove(player.pointer);
+                }
             }
             reloadTime = 20;
         }

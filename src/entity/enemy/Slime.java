@@ -2,6 +2,8 @@ package entity.enemy;
 
 import java.awt.Graphics2D;
 import entity.Entity;
+import entity.bullet.Bullet;
+import entity.bullet.NormalBullet;
 import entity.bullet.ThrowingObj;
 import main.GamePanel;
 
@@ -43,7 +45,9 @@ public class Slime extends Entity {
         isTriggerOn = false;
         timer++;
         if(timer >= 60 && Math.abs((gp.player.worldX-this.worldX)/gp.tileSize) <= 7 && Math.abs((gp.player.worldY-this.worldY)/gp.tileSize) <= 7 && gp.player.alpha >= 1){
-            ThrowingObj b = new ThrowingObj(null,"enemyBullet", 8, 8, this.worldX, this.worldY,30,gp ,0, 7, 1, 1, gp.player.worldX, gp.player.worldY);
+            Bullet b = new Bullet("/bullet/bullet.png","enemyBullet", 20, 20,4,4, this.worldX, this.worldY,20,gp ,0, 5, 2, 2, gp.player.worldX, gp.player.worldY);
+            b.death = false;
+            b.root = this.objName;
             gp.obj.add(b);
             timer = 0;
         }

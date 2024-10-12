@@ -16,9 +16,10 @@ public class Bullet extends Entity {
     double angle = 0;
     int animationDelay = 2;
     public boolean death = true;
+    public String root = null;
     double scaleX, scaleY;
     int targetX, targetY;
-    public Bullet(String path, String name, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY){
+    public Bullet(String path, String name,int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY){
         this.solidArea = new Rectangle();
         animationDelay = 2;
         if(path != null) importAndSlice(path, 4, 0,w);
@@ -38,8 +39,8 @@ public class Bullet extends Entity {
             tmp.add(image);
             animations.add(tmp);
         }
-        this.solidArea.x = 0;
-        this.solidArea.y = 0;
+        this.solidArea.x = solidAreaX;
+        this.solidArea.y = solidAreaY;
         this.solidArea.width = (int)((rectX)*scaleX);
         this.solidArea.height = (int)((rectY)*scaleY);
         this.gp = gp;
@@ -90,12 +91,20 @@ public class Bullet extends Entity {
 
         // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
         g.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth), (int)(imageHeight), null);
+
         // Khôi phục lại trạng thái ban đầu của Graphics2D
-
-
         g.setTransform(old);
 
+        // Vẽ vùng va chạm (vùng solidArea)
+        g.setColor(Color.RED);  // Màu của vùng va chạm
+        g.drawRect(
+                screenX + solidArea.x,
+                screenY + solidArea.y,
+                solidArea.width,
+                solidArea.height
+        );
     }
+
 
     @Override
     public void update() {
@@ -119,12 +128,13 @@ public class Bullet extends Entity {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));
         }
-        if(i != 999) if(gp.obj.get(i).objName.contains("ullet")){
+        if(i != 999) if(gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root)){
             isTriggerOn = false;
         }
         if(i != 999){
-            if("Slime".equals(gp.obj.get(i).objName) && !this.objName.equals("enemyBullet") && !this.objName.equals("Slime")){
-                gp.obj.remove(i);
+            if("Slime".equals(gp.obj.get(i).objName) && !this.objName.equals("enemyBullet")){
+                if(this.root == null) gp.obj.remove(i);
+                else if(!this.root.equals(gp.obj.get(i).objName)) gp.obj.remove(i);
             }
         }
         if((collisionOn || isTriggerOn) && death) {

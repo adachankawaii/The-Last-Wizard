@@ -3,9 +3,7 @@ package entity.player;
 import main.KeyHandler;
 
 import java.awt.*;
-import java.sql.Struct;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 
 import entity.Entity;
@@ -17,7 +15,7 @@ public class Player extends Entity{
     int timer = 0;
     public ArrayList<Entity> items = new ArrayList<>(8);
     public ArrayList<Integer> itemsCount = new ArrayList<>(8);
-    int pointer = 0;
+    public int pointer = 0;
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -48,7 +46,6 @@ public class Player extends Entity{
         importEachImage(new String[]{"/player/move/right_0.png","/player/move/right_1.png","/player/move/right_2.png","/player/move/right_3.png"}, true);
     }
     public void drawItems(Graphics2D g2) {
-        // Bắt đầu vẽ từ vị trí góc trái
         int itemX = 10; // Xác định vị trí X (cạnh trái màn hình)
         int itemY = 50; // Xác định vị trí Y ban đầu
         int itemSize = 32; // Kích thước của mỗi item (hoặc bạn có thể lấy kích thước thực của hình ảnh)
@@ -56,18 +53,27 @@ public class Player extends Entity{
         // Lặp qua các item trong danh sách
         for (int i = 0; i < items.size(); i++) {
             Entity item = items.get(i); // Lấy item hiện tại
-            g2.setFont(new Font("Arial", Font.PLAIN, 20));
-            g2.setColor(Color.black);
-            g2.drawString("x" + itemsCount.get(i), itemX + itemSize + 5, itemY + itemSize / 2);
+
+            // Nếu item này là item mà pointer đang chỉ đến, vẽ khung đỏ
+            if(i == pointer) {
+                g2.setColor(Color.RED);
+                g2.drawRect(itemX - 2, itemY - 2, itemSize + 4, itemSize + 4); // Vẽ khung viền màu đỏ lớn hơn hình item một chút
+            }
 
             // Vẽ hình ảnh của item (giả sử item có phương thức drawItem để vẽ hình ảnh của nó)
             g2.drawImage(item.animations.get(0).get(0), itemX, itemY, itemSize, itemSize, null);
+
+            // Vẽ số lượng item
+            g2.setFont(new Font("Arial", Font.BOLD, 20));
+            g2.setColor(Color.black);
+            g2.drawString("x" + itemsCount.get(i), itemX + itemSize + 5, itemY + itemSize / 2);
 
             // Di chuyển Y xuống cho item tiếp theo
             itemY += itemSize + 10; // Thêm khoảng cách giữa các item
         }
     }
-    
+
+
     public void update() {
         // Xử lí di chuyển khi bấm phím
         int objIndex = gp.cCheck.checkObject(this, true);
@@ -171,21 +177,25 @@ public class Player extends Entity{
                         hasKey--;
                         gp.obj.remove(gp.obj.get(i));
                         System.out.println(objName + " " + hasKey);
-                    case "HP potion":
+                        break;
+                    case "ThrowingBottle", "HPBottle":
                         if(items.size() < 8){
                             boolean flag = false;
-                            for(int j = 0;j<items.size();j++){
+                            for(int j = 0; j < items.size(); j++){
                                 if(items.get(j).objName.equals(gp.obj.get(i).objName)){
                                     flag = true;
-                                    itemsCount.add(j, itemsCount.get(j) + 1);
+                                    // Sửa từ add thành set để cập nhật đúng số lượng item
+                                    itemsCount.set(j, itemsCount.get(j) + 1);
+                                    break; // Thêm break để dừng vòng lặp sau khi tìm thấy item
                                 }
                             }
                             if(!flag) {
                                 items.add(gp.obj.get(i));
-                                itemsCount.add(1);
+                                itemsCount.add(1); // Thêm mới số lượng item là 1
                             }
                         }
                         gp.obj.remove(gp.obj.get(i));
+                        break;
                     default:
                         break;
                 }
@@ -195,7 +205,22 @@ public class Player extends Entity{
     }
     public void draw(Graphics2D g2) {
         detectMoveAndDraw(g2); // Nhận diện chuyển động lên/xuống/trái/phải để vẽ hình tương ứng
-        drawItems(g2);
+        drawItems(g2); // Vẽ danh sách các item
+
+        // Hiển thị tên của item đang được chọn (pointer chỉ đến)
+        if (!items.isEmpty() && pointer < items.size()) {
+            String itemName = items.get(pointer).objName;
+            g2.setFont(new Font("Arial", Font.BOLD, 24));
+            g2.setColor(Color.WHITE);
+
+            // Tính toán vị trí giữa màn hình để hiển thị tên item
+            int textX = gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(itemName) / 2;
+            int textY = gp.screenHeight - 30; // Hiển thị gần đáy màn hình
+
+            g2.drawString(itemName, textX, textY); // Vẽ tên item
+        }
+
         rectDraw(g2); // Vẽ ô rect nhận diện collision
     }
+
 }

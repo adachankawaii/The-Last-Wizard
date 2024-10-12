@@ -3,6 +3,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import entity.Entity;
+import entity.Items.HPBottle;
+import entity.Items.ThrowingBottle;
 import entity.enemy.Slime;
 import entity.npc.NPC;
 
@@ -42,6 +44,7 @@ public class AssetSetter {
                         if (newObj != null) {
                             newObj.worldX = x * gp.tileSize;
                             newObj.worldY = y * gp.tileSize;
+                            newObj.gp = gp;
                             gp.obj.add(newObj);
                         }
                     }
@@ -59,6 +62,10 @@ public class AssetSetter {
                 return new Slime(gp);
             case "NPC":
                 return new NPC();
+            case "ThrowingBottle":
+                return new ThrowingBottle();
+            case "HPBottle":
+                return new HPBottle();
             default:
                 System.out.println("Unknown object type: " + objectType);
                 return null;

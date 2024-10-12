@@ -7,8 +7,8 @@ public class ThrowingObj extends Bullet {
         int x0, y0;
         double vx, vy, gravity = 0.98; // Giá trị trọng lực
 
-        public ThrowingObj(String path, String name, int rectX, int rectY, int worldX, int worldY, int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int TtargetX, int TtargetY) {
-            super(path, name, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY, TtargetX, TtargetY);
+        public ThrowingObj(String path, String name,int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY, int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int TtargetX, int TtargetY) {
+            super(path, name,solidAreaX, solidAreaY, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY, TtargetX, TtargetY);
             x0 = this.worldX;
             y0 = this.worldY;
             int stargetX = (targetX-x0)/gp.tileSize;
@@ -41,7 +41,7 @@ public class ThrowingObj extends Bullet {
 
             // Kiểm tra nếu vượt quá thời gian sống hoặc va chạm
             if (timer >= lifeTime) {
-                Bullet a = new Bullet("/effect/effect1.png",this.objName,32,32,this.worldX,this.worldY,10, gp, 0, 0,2, 2, this.targetX, this.targetY);
+                Bullet a = new Bullet("/effect/effect1.png",this.objName,-10,-10,(int)(16*scaleX),(int)(16*scaleY),this.worldX,this.worldY,10, gp, 0, 0,scaleX, scaleY, this.targetX, this.targetY);
                 a.death = false;
                 gp.obj.add(a);
                 gp.obj.remove(this); // Xóa vật thể nếu đã hết thời gian hoặc va chạm

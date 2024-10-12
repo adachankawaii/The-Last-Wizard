@@ -175,4 +175,6 @@ public class Entity {
     }
     public void update() {
     }
+    public void effect(){
+    }
 }
