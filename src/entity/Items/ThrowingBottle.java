@@ -38,7 +38,7 @@ public class ThrowingBottle extends Entity {
     }
     @Override
     public void effect(){
-        ThrowingObj b = new ThrowingObj(null,"bullet", 20, 20,1,1, gp.player.worldX, gp.player.worldY,30,gp ,0, 7, 2, 2, gp.mouseX, gp.mouseY);
+        ThrowingObj b = new ThrowingObj(null,"bullet", 20, 20,1,1, gp.player.worldX, gp.player.worldY,30,gp ,0, 7, 4, 4, gp.mouseX, gp.mouseY);
         gp.obj.add(b);
     }
 }

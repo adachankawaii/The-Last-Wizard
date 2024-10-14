@@ -61,7 +61,7 @@ public class AssetSetter {
             case "Slime":
                 return new Slime(gp);
             case "NPC":
-                return new NPC();
+                return new NPC(gp);
             case "ThrowingBottle":
                 return new ThrowingBottle();
             case "HPBottle":

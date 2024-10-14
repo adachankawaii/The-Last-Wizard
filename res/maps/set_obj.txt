@@ -4,3 +4,5 @@ ThrowingBottle 2
 25,37 19,37
 HPBottle 2
 19,40 25,40
+NPC 1
+22,38

@@ -9,6 +9,7 @@ public class KeyHandler implements KeyListener{
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean EPressed;
     public boolean RPressed;
+    public boolean SpacePressed = false;
     public int i = -1;
 
     @Override
@@ -40,6 +41,7 @@ public class KeyHandler implements KeyListener{
             case KeyEvent.VK_7 -> i = 6;
             case KeyEvent.VK_8 -> i = 7;
         }
+
     }
 
     @Override
@@ -64,6 +66,7 @@ public class KeyHandler implements KeyListener{
             RPressed = false;
         }
         if(code == KeyEvent.VK_ALPHANUMERIC) i = -1;
+        if(code == KeyEvent.VK_SPACE) SpacePressed = true;
     }
 
     @Override
