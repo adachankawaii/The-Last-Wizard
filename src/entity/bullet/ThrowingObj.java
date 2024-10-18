@@ -17,7 +17,8 @@ public class ThrowingObj extends Bullet {
             if(Math.abs(stargetY) >= 7) stargetY = (stargetY/Math.abs(stargetY))*7;
             // Tính toán vận tốc theo trục x và y
             vx = (double) (stargetX*gp.tileSize) / lifeTime;
-
+            isTrigger = false;
+            collision = false;
             // Tính toán vận tốc theo trục y với sự điều chỉnh trọng lực (ngược với chiều y trong Swing)
             vy = (stargetY*gp.tileSize - 0.5 * gravity * lifeTime * lifeTime) / lifeTime;
         }
@@ -41,7 +42,7 @@ public class ThrowingObj extends Bullet {
 
             // Kiểm tra nếu vượt quá thời gian sống hoặc va chạm
             if (timer >= lifeTime) {
-                Bullet a = new Bullet("/effect/effect1.png",this.objName,-7*(int)scaleX,-7*(int)scaleY,(int)(7*scaleX),(int)(7*scaleY),this.worldX,this.worldY,10, gp, 0, 0,scaleX, scaleY, this.targetX, this.targetY);
+                Bullet a = new Bullet("/effect/effect1.png","Bigbullet",-10*5,-10*5,(int)(6*5),(int)(6*5),this.worldX,this.worldY,8, gp, 0, 0,4.5, 4.5, this.targetX, this.targetY);
                 a.death = false;
                 gp.obj.add(a);
                 gp.obj.remove(this); // Xóa vật thể nếu đã hết thời gian hoặc va chạm

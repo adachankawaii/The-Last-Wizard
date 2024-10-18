@@ -31,6 +31,9 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_R){
             RPressed = true;
         }
+        if(code == KeyEvent.VK_E){
+            EPressed = true;
+        }
         switch (code) {
             case KeyEvent.VK_1 -> i = 0;
             case KeyEvent.VK_2 -> i = 1;
@@ -60,7 +63,7 @@ public class KeyHandler implements KeyListener{
             rightPressed = false;
         }
         if(code == KeyEvent.VK_E){
-            EPressed = !EPressed;
+            EPressed = false;
         }
         if(code == KeyEvent.VK_R){
             RPressed = false;

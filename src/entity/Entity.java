@@ -10,6 +10,7 @@ import main.GamePanel;
 import main.KeyHandler;
 
 public class Entity {
+    public boolean isItem = false;
     // BIẾN LƯU
     public int worldX, worldY;
     public int screenX, screenY;
@@ -176,5 +177,7 @@ public class Entity {
     public void update() {
     }
     public void effect(){
+    }
+    public void onTriggerEnter(Entity entity){
     }
 }

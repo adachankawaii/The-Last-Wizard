@@ -13,6 +13,7 @@ public class ThrowingBottle extends Entity {
         this.isTrigger = true;
         rectGet(0, 0, 48, 48);
         getNPCImage();
+        isItem = true;
     }
 
     public void getNPCImage() {

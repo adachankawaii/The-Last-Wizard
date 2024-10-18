@@ -159,7 +159,7 @@ public class GamePanel extends JPanel implements Runnable{
         if(player.combat){
             if(reloadTime <= 0){
                 if(mouseInfo == 1 && player.Energy >= 10){
-                    NormalBullet b = new NormalBullet(null,"bullet",20,20, 8, 8, player.worldX, player.worldY,50,this ,0, 7, 1, 1, mouseX, mouseY);
+                    NormalBullet b = new NormalBullet(null,"bullet",20,20, 8, 8, player.worldX, player.worldY,20,this ,0, 12, 1, 1, mouseX, mouseY);
                     obj.add(b);
                     Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5, mouseX, mouseY);
                     obj.add(c);

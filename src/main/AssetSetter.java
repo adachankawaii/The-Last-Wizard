@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import entity.Entity;
+import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
 import entity.enemy.Slime;
@@ -66,6 +67,8 @@ public class AssetSetter {
                 return new ThrowingBottle();
             case "HPBottle":
                 return new HPBottle();
+            case "Key":
+                return new CommonItem("Key","/bullet/HP potion.png", gp);
             default:
                 System.out.println("Unknown object type: " + objectType);
                 return null;

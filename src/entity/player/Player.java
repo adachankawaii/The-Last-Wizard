@@ -13,6 +13,7 @@ public class Player extends Entity{
     public int HP = 10;
     public int Energy = 200;
     int timer = 0;
+    int itemTimer = 50;
     public ArrayList<Entity> items = new ArrayList<>(8);
     public ArrayList<Integer> itemsCount = new ArrayList<>(8);
     public int pointer = 0;
@@ -24,7 +25,7 @@ public class Player extends Entity{
         // Khởi tạo vị trí nhân vật
         screenX = gp.screenWidth/2 - gp.tileSize/2;
         screenY = gp.screenHeight/2 - gp.tileSize/2;
-
+        isTrigger = true;
         // Khởi tạo giá trị ban đầu, gọi các hàm khởi tạo trong Entity
         setDefaultValue(
         gp.tileSize * 23,
@@ -152,7 +153,7 @@ public class Player extends Entity{
                     Energy++;
                 }
             } else spriteNum = 0; // Nếu không bấm gì thì nhân vật trở về trạng thái cơ bản
-            if (keyH.EPressed) alpha = 0.5f;
+            /*if (keyH.EPressed) alpha = 0.5f;
             else alpha = 1;
             // COLLISION
             if (alpha < 0.9) {
@@ -161,21 +162,53 @@ public class Player extends Entity{
             if (Energy <= 0) {
                 alpha = 1;
                 keyH.EPressed = false;
-            }
+            }*/
             collisionOn = false;
             isTriggerOn = false;
-            if (objIndex != 999) {
-                pickUpObj(objIndex);
+            if (objIndex != 999 && gp.obj.get(objIndex) != null) {
+                close = (gp.obj.get(objIndex).isItem);
+                if (keyH.EPressed && close) {
+                    pickUpObj(objIndex);  // Nhặt item nếu người chơi nhấn phím E và gần item
+                    close = false;  // Sau khi nhặt item, không hiển thị thông báo nữa
+                }
+            } else {
+                close = false;  // Không có item gần, tắt thông báo
             }
+
             if (gp.keyH.i != -1 && !items.isEmpty() && (gp.keyH.i < items.size())) {
                 // Chỉ xóa item tại vị trí gp.keyH.i, không ảnh hưởng đến các phần tử khác
+                if(pointer != gp.keyH.i) itemTimer = 50;
                 pointer = gp.keyH.i;
             }
             timer--;
+            itemTimer--;
         }
     }
     int hasKey = 0;
+    boolean close = false;
+    void closeItem(Graphics2D g2){
+        String itemName = "Press E to loot";
+        g2.setFont(new Font("Arial", Font.PLAIN, 20));
+        g2.setColor(Color.WHITE);
 
+        // Hiển thị tên item
+        int textX = gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(itemName) / 2;
+        int textY = gp.screenHeight - 30;
+
+        // Vẽ khung nền và tên item
+        int textWidth = g2.getFontMetrics().stringWidth(itemName);
+        int textHeight = g2.getFontMetrics().getHeight();
+        int boxX = textX - 10;
+        int boxY = textY - textHeight;
+        int boxWidth = textWidth + 20;
+        int boxHeight = textHeight + 10;
+
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+        g2.setColor(Color.WHITE);
+        g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+        g2.drawString(itemName, textX, textY);
+    }
     public void pickUpObj(int i) {
         if(i != 999) {
             String objName = gp.obj.get(i).objName;
@@ -185,12 +218,7 @@ public class Player extends Entity{
                         hasKey++;
                         System.out.println(objName + " " + hasKey);
                         break;
-                    case "NPC_1":
-                        hasKey--;
-                        gp.obj.remove(gp.obj.get(i));
-                        System.out.println(objName + " " + hasKey);
-                        break;
-                    case "ThrowingBottle", "HPBottle":
+                    case "ThrowingBottle", "HPBottle","Key":
                         if(items.size() < 8){
                             boolean flag = false;
                             for(int j = 0; j < items.size(); j++){
@@ -198,14 +226,17 @@ public class Player extends Entity{
                                     flag = true;
                                     // Sửa từ add thành set để cập nhật đúng số lượng item
                                     itemsCount.set(j, itemsCount.get(j) + 1);
+                                    pointer = j;
                                     break; // Thêm break để dừng vòng lặp sau khi tìm thấy item
                                 }
                             }
                             if(!flag) {
                                 items.add(gp.obj.get(i));
                                 itemsCount.add(1); // Thêm mới số lượng item là 1
+                                pointer = items.size()-1;
                             }
                         }
+                        itemTimer = 50;
                         gp.obj.remove(gp.obj.get(i));
                         break;
                     default:
@@ -216,23 +247,39 @@ public class Player extends Entity{
         }
     }
     public void draw(Graphics2D g2) {
-        detectMoveAndDraw(g2); // Nhận diện chuyển động lên/xuống/trái/phải để vẽ hình tương ứng
-        drawItems(g2); // Vẽ danh sách các item
+        detectMoveAndDraw(g2);  // Nhận diện chuyển động và vẽ nhân vật
+        drawItems(g2);  // Vẽ danh sách các item
 
-        // Hiển thị tên của item đang được chọn (pointer chỉ đến)
-        if (!items.isEmpty() && pointer < items.size()) {
+        // Hiển thị tên của item đang được chọn
+        if (!items.isEmpty() && pointer < items.size() && itemTimer >= 0) {
             String itemName = items.get(pointer).objName;
-            g2.setFont(new Font("Arial", Font.BOLD, 24));
+            g2.setFont(new Font("Arial", Font.PLAIN, 20));
             g2.setColor(Color.WHITE);
 
-            // Tính toán vị trí giữa màn hình để hiển thị tên item
+            // Hiển thị tên item
             int textX = gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(itemName) / 2;
-            int textY = gp.screenHeight - 30; // Hiển thị gần đáy màn hình
+            int textY = gp.screenHeight - 30;
 
-            g2.drawString(itemName, textX, textY); // Vẽ tên item
+            // Vẽ khung nền và tên item
+            int textWidth = g2.getFontMetrics().stringWidth(itemName);
+            int textHeight = g2.getFontMetrics().getHeight();
+            int boxX = textX - 10;
+            int boxY = textY - textHeight;
+            int boxWidth = textWidth + 20;
+            int boxHeight = textHeight + 10;
+
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+            g2.setColor(Color.WHITE);
+            g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+            g2.drawString(itemName, textX, textY);
+
+            // Nếu người chơi đứng gần item, hiển thị thông báo "Press E to loot"
+
         }
-
-        rectDraw(g2); // Vẽ ô rect nhận diện collision
+        if (close) {
+            closeItem(g2);
+        }
+        rectDraw(g2);  // Vẽ ô collision
     }
-
 }

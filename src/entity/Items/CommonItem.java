@@ -1,25 +1,28 @@
 package entity.Items;
 
 import entity.Entity;
-import entity.bullet.ThrowingObj;
 import main.GamePanel;
 
 import java.awt.*;
 
-public class HPBottle extends Entity {
-    public HPBottle() {
-        objName = "HPBottle";
+public class CommonItem extends Entity {
+    GamePanel gp;
+    String path;
+    public CommonItem(String name, String path, GamePanel gp) {
+        objName = name;
         collision = true;
         this.isTrigger = true;
         rectGet(0, 0, 48, 48);
-        getNPCImage();
+        this.path = path;
+        getNPCImage(path);
+        this.gp = gp;
         isItem = true;
     }
 
-    public void getNPCImage() {
+    public void getNPCImage(String path) {
 
         // IMPORT NPC
-        importAnImage("/bullet/HP potion.png", true);
+        importAnImage(path, true);
     }
 
     @Override
@@ -39,6 +42,10 @@ public class HPBottle extends Entity {
     }
     @Override
     public void effect(){
-        gp.player.HP += 4;
+        CommonItem commonItem = new CommonItem(this.objName, this.path, gp);
+        commonItem.worldX = gp.player.worldX;
+        commonItem.worldY = gp.player.worldY;
+        gp.obj.add(commonItem);
     }
 }
+

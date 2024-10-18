@@ -3,6 +3,8 @@ package collision;
 import entity.Entity;
 import main.GamePanel;
 
+import java.util.Vector;
+
 public class CollisionCheck {
     GamePanel gp;
 
@@ -216,7 +218,7 @@ public class CollisionCheck {
                 // Get the object's solid area position
                 gp.obj.get(i).solidArea.x = gp.obj.get(i).worldX + gp.obj.get(i).solidArea.x;
                 gp.obj.get(i).solidArea.y = gp.obj.get(i).worldY + gp.obj.get(i).solidArea.y;
-            
+
                 switch(entity.direction) {
                     case "up":
                         entity.solidArea.y -= entity.speed;
@@ -251,7 +253,9 @@ public class CollisionCheck {
                 if (entity.solidArea.intersects(gp.obj.get(i).solidArea)) {
                     if (gp.obj.get(i).collision) {
                         if(!entity.isTrigger && !gp.obj.get(i).isTrigger) entity.collisionOn = true;
-                        else entity.isTriggerOn = true;
+                        else {
+                            if(entity.isTrigger) entity.isTriggerOn = true;
+                        }
                     }
                     if (player) index = i;
                 }
@@ -266,9 +270,9 @@ public class CollisionCheck {
     }
     
     
-    public int checkObjectForObj(Entity entity) {
+    public Vector<Integer> checkObjectForObj(Entity entity) {
 
-        int index = 999;
+        Vector<Integer> result = new Vector<>();
     
         for (int i = 0; i < gp.obj.size(); i++) {
             if(gp.obj.get(i) != null && gp.obj.get(i) != entity) {
@@ -315,9 +319,11 @@ public class CollisionCheck {
                 if (entity.solidArea.intersects(gp.obj.get(i).solidArea)) {
                     if (gp.obj.get(i).collision) {
                         if(!entity.isTrigger && !gp.obj.get(i).isTrigger) entity.collisionOn = true;
-                        else entity.isTriggerOn = true;
+                        else {
+                            if(entity.isTrigger) entity.isTriggerOn = true;
+                        }
                     }
-                    index = i;
+                    result.add(i);
                 }
     
                 // Reset positions to default
@@ -328,7 +334,7 @@ public class CollisionCheck {
             }
         }
     
-        return index;
+        return result;
     }
     
 }

@@ -122,21 +122,24 @@ public class Bullet extends Entity {
         if(Math.toDegrees(angle) > 45 && Math.toDegrees(angle) <= 135) direction = "down";
         if(Math.toDegrees(angle) > 135 || Math.toDegrees(angle) <= -135) direction = "left";
         if(Math.toDegrees(angle) > -135 && Math.toDegrees(angle) <= -45) direction = "up";
-        int i = gp.cCheck.checkObjectForObj(this);
+        Vector<Integer> interact = gp.cCheck.checkObjectForObj(this);
         gp.cCheck.checkTileForObj(this);
         if (timer <= 60) {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));
         }
-        if(i != 999) if(gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root)){
-            isTriggerOn = false;
-        }
-        if(i != 999){
-            if("Slime".equals(gp.obj.get(i).objName) && !this.objName.equals("enemyBullet")){
-                if(this.root == null) gp.obj.remove(i);
-                else if(!this.root.equals(gp.obj.get(i).objName)) gp.obj.remove(i);
+        if(!interact.isEmpty()) {
+            for(int i : interact){
+                if(gp.obj.get(i).objName != null) {
+                    if (gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root)) {
+                        isTriggerOn = false;
+                    } else if (gp.obj.get(i).objName.equals("Slime") && this.objName.contains("ullet")) {
+                        gp.obj.get(i).onTriggerEnter(this);
+                    }
+                }
             }
         }
+
         if((collisionOn || isTriggerOn) && death) {
             Effect a = new Effect("/effect/effect2.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 1, 1, targetX, targetY);
             gp.obj.add(a);
