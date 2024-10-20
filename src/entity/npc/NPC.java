@@ -13,7 +13,7 @@ public class NPC extends Entity {
     int dialogueIndex = 0;
     int timer = 0;
     GamePanel gp;
-    String[] choices = {"Choice 1", "Choice 2", "Choice 3"}; // Các lựa chọn
+    String[] choices = {"Choice 1", "Choice 2"}; // Các lựa chọn
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
 
     public NPC(GamePanel gp) {
@@ -23,10 +23,9 @@ public class NPC extends Entity {
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        setWords("What can I help you ?,default text 1,default text 2,default text 3,default text 4");
-        setWords("Choice 1, great choice, end");
-        setWords("Choice 2,stupid, end");
-        setWords("Choice 3,aaaaaaaaaa, end");
+        setWords("Đây chỉ là một đoạn báo cáo tiến độ..,..nhưng mà tớ có câu hỏi, end");
+        setWords("Ừa đây chỉ là báo cáo thôi mà,.....,20/10 vui vẻ nhé <3,end");
+        setWords("Thực ra 2 lựa chọn không khác gì nhau cả,Chúc cậu 20/10 vui vẻ nhé!, end");
 
     }
 
@@ -96,7 +95,7 @@ public class NPC extends Entity {
                 String currentDialogue = words.get(index).get(dialogueIndex);
 
                 // Khi đến đoạn hội thoại yêu cầu lựa chọn
-                if (dialogueIndex == 2 && !choiceMade && index == 0) {
+                if (dialogueIndex == 1 && !choiceMade && index == 0) {
                     int choiceBoxY = dialogueBoxY - 50;
                     int choiceBoxX = dialogueBoxX + 20;
                     isChoosing = true;
@@ -106,7 +105,7 @@ public class NPC extends Entity {
                         g2.fillRoundRect(choiceBoxX, choiceBoxY - i * 40, 200, 30, 15, 15);
                         g2.setColor(Color.WHITE);
                         g2.drawRoundRect(choiceBoxX, choiceBoxY - i * 40, 200, 30, 15, 15);
-                        g2.drawString(choices[i], choiceBoxX + 10, choiceBoxY - i * 40 + 20);
+                        g2.drawString("Key " + (i + 1) + ": " + choices[i], choiceBoxX + 10, choiceBoxY - i * 40 + 20);
 
                         // Đánh dấu lựa chọn hiện tại
                         if (i == selectedChoice) {
@@ -115,7 +114,7 @@ public class NPC extends Entity {
                             g2.setColor(new Color(100, 100, 100, 100));
                             g2.fillRoundRect(choiceBoxX - 5, choiceBoxY - i * 40 - 5, 210, 40, 15, 15);
                         }
-                        g2.drawString(choices[i], choiceBoxX + 10, choiceBoxY - i * 40 + 20);
+                        g2.drawString("Key " + (i + 1) + ": " + choices[i], choiceBoxX + 10, choiceBoxY - i * 40 + 20);
                     }
 
                     // Xử lý khi người chơi nhấn 'Space' để chọn
@@ -153,7 +152,8 @@ public class NPC extends Entity {
                 }
 
                 g2.setFont(font);
-                g2.setColor(Color.WHITE);
+                if(index >= 1 && dialogueIndex == (words.get(index).size() - 2)) g2.setColor(Color.PINK);
+                else g2.setColor(Color.WHITE);
                 g2.drawString(objName + ": " + currentDialogue, textX, textY);
             }
             else if (gp.player.combat && timer <= 0) {
@@ -193,7 +193,8 @@ public class NPC extends Entity {
         drawObjImage(g2, gp);
         rectDraw(g2);
     }
-
+    // Bấm Space để tương tác, lựa chọn va để chạy hội thoại
+    // Các phím 1, 2, 3,... đế trỏ vào lựa chọn muốn chọn, rồi bấm space để chọn
 }
 
 
