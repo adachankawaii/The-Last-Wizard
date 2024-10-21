@@ -23,9 +23,9 @@ public class NPC extends Entity {
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        setWords("Đây chỉ là một đoạn báo cáo tiến độ..,..nhưng mà tớ có câu hỏi, end");
-        setWords("Ừa đây chỉ là báo cáo thôi mà,.....,20/10 vui vẻ nhé <3,end");
-        setWords("Thực ra 2 lựa chọn không khác gì nhau cả,Chúc cậu 20/10 vui vẻ nhé!, end");
+        setWords("sin cong sin bang 2 sin cos,cos cong cos bang tru 2 sin sin, end");
+        setWords("sin thi sin cos cos sin,cos thi cos cos sin sin dau tru,dia dia,end");
+        setWords("co day em bai the duc buoi sang, mot hai ba co len, end");
 
     }
 

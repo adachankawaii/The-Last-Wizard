@@ -17,35 +17,48 @@ public class TileManager {
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        tile = new Tile[10]; // Mảng lưu trữ các tile cần dùng
+        tile = new Tile[100]; // Mảng lưu trữ các tile cần dùng
         mapTile = new int[gp.maxWorldCol][gp.maxWorldRow]; // Tạo mảng map
         getTileImage(); // Lấy tile từ res
-        loadMap("res/maps/world01.txt"); // Match với ma trận ở file txt
+        // loadMap("res/maps/world01.txt"); // Match với ma trận ở file txt
+        loadMap("res/maps/world02.txt"); // Match với ma trận ở file txt
     }
 
     // LẤY MẪU TILE
     public void getTileImage() {
         try { // Lấy các tile
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(new File("res/tiles/grass.png"));
+        // // MAP 1
+        //     tile[1] = new Tile();
+        //     tile[1].image = ImageIO.read(new File("res/tiles/map1/1.png"));
 
+        //     tile[2] = new Tile();
+        //     tile[2].image = ImageIO.read(new File("res/tiles/map1/2.png"));
+
+        //     tile[3] = new Tile();
+        //     tile[3].image = ImageIO.read(new File("res/tiles/map1/3.png"));
+
+        //     tile[4] = new Tile();
+        //     tile[4].image = ImageIO.read(new File("res/tiles/map1/4.png"));
+
+        //     tile[5] = new Tile();
+        //     tile[5].image = ImageIO.read(new File("res/tiles/map1/5.png"));
+
+        //     tile[6] = new Tile();
+        //     tile[6].image = ImageIO.read(new File("res/tiles/map1/6.png"));
+
+        //     tile[7] = new Tile();
+        //     tile[7].image = ImageIO.read(new File("res/tiles/map1/7.png"));
+
+        //     tile[8] = new Tile();
+        //     tile[8].image = ImageIO.read(new File("res/tiles/map1/8.png"));
+
+        // MAP 2
             tile[1] = new Tile();
-            tile[1].image = ImageIO.read(new File("res/tiles/wall.png"));
-            tile[1].collision = true;
+            tile[1].image = ImageIO.read(new File("res/tiles/map2/1.png"));
 
             tile[2] = new Tile();
-            tile[2].image = ImageIO.read(new File("res/tiles/water.png"));
-            tile[2].collision = true;
-
-            tile[3] = new Tile();
-            tile[3].image = ImageIO.read(new File("res/tiles/earth.png"));
-
-            tile[4] = new Tile();
-            tile[4].image = ImageIO.read(new File("res/tiles/tree.png"));
-            tile[4].collision = true;
-
-            tile[5] = new Tile();
-            tile[5].image = ImageIO.read(new File("res/tiles/sand.png"));
+            tile[2].image = ImageIO.read(new File("res/tiles/map2/2.png"));        
+            
 
         }catch (Exception e) {
             e.printStackTrace();
