@@ -88,7 +88,7 @@ public class Player extends Entity{
             }
             if (HP >= 10) HP = 10;
             if (Energy >= 200) Energy = 200;
-            else if (Energy <= 0) Energy = 0;
+            else if (Energy < 200) Energy = 200;
             if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
                 // Di chuyển chéo
                 if (keyH.upPressed && keyH.leftPressed) {
@@ -238,6 +238,7 @@ public class Player extends Entity{
                         }
                         itemTimer = 50;
                         gp.obj.remove(gp.obj.get(i));
+                        gp.soundManager.play("got_sth");
                         break;
                     default:
                         break;

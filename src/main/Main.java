@@ -23,7 +23,6 @@ public class Main {
 
         // ĐẶT ĐỒ LÊN MAP
         gp.setupGame();
-
         // CHẠY THREAD
         gp.startGameThread();
     }   

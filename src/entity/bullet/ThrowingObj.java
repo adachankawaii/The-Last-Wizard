@@ -50,6 +50,7 @@ public class ThrowingObj extends Bullet {
         }
         public void specialMethod(){
             Effect a = new Effect(null, 16,16,this.worldX ,this.worldY,10, gp, 2, 2,2, targetX, targetY);
+            gp.soundManager.play("wand");
             gp.obj.add(a);
         }
     }

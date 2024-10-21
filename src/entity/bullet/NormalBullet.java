@@ -12,8 +12,10 @@ public class NormalBullet extends Bullet{
         super(path, name,solidAreaX,solidAreaY, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY, targetX, targetY);
         animationDelay = 0;
     }
+    
     @Override
     public void specialMethod(){
+        gp.soundManager.play("wand");
         // Tạo hiệu ứng nổ tại vị trí hiện tại của viên đạn
         Effect impactEffect = new Effect(null, 16, 16, this.worldX, this.worldY, 10, gp, 7, 2, 2, targetX, targetY);
         gp.obj.add(impactEffect);

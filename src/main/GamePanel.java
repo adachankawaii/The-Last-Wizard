@@ -3,7 +3,6 @@ package main;
 import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
-
 import UI.Bar;
 import collision.CollisionCheck;
 import entity.Entity;
@@ -12,6 +11,7 @@ import entity.player.Player;
 import tile.TileManager;
 import entity.effect.Effect;
 import entity.bullet.NormalBullet;
+
 public class GamePanel extends JPanel implements Runnable{
     // SCREEN SETTING
     // Cài đặt tile size
@@ -43,7 +43,14 @@ public class GamePanel extends JPanel implements Runnable{
         this.addKeyListener(keyH); // Thêm vào để game detect key input
         this.addMouseListener(mouseH); // Detect Mouse input
         this.setFocusable(true); // Tập trung vào nhận diện và xử lí key input
+        soundManager = new Sound();
+        soundManager.setVolumeAll(-20.0f);
+        soundManager.setVolume("background", -30.0f);
+        soundManager.loop("background");
     }
+
+    // TẠO SOUNDMNG
+    public Sound soundManager;
 
     // TẠO THREAD
     Thread gameThread;
@@ -127,6 +134,10 @@ public class GamePanel extends JPanel implements Runnable{
         reloadTime = 0;
         player.items.clear();
         player.itemsCount.clear();
+        soundManager.setVolumeAll(-20.0f);
+        soundManager.setVolume("background", -30.0f);
+        soundManager.play("background");
+        soundManager.loop("background");
         setupGame(); // Gọi lại setup ban đầu của game
         repaint();
     }
@@ -137,10 +148,20 @@ public class GamePanel extends JPanel implements Runnable{
                 System.out.println("isReset");
                 keyH.RPressed = false;
                 resetGame();
-
             }
             return;
         }
+
+        if (keyH.volumeUpPressed) {
+            soundManager.increaseVolume("background"); // Tăng âm lượng của nhạc nền
+            keyH.volumeUpPressed = false;
+        }
+
+        if (keyH.volumeDownPressed) {
+            soundManager.decreaseVolume("background"); // Giảm âm lượng của nhạc nền
+            keyH.volumeDownPressed = false;
+        }
+
         player.update();
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
@@ -152,6 +173,8 @@ public class GamePanel extends JPanel implements Runnable{
         EnergyBar.update(player.Energy);
         // Kiểm tra điều kiện game over (ví dụ: HP <= 0)
         if (player.HP <= 0) {
+            // Dừng nhạc nền khi người chơi chết
+            soundManager.play("player_die"); // Phát âm thanh khi người chơi chết
             gameOver = true;
         }
     }
@@ -205,6 +228,9 @@ public class GamePanel extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
 
         if (gameOver) {
+            // Mute all sounds
+            soundManager.muteAll();
+
             // Vẽ màn hình game over
             g2.setColor(Color.RED);
             g2.setFont(new Font("Arial", Font.BOLD, 50));

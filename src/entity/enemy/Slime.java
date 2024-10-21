@@ -11,7 +11,6 @@ import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
 import main.GamePanel;
 
-import javax.crypto.EncryptedPrivateKeyInfo;
 
 public class Slime extends Entity {
     int timer = 0;
@@ -103,6 +102,7 @@ public class Slime extends Entity {
             if(HP <= 0){
                 Effect a = new Effect("/effect/effect1.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 2, 2, 0, 0);
                 gp.obj.add(a);
+                gp.soundManager.play("slime_die");
                 gp.obj.remove(this);
             }
         }
