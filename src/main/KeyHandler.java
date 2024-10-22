@@ -54,6 +54,7 @@ public class KeyHandler implements KeyListener{
             case KeyEvent.VK_7 -> i = 6;
             case KeyEvent.VK_8 -> i = 7;
         }
+        if(code == KeyEvent.VK_SPACE) SpacePressed = true;
     }
 
     @Override
@@ -85,7 +86,7 @@ public class KeyHandler implements KeyListener{
             RPressed = false;
         }
         if(code == KeyEvent.VK_ALPHANUMERIC) i = -1;
-        if(code == KeyEvent.VK_SPACE) SpacePressed = true;
+        if(code == KeyEvent.VK_SPACE) SpacePressed = false;
     }
 
     @Override

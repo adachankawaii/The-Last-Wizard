@@ -174,6 +174,8 @@ public class Entity {
 
     public void draw(Graphics2D g2d, GamePanel gamePanel) {
     }
+    public void drawUI(Graphics2D g2d, GamePanel gamePanel){
+    }
     public void update() {
     }
     public void effect(){

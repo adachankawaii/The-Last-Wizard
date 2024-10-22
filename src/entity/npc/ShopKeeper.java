@@ -2,32 +2,47 @@ package entity.npc;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Vector;
 
 import entity.Entity;
+import entity.Items.CommonItem;
+import entity.Items.HPBottle;
+import entity.Items.ThrowingBottle;
+import entity.enemy.Slime;
 import main.GamePanel;
 
-public class NPC extends Entity {
+public class ShopKeeper extends Entity {
     Vector<Vector<String>> words = new Vector<>();
     int index = 0;
     int dialogueIndex = 0;
     int timer = 0;
     GamePanel gp;
-    String[] choices = {"Choice 1", "Choice 2"}; // Các lựa chọn
-
+    String[] choices = {"Choice 1", "Choice 2","Choice 3",""}; // Các lựa chọn
+    int[] cost = {0,1,1,0};
+    Vector<Integer> tmp = new Vector<>(choices.length);
+    String[] items = {"Slime","ThrowingBottle","HPBottle","Key"};
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
 
-    public NPC(GamePanel gp) {
-        objName = "Te Quiero";
+    public ShopKeeper(GamePanel gp) {
+        objName = "ShopKeeper";
         collision = true;
         this.isTrigger = true;
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        setWords("sin cong sin bang 2 sin cos,cos cong cos bang tru 2 sin sin, end");
-        setWords("sin thi sin cos cos sin,cos thi cos cos sin sin dau tru,dia dia,end");
-        setWords("co day em bai the duc buoi sang, mot hai ba co len, end");
-        gp.keyH.SpacePressed = false;
+        setWords("Welcome to my shop!,What would you like to buy?, end");
+        setWords("Thank you !, end");
+        setWords("Sorry we don't have what you need, end");
+
+        for(int i = 0; i<choices.length;i++) {
+            int a = new Random().nextInt(items.length);
+            while (tmp.contains(a)){
+                a = new Random().nextInt(items.length);
+            }
+            tmp.add(a);
+        }
+
     }
 
     public void getNPCImage() {
@@ -56,14 +71,19 @@ public class NPC extends Entity {
     // Biến để theo dõi trạng thái lựa chọn
     boolean isChoosing = false; // Đảm bảo rằng chỉ bật khi vào trạng thái lựa chọn
     boolean choiceMade = false; // Để kiểm tra xem đã thực hiện lựa chọn chưa
-
+    public Image getItemSprite(String itemType) {
+        Entity item = createObject(itemType);
+        if (item != null && item.animations != null && !item.animations.isEmpty()) {
+            return item.animations.get(0).get(0); // Lấy sprite đầu tiên
+        }
+        return null; // Trả về null nếu không có sprite
+    }
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
         g2.setFont(new Font("Arial", Font.BOLD, 15));
         int textWidth = g2.getFontMetrics(new Font("Arial", Font.BOLD, 15)).stringWidth(objName);
         screenX = worldX - gp.player.worldX + gp.player.screenX + this.solidArea.width / 2 - textWidth / 2;
         screenY = worldY - gp.player.worldY + gp.player.screenY - 5;
-
         g2.setColor(Color.WHITE);
         g2.drawString(objName, screenX, screenY);
         drawObjImage(g2, gp);
@@ -121,24 +141,54 @@ public class NPC extends Entity {
                     // Hiển thị các lựa chọn
                     for (int i = 0; i < choices.length; i++) {
                         g2.setColor(new Color(0, 0, 0, 180));
-                        g2.fillRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
+                        g2.fillRoundRect(choiceBoxX, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
                         g2.setColor(Color.WHITE);
-                        g2.drawRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
-                        g2.drawString("Key " + (i + 1) + ": " + choices[i], choiceBoxX + 10, choiceBoxY + i * choiceBoxHeight + 20);
+                        g2.drawRoundRect(choiceBoxX, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
+
+                        String info = "Sold out";
+                        if(tmp.get(i) != -1) info = items[tmp.get(i)] + " || cost " + cost[tmp.get(i)];
+                        if(i == 0) info = "* Leave *";
+                        g2.drawString("Key " + (i + 1) + ": " + info, choiceBoxX + 10, choiceBoxY - i * choiceBoxHeight + 20);
+
+                        // Lấy sprite của item và vẽ nó
+                        if (tmp.get(i) != -1 && i != 0) {
+                            Image itemSprite = getItemSprite(items[tmp.get(i)]);
+                            if (itemSprite != null) {
+                                int spriteX = choiceBoxX + choiceBoxWidth - 50; // Xác định vị trí vẽ sprite
+                                int spriteY = choiceBoxY - i * choiceBoxHeight + 5; // Y vị trí cho sprite
+                                g2.drawImage(itemSprite, spriteX, spriteY, 40, 40, null); // Vẽ sprite
+                            }
+                        }
 
                         // Đánh dấu lựa chọn hiện tại
                         if (i == selectedChoice) {
                             g2.setColor(Color.WHITE);
-                            g2.drawRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
+                            g2.drawRoundRect(choiceBoxX - 5, choiceBoxY - i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
                             g2.setColor(new Color(100, 100, 100, 100));
-                            g2.fillRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
+                            g2.fillRoundRect(choiceBoxX - 5, choiceBoxY - i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
                         }
                     }
+
 
                     // Xử lý khi người chơi nhấn 'Space' để chọn
                     if (gp.keyH.SpacePressed && selectedChoice != -1 && timer <= 0) {
                         dialogueIndex = 0; // Chuyển sang đoạn hội thoại tương ứng
-                        index = selectedChoice + 1;
+
+                        if(tmp.get(selectedChoice) != -1 && selectedChoice != 0) {
+                            index = 1;
+                            Entity newObj = createObject(items[tmp.get(selectedChoice)]);
+                            if (newObj != null) {
+                                newObj.worldX = worldX;
+                                newObj.worldY = worldY + gp.tileSize;
+                                newObj.gp = gp;
+                                gp.obj.add(newObj);
+                            }
+                            gp.player.money -= cost[tmp.get(selectedChoice)];
+                            tmp.set(selectedChoice, -1);
+                        }
+                        else {
+                            index = 2;
+                        }
                         gp.keyH.SpacePressed = false;
                         timer = 20;
                         choiceMade = true; // Đã chọn
@@ -206,10 +256,24 @@ public class NPC extends Entity {
             isChoosing = false; // Reset trạng thái lựa chọn
             choiceMade = false;
         }
-
     }
     // Bấm Space để tương tác, lựa chọn va để chạy hội thoại
     // Các phím 1, 2, 3,... đế trỏ vào lựa chọn muốn chọn, rồi bấm space để chọn
+    public Entity createObject(String objectType) {
+        switch (objectType) {
+            case "Slime":
+                return new Slime(gp);
+            case "ThrowingBottle":
+                return new ThrowingBottle();
+            case "HPBottle":
+                return new HPBottle();
+            case "Key":
+                return new CommonItem("Key","/bullet/HP potion.png", gp);
+            default:
+                System.out.println("Unknown object type: " + objectType);
+                return null;
+        }
+    }
 }
 
 

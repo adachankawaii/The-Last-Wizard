@@ -8,3 +8,5 @@ NPC 1
 29,38
 Key 1
 23,15
+ShopKeeper 1
+29,43

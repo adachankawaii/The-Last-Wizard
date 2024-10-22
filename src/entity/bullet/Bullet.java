@@ -7,6 +7,7 @@ import entity.effect.Effect;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 import java.util.Vector;
 
 public class Bullet extends Entity {
@@ -131,7 +132,7 @@ public class Bullet extends Entity {
         if(!interact.isEmpty()) {
             for(int i : interact){
                 if(gp.obj.get(i).objName != null) {
-                    if (gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root)) {
+                    if (gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root) || gp.obj.get(i).isItem || Objects.equals(gp.obj.get(i).objName, "Coin")) {
                         isTriggerOn = false;
                     } else if (gp.obj.get(i).objName.equals("Slime") && this.objName.contains("ullet")) {
                         gp.obj.get(i).onTriggerEnter(this);

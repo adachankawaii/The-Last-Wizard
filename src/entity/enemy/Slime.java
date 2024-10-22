@@ -2,15 +2,15 @@ package entity.enemy;
 
 import java.awt.*;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Random;
 
 import entity.Entity;
+import entity.Items.Coin;
 import entity.bullet.Bullet;
-import entity.bullet.NormalBullet;
-import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
 import main.GamePanel;
 
+import javax.crypto.EncryptedPrivateKeyInfo;
 
 public class Slime extends Entity {
     int timer = 0;
@@ -100,6 +100,12 @@ public class Slime extends Entity {
             delayTime = 10;
             HP-= map.get(entity.objName);
             if(HP <= 0){
+                int tmp = new Random().nextInt(3);
+                for(int i = 0;i< tmp;i++){
+                    Coin coin = new Coin(this.worldX + new Random().nextInt(gp.tileSize), this.worldY + new Random().nextInt(gp.tileSize), gp);
+                    gp.obj.add(coin);
+                }
+
                 Effect a = new Effect("/effect/effect1.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 2, 2, 0, 0);
                 gp.obj.add(a);
                 gp.soundManager.play("slime_die");

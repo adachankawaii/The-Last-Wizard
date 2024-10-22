@@ -22,6 +22,7 @@ public class Sound {
         addSound("wand", "/sound/wand.wav");
         addSound("player_die", "/sound/player_die.wav");
         addSound("slime_die", "/sound/slime_die.wav");
+        addSound("pew","/sound/pew-laser-fx_C_minor.wav");
     }
 
     // Phương thức để thêm âm thanh vào danh sách quản lý

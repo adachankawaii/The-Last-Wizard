@@ -190,7 +190,7 @@ public class GamePanel extends JPanel implements Runnable{
                 }
                 else if(mouseInfo == 2 && !player.items.isEmpty()){
                     player.items.get(player.pointer).effect();
-                    player.itemsCount.set(player.pointer, player.itemsCount.get(player.pointer) - 1);
+                    player.itemsCount.set(player.pointer, player.itemsCount.get(player.pointer) );
                     if(player.itemsCount.get(player.pointer) <= 0){
                         player.itemsCount.remove(player.pointer);
                         player.items.remove(player.pointer);
@@ -218,8 +218,14 @@ public class GamePanel extends JPanel implements Runnable{
 
         // Vẽ nhân vật
         player.draw(g2);
+        for (int i = 0; i < obj.size(); i++) {
+            if (obj.get(i) != null) {
+                obj.get(i).drawUI(g2, this);
+            }
+        }
         HPbar.draw(g2);
         EnergyBar.draw(g2);
+
     }
     // VẼ OBJ Ở ĐÂY
     @Override

@@ -209,7 +209,7 @@ public class CollisionCheck {
         int index = 999;
     
         for (int i = 0; i < gp.obj.size(); i++) {
-            if(gp.obj.get(i) != null) {
+            if(gp.obj.get(i) != null && gp.obj.get(i).collision) {
     
                 // Get entity's solid area position
                 entity.solidArea.x = entity.worldX + entity.solidArea.x;
@@ -275,7 +275,7 @@ public class CollisionCheck {
         Vector<Integer> result = new Vector<>();
     
         for (int i = 0; i < gp.obj.size(); i++) {
-            if(gp.obj.get(i) != null && gp.obj.get(i) != entity) {
+            if(gp.obj.get(i) != null && gp.obj.get(i) != entity  && gp.obj.get(i).collision) {
     
                 // Get entity's solid area position
                 entity.solidArea.x = entity.worldX + entity.solidArea.x;

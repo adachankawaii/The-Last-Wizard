@@ -3,21 +3,28 @@ package entity.player;
 import main.KeyHandler;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 import entity.Entity;
 import main.GamePanel;
+
+import javax.imageio.ImageIO;
 
 public class Player extends Entity{
     public int HP = 10;
     public int Energy = 200;
     int timer = 0;
     int itemTimer = 50;
+    public int money = 0;
     public ArrayList<Entity> items = new ArrayList<>(8);
     public ArrayList<Integer> itemsCount = new ArrayList<>(8);
     public int pointer = 0;
     public boolean combat = true;
+    BufferedImage coin;
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -36,6 +43,13 @@ public class Player extends Entity{
         rectGet(8, 16, 32, 32);
         getPlayerImage(); // Lấy hình ảnh Player
 
+        try(InputStream is = getClass().getResourceAsStream("/effect/coin.png")){
+            coin = ImageIO.read(is);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     public void getPlayerImage() {
@@ -48,10 +62,17 @@ public class Player extends Entity{
         importEachImage(new String[]{"/player/move/right_0.png","/player/move/right_1.png","/player/move/right_2.png","/player/move/right_3.png"}, true);
     }
     public void drawItems(Graphics2D g2) {
+
         int itemX = 10; // Xác định vị trí X (cạnh trái màn hình)
         int itemY = 50; // Xác định vị trí Y ban đầu
         int itemSize = 32; // Kích thước của mỗi item (hoặc bạn có thể lấy kích thước thực của hình ảnh)
+        g2.drawImage(coin, itemX, itemY, itemSize- 10, itemSize- 5, null);
 
+        // Vẽ số lượng item
+        g2.setFont(new Font("Arial", Font.BOLD, 15));
+        g2.setColor(Color.black);
+        g2.drawString("x" + money, itemX + itemSize, itemY + itemSize/2);
+        itemY += 10 + itemSize;
         // Lặp qua các item trong danh sách
         for (int i = 0; i < items.size(); i++) {
             Entity item = items.get(i); // Lấy item hiện tại
@@ -167,10 +188,15 @@ public class Player extends Entity{
             isTriggerOn = false;
             if (objIndex != 999 && gp.obj.get(objIndex) != null) {
                 close = (gp.obj.get(objIndex).isItem);
+                if(!close && gp.obj.get(objIndex).objName.equals("Coin")){
+                    money++;
+                    gp.obj.remove(gp.obj.get(objIndex));
+                }
                 if (keyH.EPressed && close) {
                     pickUpObj(objIndex);  // Nhặt item nếu người chơi nhấn phím E và gần item
                     close = false;  // Sau khi nhặt item, không hiển thị thông báo nữa
                 }
+
             } else {
                 close = false;  // Không có item gần, tắt thông báo
             }
@@ -212,6 +238,7 @@ public class Player extends Entity{
     public void pickUpObj(int i) {
         if(i != 999) {
             String objName = gp.obj.get(i).objName;
+            System.out.println(objName);
             if(objName != null){
                 switch (objName) {
                     case "Slime":
@@ -240,6 +267,7 @@ public class Player extends Entity{
                         gp.obj.remove(gp.obj.get(i));
                         gp.soundManager.play("got_sth");
                         break;
+
                     default:
                         break;
                 }
@@ -248,39 +276,41 @@ public class Player extends Entity{
         }
     }
     public void draw(Graphics2D g2) {
-        detectMoveAndDraw(g2);  // Nhận diện chuyển động và vẽ nhân vật
-        drawItems(g2);  // Vẽ danh sách các item
+        if(combat) {
+            detectMoveAndDraw(g2);  // Nhận diện chuyển động và vẽ nhân vật
+            drawItems(g2);  // Vẽ danh sách các item
 
-        // Hiển thị tên của item đang được chọn
-        if (!items.isEmpty() && pointer < items.size() && itemTimer >= 0) {
-            String itemName = items.get(pointer).objName;
-            g2.setFont(new Font("Arial", Font.PLAIN, 20));
-            g2.setColor(Color.WHITE);
+            // Hiển thị tên của item đang được chọn
+            if (!items.isEmpty() && pointer < items.size() && itemTimer >= 0) {
+                String itemName = items.get(pointer).objName;
+                g2.setFont(new Font("Arial", Font.PLAIN, 20));
+                g2.setColor(Color.WHITE);
 
-            // Hiển thị tên item
-            int textX = gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(itemName) / 2;
-            int textY = gp.screenHeight - 30;
+                // Hiển thị tên item
+                int textX = gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(itemName) / 2;
+                int textY = gp.screenHeight - 30;
 
-            // Vẽ khung nền và tên item
-            int textWidth = g2.getFontMetrics().stringWidth(itemName);
-            int textHeight = g2.getFontMetrics().getHeight();
-            int boxX = textX - 10;
-            int boxY = textY - textHeight;
-            int boxWidth = textWidth + 20;
-            int boxHeight = textHeight + 10;
+                // Vẽ khung nền và tên item
+                int textWidth = g2.getFontMetrics().stringWidth(itemName);
+                int textHeight = g2.getFontMetrics().getHeight();
+                int boxX = textX - 10;
+                int boxY = textY - textHeight;
+                int boxWidth = textWidth + 20;
+                int boxHeight = textHeight + 10;
 
-            g2.setColor(new Color(0, 0, 0, 180));
-            g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
-            g2.setColor(Color.WHITE);
-            g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
-            g2.drawString(itemName, textX, textY);
+                g2.setColor(new Color(0, 0, 0, 180));
+                g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+                g2.setColor(Color.WHITE);
+                g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+                g2.drawString(itemName, textX, textY);
 
-            // Nếu người chơi đứng gần item, hiển thị thông báo "Press E to loot"
+                // Nếu người chơi đứng gần item, hiển thị thông báo "Press E to loot"
 
+            }
+            if (close) {
+                closeItem(g2);
+            }
+            rectDraw(g2);  // Vẽ ô collision
         }
-        if (close) {
-            closeItem(g2);
-        }
-        rectDraw(g2);  // Vẽ ô collision
     }
 }
