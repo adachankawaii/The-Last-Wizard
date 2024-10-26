@@ -80,12 +80,25 @@ public class ShopKeeper extends Entity {
     }
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
-        g2.setFont(new Font("Arial", Font.BOLD, 15));
-        int textWidth = g2.getFontMetrics(new Font("Arial", Font.BOLD, 15)).stringWidth(objName);
-        screenX = worldX - gp.player.worldX + gp.player.screenX + this.solidArea.width / 2 - textWidth / 2;
-        screenY = worldY - gp.player.worldY + gp.player.screenY - 5;
-        g2.setColor(Color.WHITE);
-        g2.drawString(objName, screenX, screenY);
+        int npcCenterX = worldX + gp.tileSize / 2;
+        int npcCenterY = worldY + gp.tileSize / 2;
+
+        int playerCenterX = gp.player.worldX + gp.tileSize / 2;
+        int playerCenterY = gp.player.worldY + gp.tileSize / 2;
+
+        double distance = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
+
+        // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
+        if (distance <= 1.5 * gp.tileSize) {
+            g2.setFont(new Font("Arial", Font.PLAIN, 15));
+            int textWidth = g2.getFontMetrics(new Font("Arial", Font.PLAIN, 15)).stringWidth(objName);
+            screenX = worldX - gp.player.worldX + gp.player.screenX + this.solidArea.width / 2 - textWidth / 2;
+            screenY = worldY - gp.player.worldY + gp.player.screenY - 5;
+            g2.setColor(new Color(100,100,100,120));
+            g2.fillRect(screenX - 2,screenY - 12,textWidth + 5,15);
+            g2.setColor(Color.WHITE);
+            g2.drawString(objName, screenX, screenY);
+        }
         drawObjImage(g2, gp);
         rectDraw(g2);
     }
@@ -140,6 +153,7 @@ public class ShopKeeper extends Entity {
                     isChoosing = true;
                     // Hiển thị các lựa chọn
                     for (int i = 0; i < choices.length; i++) {
+                        gp.player.interact = objName;
                         g2.setColor(new Color(0, 0, 0, 180));
                         g2.fillRoundRect(choiceBoxX, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
                         g2.setColor(Color.WHITE);
@@ -174,7 +188,7 @@ public class ShopKeeper extends Entity {
                     if (gp.keyH.SpacePressed && selectedChoice != -1 && timer <= 0) {
                         dialogueIndex = 0; // Chuyển sang đoạn hội thoại tương ứng
 
-                        if(tmp.get(selectedChoice) != -1 && selectedChoice != 0) {
+                        if(tmp.get(selectedChoice) != -1 && selectedChoice != 0 && gp.player.money >= cost[tmp.get(selectedChoice)]) {
                             index = 1;
                             Entity newObj = createObject(items[tmp.get(selectedChoice)]);
                             if (newObj != null) {

@@ -24,6 +24,10 @@ public class Player extends Entity{
     public ArrayList<Integer> itemsCount = new ArrayList<>(8);
     public int pointer = 0;
     public boolean combat = true;
+    // --------------------------Tham số cho nhiệm vụ--------------------------------------------
+    public int kills = 0;
+    public String interact = null;
+    // --------------------------Hết tham số cho nhiệm vụ-----------------------------------------
     BufferedImage coin;
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -70,6 +74,9 @@ public class Player extends Entity{
 
         // Vẽ số lượng item
         g2.setFont(new Font("Arial", Font.BOLD, 15));
+        int textWidth1 = g2.getFontMetrics(new Font("Arial", Font.PLAIN, 15)).stringWidth("x" + money);
+        g2.setColor(new Color(255,255,255,120));
+        g2.fillRect(itemX + itemSize,itemY + itemSize/2 - 12,textWidth1,15);
         g2.setColor(Color.black);
         g2.drawString("x" + money, itemX + itemSize, itemY + itemSize/2);
         itemY += 10 + itemSize;
@@ -88,6 +95,8 @@ public class Player extends Entity{
 
             // Vẽ số lượng item
             g2.setFont(new Font("Arial", Font.BOLD, 20));
+            g2.setColor(new Color(255,255,255,120));
+            //g2.fillRect();
             g2.setColor(Color.black);
             g2.drawString("x" + itemsCount.get(i), itemX + itemSize + 5, itemY + itemSize / 2);
 
@@ -99,13 +108,13 @@ public class Player extends Entity{
 
     public void update() {
         if(combat) {
+            System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
             // Xử lí di chuyển khi bấm phím
             int objIndex = gp.cCheck.checkObject(this, true);
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
                 alpha = 1;
-                keyH.EPressed = false;
                 timer = 20;
-                HP--;
+                //HP--;
             }
             if (HP >= 10) HP = 10;
             if (Energy >= 200) Energy = 200;
@@ -134,34 +143,26 @@ public class Player extends Entity{
                 gp.cCheck.checkTile(this);
                 if (!collisionOn) {
                     switch (direction) {
-                        case "up":
-                            worldY -= speed;
-                            break;
-                        case "down":
-                            worldY += speed;
-                            break;
-                        case "left":
-                            worldX -= speed;
-                            break;
-                        case "right":
-                            worldX += speed;
-                            break;
-                        case "up-left":
-                            worldY -= speed / Math.sqrt(2);
-                            worldX -= speed / Math.sqrt(2); // Chia căn 2 để giảm tốc về bình thường
-                            break;
-                        case "up-right":
-                            worldY -= speed / Math.sqrt(2);
-                            worldX += speed / Math.sqrt(2);
-                            break;
-                        case "down-left":
-                            worldY += speed / Math.sqrt(2);
-                            worldX -= speed / Math.sqrt(2);
-                            break;
-                        case "down-right":
-                            worldY += speed / Math.sqrt(2);
-                            worldX += speed / Math.sqrt(2);
-                            break;
+                        case "up" -> worldY -= speed;
+                        case "down" -> worldY += speed;
+                        case "left" -> worldX -= speed;
+                        case "right" -> worldX += speed;
+                        case "up-left" -> {
+                            worldY -= (int) (speed / Math.sqrt(2));
+                            worldX -= (int) (speed / Math.sqrt(2)); // Chia căn 2 để giảm tốc về bình thường
+                        }
+                        case "up-right" -> {
+                            worldY -= (int) (speed / Math.sqrt(2));
+                            worldX += (int) (speed / Math.sqrt(2));
+                        }
+                        case "down-left" -> {
+                            worldY += (int) (speed / Math.sqrt(2));
+                            worldX -= (int) (speed / Math.sqrt(2));
+                        }
+                        case "down-right" -> {
+                            worldY += (int) (speed / Math.sqrt(2));
+                            worldX += (int) (speed / Math.sqrt(2));
+                        }
                     }
                 }
 
@@ -200,7 +201,7 @@ public class Player extends Entity{
             } else {
                 close = false;  // Không có item gần, tắt thông báo
             }
-
+            updateQuests();
             if (gp.keyH.i != -1 && !items.isEmpty() && (gp.keyH.i < items.size())) {
                 // Chỉ xóa item tại vị trí gp.keyH.i, không ảnh hưởng đến các phần tử khác
                 if(pointer != gp.keyH.i) itemTimer = 50;
@@ -241,15 +242,15 @@ public class Player extends Entity{
             System.out.println(objName);
             if(objName != null){
                 switch (objName) {
-                    case "Slime":
+                    case "Slime" -> {
                         hasKey++;
                         System.out.println(objName + " " + hasKey);
-                        break;
-                    case "ThrowingBottle", "HPBottle","Key":
-                        if(items.size() < 8){
+                    }
+                    case "ThrowingBottle", "HPBottle", "Key" -> {
+                        if (items.size() < 8) {
                             boolean flag = false;
-                            for(int j = 0; j < items.size(); j++){
-                                if(items.get(j).objName.equals(gp.obj.get(i).objName)){
+                            for (int j = 0; j < items.size(); j++) {
+                                if (items.get(j).objName.equals(gp.obj.get(i).objName)) {
                                     flag = true;
                                     // Sửa từ add thành set để cập nhật đúng số lượng item
                                     itemsCount.set(j, itemsCount.get(j) + 1);
@@ -257,19 +258,18 @@ public class Player extends Entity{
                                     break; // Thêm break để dừng vòng lặp sau khi tìm thấy item
                                 }
                             }
-                            if(!flag) {
+                            if (!flag) {
                                 items.add(gp.obj.get(i));
                                 itemsCount.add(1); // Thêm mới số lượng item là 1
-                                pointer = items.size()-1;
+                                pointer = items.size() - 1;
                             }
                         }
                         itemTimer = 50;
                         gp.obj.remove(gp.obj.get(i));
                         gp.soundManager.play("got_sth");
-                        break;
-
-                    default:
-                        break;
+                    }
+                    default -> {
+                    }
                 }
             }
 
@@ -310,7 +310,81 @@ public class Player extends Entity{
             if (close) {
                 closeItem(g2);
             }
+            if(!quests.isEmpty()) drawQuests(g2);
             rectDraw(g2);  // Vẽ ô collision
         }
     }
+    public ArrayList<Quest> quests = new ArrayList<>();
+
+    // Thêm phương thức để thêm nhiệm vụ
+    public void addQuest(Quest quest) {
+        quests.add(quest);
+    }
+    public void drawQuests(Graphics2D g2) {
+        int questX = gp.screenWidth - 250; // Vị trí X bên phải màn hình
+        int questY = 50; // Vị trí Y ban đầu
+        int boxWidth = 220; // Độ rộng của khung
+        int boxHeight = 30 * quests.size(); // Chiều cao của khung phụ thuộc vào số lượng nhiệm vụ
+
+        // Set font và màu sắc
+        g2.setFont(new Font("Arial", Font.PLAIN, 15));
+
+        // Vẽ khung nền cho danh sách Quest
+        g2.setColor(new Color(0, 0, 0, 150)); // Nền đen với độ trong suốt
+        g2.fillRoundRect(questX - 10, questY - 30, boxWidth, boxHeight + 10, 15, 15);
+
+        // Vẽ viền cho khung
+        g2.setColor(Color.WHITE);
+        g2.setStroke(new BasicStroke(2)); // Độ dày của viền
+        g2.drawRoundRect(questX - 10, questY - 30, boxWidth, boxHeight + 10, 15, 15);
+
+        // Vẽ từng Quest
+        for (Quest quest : quests) {
+            String status = quest.isComplete ? "Completed" : quest.currentAmount + "/" + quest.targetAmount;
+
+            // Hiệu ứng bóng đổ
+            g2.setColor(Color.BLACK);  // Màu đen cho bóng
+            g2.drawString(quest.name + ": " + status, questX + 2, questY + 2);  // Tạo bóng bằng cách dịch vị trí
+
+            // Hiển thị văn bản nhiệm vụ
+            if(quest.isComplete){
+                g2.setColor(Color.GREEN);
+            }
+            else {
+                g2.setColor(Color.WHITE);  // Màu trắng cho văn bản
+            }
+            g2.drawString(quest.name + ": " + status, questX, questY);
+
+            questY += 20; // Di chuyển xuống cho nhiệm vụ tiếp theo
+        }
+    }
+
+    public void updateQuests() {
+        for (Quest quest : quests) {
+            if (!quest.isComplete) {
+                switch (quest.targetType) {
+                    case "Items" -> {
+                        for (Entity item : items) {
+                            if (Objects.equals(item.objName, quest.targetObject)) {
+                                quest.currentAmount = 1;
+                                break;
+                            }
+                        }
+                    }
+                    case "kills" -> {
+                        quest.currentAmount = kills;
+                        if (kills >= quest.targetAmount) kills = 0;
+                    }
+                    case "interact" ->{
+                        if(Objects.equals(interact, quest.targetObject)){
+                            quest.currentAmount = 1;
+                        }
+                    }
+                }
+                // Kiểm tra trạng thái hoàn thành
+                quest.checkCompletion();
+            }
+        }
+    }
+
 }

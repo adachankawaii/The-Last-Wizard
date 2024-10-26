@@ -1,21 +1,22 @@
 package entity.enemy;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Random;
 
 import entity.Entity;
 import entity.Items.Coin;
-import entity.bullet.Bullet;
 import entity.effect.Effect;
 import main.GamePanel;
 
-import javax.crypto.EncryptedPrivateKeyInfo;
 
 public class Slime extends Entity {
     int timer = 0;
     int delayTime = 0;
     int HP;
+    double angle = 0;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
     public Slime(GamePanel gp) {
         this.isTrigger = true;
@@ -23,6 +24,8 @@ public class Slime extends Entity {
         collision = true;
         direction = "down";
         HP = 8;
+        speed = 3;
+        isTrigger = false;
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getSlimeImage();
@@ -56,21 +59,86 @@ public class Slime extends Entity {
         }
         isTriggerOn = false;
         timer++;
-        if(timer >= 60 && Math.abs((gp.player.worldX-this.worldX)/gp.tileSize) <= 7 && Math.abs((gp.player.worldY-this.worldY)/gp.tileSize) <= 7 && gp.player.alpha >= 1){
-            Bullet b = new Bullet("/bullet/bullet.png","enemyBullet", 20, 20,4,4, this.worldX, this.worldY,20,gp ,0, 5, 2, 2, gp.player.worldX, gp.player.worldY);
-            b.death = false;
-            b.root = this.objName;
-            gp.obj.add(b);
-            timer = 0;
+        angle = Math.atan2(gp.player.worldY - worldY, gp.player.worldX - worldX);
+        double angleDegrees = Math.toDegrees(angle);
+
+        if (angleDegrees > -22.5 && angleDegrees <= 22.5) {
+            direction = "right";
+        } else if (angleDegrees > 22.5 && angleDegrees <= 67.5) {
+            direction = "down-right";
+        } else if (angleDegrees > 67.5 && angleDegrees <= 112.5) {
+            direction = "down";
+        } else if (angleDegrees > 112.5 && angleDegrees <= 157.5) {
+            direction = "down-left";
+        } else if (angleDegrees > 157.5 || angleDegrees <= -157.5) {
+            direction = "left";
+        } else if (angleDegrees > -157.5 && angleDegrees <= -112.5) {
+            direction = "up-left";
+        } else if (angleDegrees > -112.5 && angleDegrees <= -67.5) {
+            direction = "up";
+        } else if (angleDegrees > -67.5) {
+            direction = "up-right";
         }
+
+// Kiểm tra va chạm và di chuyển
+        gp.cCheck.checkTileForObj(this);
+        gp.cCheck.checkObjectForObj(this);
+        int npcCenterX = worldX + gp.tileSize / 2;
+        int npcCenterY = worldY + gp.tileSize / 2;
+
+        int playerCenterX = gp.player.worldX + gp.tileSize / 2;
+        int playerCenterY = gp.player.worldY + gp.tileSize / 2;
+
+        double distance = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
+        if (!collisionOn && delayTime <= 0 && distance <= 8*gp.tileSize && distance >= gp.tileSize) {
+            switch (direction) {
+                case "up":
+                    worldY -= speed;
+                    break;
+                case "down":
+                    worldY += speed;
+                    break;
+                case "left":
+                    worldX -= speed;
+                    flip = true;
+                    break;
+                case "right":
+                    worldX += speed;
+                    flip = false;
+                    break;
+                case "up-right":
+                    worldX += (int) (speed / Math.sqrt(2)); // Di chuyển theo cả 2 trục với tỷ lệ cân đối
+                    worldY -= (int) (speed / Math.sqrt(2));
+                    flip = false;
+                    break;
+                case "up-left":
+                    worldX -= (int) (speed / Math.sqrt(2));
+                    worldY -= (int) (speed / Math.sqrt(2));
+                    flip = true;
+                    break;
+                case "down-right":
+                    worldX += (int) (speed / Math.sqrt(2));
+                    worldY += (int) (speed / Math.sqrt(2));
+                    flip = false;
+                    break;
+                case "down-left":
+                    worldX -= (int) (speed / Math.sqrt(2));
+                    worldY += (int) (speed / Math.sqrt(2));
+                    flip = true;
+                    break;
+            }
+        }
+        timer++;
+        if(timer >= 60 && distance <= gp.tileSize && gp.player.alpha >= 1){
+
+        }
+        collisionOn = false;
         delayTime--;
     }
+    boolean flip = false;
 
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
-        drawObjImage(g2, gp);
-        rectDraw(g2);
-
         // Tọa độ để vẽ thanh máu trên đầu của Slime
         int barX = this.screenX;
         int barY = this.screenY - 10; // Thanh máu cách đầu Slime 10 pixel
@@ -81,8 +149,46 @@ public class Slime extends Entity {
 
         // Tính toán phần trăm HP
         double healthPercent = (double) HP / 8.0; // HP hiện tại chia cho HP tối đa
-        if(awake){
-            g2.setColor(new Color(100,100,100));
+
+        // Lưu trạng thái gốc của Graphics2D
+        screenY = worldY - gp.player.worldY + gp.player.screenY;
+        screenX = worldX - gp.player.worldX + gp.player.screenX;
+
+        // Tạo hình ảnh
+        BufferedImage image = animations.get(aniCount).get(spriteNum);
+
+        // Lưu lại trạng thái ban đầu của Graphics2D
+        AffineTransform old = g2.getTransform();
+
+        // Kích thước của hình ảnh
+        int imageWidth = gp.tileSize;
+        int imageHeight = gp.tileSize;
+
+        // Tính toán chính xác tâm của hình ảnh
+        int centerX = screenX + gp.tileSize / 2 ;
+        int centerY = screenY + gp.tileSize / 2;
+
+        // Dịch hệ tọa độ đến tâm của vật thể (tâm của hình ảnh)
+        g2.translate(centerX, centerY);
+
+        // Xoay hệ tọa độ quanh tâm của hình ảnh
+
+        // Lật hình ảnh theo trục Ox (nếu cần)
+        if(flip) g2.scale(-1, 1);
+
+        // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
+        g2.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth), (int)(imageHeight), null);
+
+        // Khôi phục lại trạng thái ban đầu của Graphics2D
+        g2.setTransform(old);
+
+        // Vẽ khung hình chữ nhật (nếu cần)
+        rectDraw(g2);
+
+        // Vẽ thanh máu
+        if (awake) {
+            // Vẽ nền thanh máu (màu xám)
+            g2.setColor(new Color(100, 100, 100));
             g2.fillRect(barX, barY, barWidth, barHeight);
 
             // Vẽ thanh máu (màu đỏ) với độ dài tùy thuộc vào lượng HP
@@ -109,6 +215,7 @@ public class Slime extends Entity {
                 Effect a = new Effect("/effect/effect1.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 2, 2, 0, 0);
                 gp.obj.add(a);
                 gp.soundManager.play("slime_die");
+                gp.player.kills++;
                 gp.obj.remove(this);
             }
         }

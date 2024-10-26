@@ -7,6 +7,8 @@ import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
 import entity.enemy.Slime;
+import entity.enemy.Soldier;
+import entity.npc.GuildMaster;
 import entity.npc.NPC;
 import entity.npc.ShopKeeper;
 
@@ -72,6 +74,10 @@ public class AssetSetter {
                 return new CommonItem("Key","/bullet/HP potion.png", gp);
             case "ShopKeeper":
                 return new ShopKeeper(gp);
+            case "Soldier":
+                return new Soldier(gp);
+            case "GuildMaster":
+                return new GuildMaster(gp);
             default:
                 System.out.println("Unknown object type: " + objectType);
                 return null;

@@ -134,6 +134,9 @@ public class GamePanel extends JPanel implements Runnable{
         reloadTime = 0;
         player.items.clear();
         player.itemsCount.clear();
+        player.money = 0;
+        player.quests.clear();
+        player.kills= 0;
         soundManager.setVolumeAll(-20.0f);
         soundManager.setVolume("background", -30.0f);
         soundManager.play("background");

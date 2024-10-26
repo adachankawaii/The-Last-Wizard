@@ -1,32 +1,47 @@
 package entity.npc;
 
-import java.awt.*;
-import java.util.Arrays;
-import java.util.Vector;
-
 import entity.Entity;
+import entity.player.Quest;
 import main.GamePanel;
 
-public class NPC extends Entity {
+import java.awt.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+public class GuildMaster extends Entity {
     Vector<Vector<String>> words = new Vector<>();
     int index = 0;
     int dialogueIndex = 0;
     int timer = 0;
     GamePanel gp;
-    String[] choices = {"Choice 1", "Choice 2"}; // Các lựa chọn
-
-    int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
-
-    public NPC(GamePanel gp) {
-        objName = "Te Quiero";
+    Vector<Quest> questsLine = new Vector<>();
+    public GuildMaster(GamePanel gp) {
+        objName = "GuildMaster";
         collision = true;
         this.isTrigger = true;
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        setWords("sin cong sin bang 2 sin cos,cos cong cos bang tru 2 sin sin, end");
-        setWords("sin thi sin cos cos sin,cos thi cos cos sin sin dau tru,dia dia,end");
-        setWords("co day em bai the duc buoi sang, mot hai ba co len, end");
+        questsLine.add(new Quest("Get the Key","Get the Key from the ShopKeeper", "Items", 1,"Key","Coin", 15, gp));
+        questsLine.add(new Quest("Get the HPBottle","Get the HPBottle", "Items", 1,"HPBottle","Coin", 15, gp));
+        questsLine.add(new Quest("Defeat the enemies","Clear this area, cover it with blood","kills",4,null,"ThrowingBottle", 13, gp));
+        questsLine.add(new Quest("Talk to NPC","Talk to Te Quiero","interact",1,"Te Quiero","Coin", 28,gp));
+        addWords(new String[]{"Look like you have completed the quest","This is your reward","end"});
+        addWords(new String[]{"Nothing here for you !", "end"});
+        String[] tmp = new String[questsLine.size()+2];
+        for (int i = 0; i < tmp.length;i++){
+            if(i == 0){
+                tmp[i] = "I got something for you";
+            }
+            else if(i == tmp.length -1){
+                tmp[i] = "end";
+            }
+            else{
+                tmp[i] = questsLine.get(i-1).description;
+            }
+        }
+        addWords(tmp);
         gp.keyH.SpacePressed = false;
     }
 
@@ -45,17 +60,14 @@ public class NPC extends Entity {
         timer--;
     }
 
-    public void setWords(String inputWords) {
+    public void addWords(String[] inputWords) {
         words.add(new Vector<>());
-        String[] splitWords = inputWords.split(",");
-        words.get(words.size() - 1).addAll(Arrays.asList(splitWords));
+        words.get(words.size() - 1).addAll(List.of(inputWords));
     }
 
     // Thêm biến để theo dõi việc đã hiển thị đoạn dialogueChoice chưa
     // Biến để theo dõi trạng thái lựa chọn
     // Biến để theo dõi trạng thái lựa chọn
-    boolean isChoosing = false; // Đảm bảo rằng chỉ bật khi vào trạng thái lựa chọn
-    boolean choiceMade = false; // Để kiểm tra xem đã thực hiện lựa chọn chưa
 
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
@@ -83,8 +95,6 @@ public class NPC extends Entity {
     }
     @Override
     public void drawUI(Graphics2D g2, GamePanel gp){
-
-
         Font font = new Font("Arial", Font.PLAIN, 20);
         int npcCenterX = worldX + gp.tileSize / 2;
         int npcCenterY = worldY + gp.tileSize / 2;
@@ -123,68 +133,49 @@ public class NPC extends Entity {
                 String currentDialogue = words.get(index).get(dialogueIndex);
 
                 // Khi đến đoạn hội thoại yêu cầu lựa chọn
-                if (dialogueIndex == 1 && !choiceMade && index == 0) {
 
-                    int choiceBoxWidth = (int)(dialogueBoxWidth * 2 / 3);
-                    int choiceBoxHeight = (int)(dialogueBoxHeight * 3 / 4);
-                    int choiceBoxY = dialogueBoxY - dialogueBoxHeight - choiceBoxHeight; // Di chuyển xuống dưới khung hội thoại
-                    int choiceBoxX = dialogueBoxX + dialogueBoxWidth - (dialogueBoxWidth * 2 / 3) - 20; // Đặt bên phải khung hội thoại
 
-                    isChoosing = true;
-                    // Hiển thị các lựa chọn
-                    for (int i = 0; i < choices.length; i++) {
-                        g2.setColor(new Color(0, 0, 0, 180));
-                        g2.fillRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
-                        g2.setColor(Color.WHITE);
-                        g2.drawRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
-                        g2.drawString("Key " + (i + 1) + ": " + choices[i], choiceBoxX + 10, choiceBoxY + i * choiceBoxHeight + 20);
-
-                        // Đánh dấu lựa chọn hiện tại
-                        if (i == selectedChoice) {
-                            g2.setColor(Color.WHITE);
-                            g2.drawRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
-                            g2.setColor(new Color(100, 100, 100, 100));
-                            g2.fillRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
+                if (gp.keyH.SpacePressed && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
+                    dialogueIndex++; // Chuyển sang đoạn tiếp theo
+                    gp.keyH.SpacePressed = false;
+                    timer = 20;
+                }
+                if (dialogueIndex >= words.get(index).size() - 1) {
+                    if (index == 0) {
+                        Iterator<Quest> iterator = gp.player.quests.iterator();
+                        while (iterator.hasNext()) {
+                            Quest quest = iterator.next();
+                            if (quest.isComplete) {
+                                quest.getReward();
+                                iterator.remove(); // Xóa phần tử an toàn bằng Iterator
+                            }
                         }
                     }
-
-                    // Xử lý khi người chơi nhấn 'Space' để chọn
-                    if (gp.keyH.SpacePressed && selectedChoice != -1 && timer <= 0) {
-                        dialogueIndex = 0; // Chuyển sang đoạn hội thoại tương ứng
-                        index = selectedChoice + 1;
-                        gp.keyH.SpacePressed = false;
-                        timer = 20;
-                        choiceMade = true; // Đã chọn
-                        isChoosing = false; // Hoàn thành quá trình lựa chọn
+                    else if(index == 2){
+                        Iterator<Quest> iterator = questsLine.iterator();
+                        while (iterator.hasNext()) {
+                            Quest quest = iterator.next();
+                            gp.player.addQuest(quest);
+                            iterator.remove();
+                        }
                     }
-                }
-                // Sau khi hoàn thành lựa chọn, tiếp tục hiển thị đoạn hội thoại
-                else if (!isChoosing) {
-                    // Sau khi chọn, nếu có đoạn hội thoại tiếp theo
-                    if (gp.keyH.SpacePressed && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
-                        dialogueIndex++; // Chuyển sang đoạn tiếp theo
-                        gp.keyH.SpacePressed = false;
-                        timer = 20;
-                    }
-                }
-
-                // Cập nhật lựa chọn
-                if (isChoosing) {
-                    selectedChoice = (gp.keyH.i + choices.length) % choices.length; // Đảm bảo chỉ chọn trong khoảng từ 0 đến số lượng lựa chọn
-                }
-
-                // Khi kết thúc hội thoại
-                if (dialogueIndex >= words.get(index).size() - 1) {
                     gp.player.combat = true;
                     gp.keyH.SpacePressed = false;
-                    index = 0;
+                    boolean flag = false;
+                    for(Quest quest : gp.player.quests){
+                        if (quest.isComplete) {
+                            flag = true;
+                            index = 0;
+                            break;
+                        }
+                    }
+                    if(!flag) index = 1;
+                    if(!questsLine.isEmpty() && !flag) index = 2;
                     dialogueIndex = 0; // Đặt lại để sẵn sàng cho lần sau
-                    choiceMade = false; // Cho phép lựa chọn lại lần sau
                 }
 
                 g2.setFont(font);
-                if(index >= 1 && dialogueIndex == (words.get(index).size() - 2)) g2.setColor(Color.PINK);
-                else g2.setColor(Color.WHITE);
+                g2.setColor(Color.WHITE);
                 g2.drawString(objName + ": " + currentDialogue, textX, textY);
             }
             else if (gp.player.combat && timer <= 0) {
@@ -214,10 +205,17 @@ public class NPC extends Entity {
             }
         } else {
             // Reset các biến khi ra khỏi phạm vi
-            index = 0;
+            boolean flag = false;
+            for(Quest quest : gp.player.quests){
+                if (quest.isComplete) {
+                    flag = true;
+                    index = 0;
+                    break;
+                }
+            }
+            if(!flag) index = 1;
+            if(!questsLine.isEmpty() && !flag) index = 2;
             dialogueIndex = 0;
-            isChoosing = false; // Reset trạng thái lựa chọn
-            choiceMade = false;
         }
 
     }

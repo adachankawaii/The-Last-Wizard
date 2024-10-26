@@ -42,7 +42,7 @@ public class ThrowingObj extends Bullet {
 
             // Kiểm tra nếu vượt quá thời gian sống hoặc va chạm
             if (timer >= lifeTime) {
-                Bullet a = new Bullet("/effect/effect1.png","Bigbullet",-10*5,-10*5,(int)(6*5),(int)(6*5),this.worldX,this.worldY,8, gp, 0, 0,4.5, 4.5, this.targetX, this.targetY);
+                Bullet a = new Bullet("/effect/effect1.png",objName,-10*5,-10*5,(int)(6*5),(int)(6*5),this.worldX,this.worldY,8, gp, 0, 0,4.5, 4.5, this.targetX, this.targetY);
                 a.death = false;
                 gp.obj.add(a);
                 gp.obj.remove(this); // Xóa vật thể nếu đã hết thời gian hoặc va chạm
