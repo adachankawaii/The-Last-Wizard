@@ -22,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int tileSize = originalTitleSize * scale;  // Size 1 tile sau khi scale
 
     // Cài đặt size màn hình
-    public final int maxScreenCol = 20;  // Số cột hiện ở màn hình (Width)
+    public final int maxScreenCol = 25;  // Số cột hiện ở màn hình (Width)
     public final int maxScreenRow = 15;  // Số hàng hiện ở màn hình (Height)
     public final int screenWidth = maxScreenCol * tileSize;  // Width tính theo pixel
     public final int screenHeight = maxScreenRow * tileSize;  // Height tính theo pixel
@@ -67,10 +67,15 @@ public class GamePanel extends JPanel implements Runnable{
     public TileManager tileMng = new TileManager(this);
     // TẠO COLLISION
     public CollisionCheck cCheck = new CollisionCheck(this);
+
     // TẠO ARRAY LƯU OBJ
     public ArrayList<Entity> obj = new ArrayList<>();
+    public ArrayList<Entity> objMap1 = new ArrayList<>();
+
     // TẠO SET OBJECT
     AssetSetter aSetter = new AssetSetter(this);
+    ObjectSetter oSetter = new ObjectSetter(this);    
+
     // MOUSE
     MouseHandler mouseH = new MouseHandler(this);
     public int mouseX = 0, mouseY = 0;
@@ -81,7 +86,9 @@ public class GamePanel extends JPanel implements Runnable{
     public void setupGame() {
         // Đọc đường dẫn tới file thông tin và nhập
         String url = "res/maps/set_obj.txt";
+        String url1 = "res/maps/map1obj.txt";
         aSetter.setObject(url);
+        oSetter.setObject(url1);
     }
 
     // CHẠY GAME
@@ -219,6 +226,12 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
 
+        for (int i = 0; i < objMap1.size(); i++) {
+            if (objMap1.get(i) != null) {
+                objMap1.get(i).draw(g2, this);
+            }
+        }
+        
         // Vẽ nhân vật
         player.draw(g2);
         for (int i = 0; i < obj.size(); i++) {
@@ -226,6 +239,7 @@ public class GamePanel extends JPanel implements Runnable{
                 obj.get(i).drawUI(g2, this);
             }
         }
+
         HPbar.draw(g2);
         EnergyBar.draw(g2);
 

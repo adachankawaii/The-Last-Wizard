@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
-
+import java.util.Vector;
 
 import entity.Entity;
 import main.GamePanel;
@@ -54,6 +54,34 @@ public class Player extends Entity{
             e.printStackTrace();
         }
 
+    }
+
+        // IMPORT NHIỀU ẢNH 1 LOẠI CHUYỂN ĐỘNG
+    public void importEachImageForPlayer(String[] path, boolean newAnimation){
+        if(newAnimation){
+            Vector<BufferedImage> a = new Vector<>();
+            for(int i = 0;i<path.length;i++){
+                try(InputStream is = getClass().getResourceAsStream(path[i])){
+                    img = ImageIO.read(is);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                a.add(img);
+            }
+            animations.add(a);
+        }
+        else{
+            for(int i = 0;i<path.length;i++){
+                try(InputStream is = getClass().getResourceAsStream(path[i])){
+                    img = ImageIO.read(is);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                animations.get(animations.size() - 1).add(img);
+            }
+        }
     }
 
     public void getPlayerImage() {

@@ -23,6 +23,8 @@ public class Entity {
     public int solidAreaDefaultX;
     public int solidAreaDefaultY;
 
+    public int imgWidth, imgHeight;
+
     public GamePanel gp;
     public KeyHandler keyH;
 
@@ -37,7 +39,7 @@ public class Entity {
     protected int spriteCounter = 0;
     protected int spriteNum = 0;
     BufferedImage source;
-    BufferedImage img;
+    protected BufferedImage img;
     public Vector<Vector<BufferedImage>> animations = new Vector<>();
 
     // CẮT VÀ IMPORT ẢNH
@@ -99,6 +101,7 @@ public class Entity {
             e.printStackTrace();
         }
     }
+    
 
     // VẼ KHUNG RECT CỦA OBJECT
     public void rectDraw(Graphics2D g2) {
@@ -156,7 +159,7 @@ public class Entity {
         Composite originalComposite = g2.getComposite();
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         BufferedImage image = animations.get(aniCount).get(spriteNum); // Import ảnh từ Animations
-        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image, screenX, screenY, 56, 56, null);
     }
     
     public void drawObjImage(Graphics2D g2, GamePanel gp) {

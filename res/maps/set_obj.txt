@@ -1,4 +1,4 @@
-Soldier 4
+Slime 4
 23,23 23,19 21,21 25,21
 ThrowingBottle 2
 32,37 26,37

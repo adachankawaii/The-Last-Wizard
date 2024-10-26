@@ -1,0 +1,109 @@
+package entity.Items;
+
+import entity.Entity;
+import main.GamePanel;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class ObjectMap1 extends Entity {
+
+    private ArrayList<Rectangle> rectList;
+    public GamePanel gp;
+    String path;
+    public ObjectMap1(String name, String path, GamePanel gp) {
+        objName = name;
+        collision = true;
+        this.rectList = new ArrayList<>();
+        this.path = path;
+        getObjImage(path);
+        this.gp = gp;
+    }
+
+    public void getObjImage(String path) {
+        // IMPORT NPC
+        importAnImage(path, true);
+
+    }
+
+    // Phương thức để khởi tạo các rect dựa trên tọa độ
+    public void mapRectGet(int a, int b, int w, int h) {
+        Rectangle solidArea = new Rectangle();
+        solidArea.x = (int)(a*1.5);
+        solidArea.y = (int)(b*1.5);
+        solidArea.width = (int)(w*1.5);
+        solidArea.height = (int)(h*1.5);
+        this.rectList.add(solidArea);
+    }
+
+    // Phương thức để vẽ tất cả các rect đã khởi tạo
+    public void mapRectDraw(Graphics2D g2) {
+        g2.setColor(Color.red);
+        for (Rectangle rect : rectList) {
+            g2.drawRect(screenX + rect.x, screenY + rect.y, rect.width, rect.height);
+        }
+    }
+
+        // Phương thức đọc từ file và thêm vào danh sách rect
+    public void loadRectsFromFile(String rectFilePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(rectFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                int a = Integer.parseInt(values[0].trim());
+                int b = Integer.parseInt(values[1].trim());
+                int w = Integer.parseInt(values[2].trim());
+                int h = Integer.parseInt(values[3].trim());
+                mapRectGet(a, b, w, h);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // @Override
+    // public void update() {
+    //     spriteCounter++; // Đếm số lần cập nhật
+    //     if(spriteCounter > 5) { //
+    //         spriteNum++; // Tăng lên để ch
+    //         if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
+    //         spriteCounter = 0;
+    //     }
+    // }
+
+    @Override
+    public void draw(Graphics2D g2, GamePanel gp) {
+        drawObjMapImage(g2, gp);
+        // mapRectDraw(g2);
+    }
+
+    public void drawObjMapImage(Graphics2D g2, GamePanel gp) {
+        screenX = worldX - gp.player.worldX + gp.player.screenX;
+        screenY = worldY - gp.player.worldY + gp.player.screenY;
+    
+        if(worldX + 50*gp.tileSize > gp.player.worldX - gp.player.screenX
+        && worldX - 50*gp.tileSize < gp.player.worldX + gp.player.screenX
+        && worldY + 50*gp.tileSize > gp.player.worldY - gp.player.screenY
+        && worldY - 50*gp.tileSize < gp.player.worldY + gp.player.screenY) {
+            BufferedImage image = animations.get(aniCount).get(spriteNum);
+            imgWidth = image.getWidth();
+            imgHeight = image.getHeight();
+            int width = (int)(imgWidth * 1.5);
+            int height = (int)(imgHeight * 1.5);
+            g2.drawImage(image, screenX, screenY, width, height, null);
+        }
+    }
+    
+    // @Override
+    // public void effect(){
+    //     CommonItem commonItem = new CommonItem(this.objName, this.path, gp);
+    //     commonItem.worldX = gp.player.worldX;
+    //     commonItem.worldY = gp.player.worldY;
+    //     gp.obj.add(commonItem);
+    // }
+}
+
