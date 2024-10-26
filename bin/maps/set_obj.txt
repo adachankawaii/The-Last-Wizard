@@ -1,5 +1,5 @@
 Slime 4
-23,23 23,19 21,21 25,21
+23,32 23,28 21,30 25,30
 ThrowingBottle 2
 32,37 26,37
 HPBottle 2
@@ -8,3 +8,5 @@ NPC 1
 29,38
 Key 1
 23,15
+ShopKeeper 1
+29,43
