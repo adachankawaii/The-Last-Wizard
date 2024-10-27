@@ -35,10 +35,10 @@ public class ObjectMap1 extends Entity {
     // Phương thức để khởi tạo các rect dựa trên tọa độ
     public void mapRectGet(int a, int b, int w, int h) {
         Rectangle solidArea = new Rectangle();
-        solidArea.x = (int)(a*1.5);
-        solidArea.y = (int)(b*1.5);
-        solidArea.width = (int)(w*1.5);
-        solidArea.height = (int)(h*1.5);
+        solidArea.x = (int)(a);
+        solidArea.y = (int)(b);
+        solidArea.width = (int)(w);
+        solidArea.height = (int)(h);
         this.rectList.add(solidArea);
     }
 
@@ -94,8 +94,8 @@ public class ObjectMap1 extends Entity {
             BufferedImage image = animations.get(aniCount).get(spriteNum);
             imgWidth = image.getWidth();
             imgHeight = image.getHeight();
-            int width = (int)(imgWidth * 1.5);
-            int height = (int)(imgHeight * 1.5);
+            int width = (int)(imgWidth);
+            int height = (int)(imgHeight);
             g2.drawImage(image, screenX, screenY, width, height, null);
         }
     }

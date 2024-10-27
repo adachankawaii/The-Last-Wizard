@@ -19,12 +19,12 @@ public class GamePanel extends JPanel implements Runnable{
     public boolean gameOver = false;
     public boolean running = true;
     public final int originalTitleSize = 16;  // Size gốc của 1 tile
-    public final int scale = 3;               // Chỉ số scale
+    public final int scale = 2;               // Chỉ số scale
     public final int tileSize = originalTitleSize * scale;  // Size 1 tile sau khi scale
 
     // Cài đặt size màn hình
-    public final int maxScreenCol = 25;  // Số cột hiện ở màn hình (Width)
-    public final int maxScreenRow = 15;  // Số hàng hiện ở màn hình (Height)
+    public final int maxScreenCol = 25 * 3/2;  // Số cột hiện ở màn hình (Width)
+    public final int maxScreenRow = 15*3/2;  // Số hàng hiện ở màn hình (Height)
     public final int screenWidth = maxScreenCol * tileSize;  // Width tính theo pixel
     public final int screenHeight = maxScreenRow * tileSize;  // Height tính theo pixel
 
@@ -220,13 +220,14 @@ public class GamePanel extends JPanel implements Runnable{
     public void draw(Graphics2D g2) {
         // Vẽ Map
         tileMng.draw(g2);
+
+        // Vẽ nhân vật
+        player.draw(g2);
         for (int i = 0; i < objMap1.size(); i++) {
             if (objMap1.get(i) != null) {
                 objMap1.get(i).draw(g2, this);
             }
         }
-        // Vẽ nhân vật
-        player.draw(g2);
         // Vẽ Obj
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {

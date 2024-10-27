@@ -171,7 +171,7 @@ public class Entity {
         && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
         && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
             BufferedImage image = animations.get(aniCount).get(spriteNum);
-            g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(image, screenX, screenY, 48, 48, null);
         }
     }
 

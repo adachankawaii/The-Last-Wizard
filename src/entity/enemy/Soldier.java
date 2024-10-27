@@ -197,8 +197,8 @@ public class Soldier extends Entity {
         AffineTransform old = g2.getTransform();
 
         // Kích thước của hình ảnh
-        int imageWidth = (int)(gp.tileSize*1.5);
-        int imageHeight = (int)(gp.tileSize*1.5);
+        int imageWidth = (int)(gp.tileSize*2);
+        int imageHeight = (int)(gp.tileSize*2);
 
         // Tính toán chính xác tâm của hình ảnh
         int centerX = screenX + gp.tileSize / 2 ;
@@ -213,7 +213,7 @@ public class Soldier extends Entity {
         if(flip) g2.scale(-1, 1);
 
         // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
-        g2.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth), (int)(imageHeight), null);
+        g2.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth) , (int)(imageHeight), null);
 
         // Khôi phục lại trạng thái ban đầu của Graphics2D
         g2.setTransform(old);
