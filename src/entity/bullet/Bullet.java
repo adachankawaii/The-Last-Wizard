@@ -125,6 +125,7 @@ public class Bullet extends Entity {
         if(Math.toDegrees(angle) > -135 && Math.toDegrees(angle) <= -45) direction = "up";
         Vector<Integer> interact = gp.cCheck.checkObjectForObj(this);
         gp.cCheck.checkTileForObj(this);
+        gp.cCheck.checkMapObject(this);
         if (timer <= 60) {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));

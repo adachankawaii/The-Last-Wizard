@@ -6,6 +6,7 @@ import javax.swing.*;
 import UI.Bar;
 import collision.CollisionCheck;
 import entity.Entity;
+import entity.Items.ObjectMap1;
 import entity.bullet.ThrowingObj;
 import entity.player.Player;
 import tile.TileManager;
@@ -70,7 +71,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     // TẠO ARRAY LƯU OBJ
     public ArrayList<Entity> obj = new ArrayList<>();
-    public ArrayList<Entity> objMap1 = new ArrayList<>();
+    public ArrayList<ObjectMap1> objMap1 = new ArrayList<>();
 
     // TẠO SET OBJECT
     AssetSetter aSetter = new AssetSetter(this);
@@ -129,8 +130,8 @@ public class GamePanel extends JPanel implements Runnable{
     public void resetGame() {
         // Đặt lại tất cả các thành phần của trò chơi về trạng thái ban đầu
         player.setDefaultValue(
-                tileSize * 23,
-                tileSize * 21,
+                tileSize * 42,
+                tileSize * 50,
                 5,
                 "down");
         obj.clear(); // Xóa tất cả các object
@@ -219,21 +220,19 @@ public class GamePanel extends JPanel implements Runnable{
     public void draw(Graphics2D g2) {
         // Vẽ Map
         tileMng.draw(g2);
+        for (int i = 0; i < objMap1.size(); i++) {
+            if (objMap1.get(i) != null) {
+                objMap1.get(i).draw(g2, this);
+            }
+        }
+        // Vẽ nhân vật
+        player.draw(g2);
         // Vẽ Obj
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
                 obj.get(i).draw(g2, this);
             }
         }
-
-        for (int i = 0; i < objMap1.size(); i++) {
-            if (objMap1.get(i) != null) {
-                objMap1.get(i).draw(g2, this);
-            }
-        }
-        
-        // Vẽ nhân vật
-        player.draw(g2);
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
                 obj.get(i).drawUI(g2, this);

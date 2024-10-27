@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class ObjectMap1 extends Entity {
 
-    private ArrayList<Rectangle> rectList;
+    public ArrayList<Rectangle> rectList;
     public GamePanel gp;
     String path;
     public ObjectMap1(String name, String path, GamePanel gp) {
@@ -20,8 +20,10 @@ public class ObjectMap1 extends Entity {
         collision = true;
         this.rectList = new ArrayList<>();
         this.path = path;
+        this.isTrigger = false;
         getObjImage(path);
         this.gp = gp;
+
     }
 
     public void getObjImage(String path) {
@@ -78,7 +80,7 @@ public class ObjectMap1 extends Entity {
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
         drawObjMapImage(g2, gp);
-        // mapRectDraw(g2);
+        mapRectDraw(g2);
     }
 
     public void drawObjMapImage(Graphics2D g2, GamePanel gp) {

@@ -95,7 +95,7 @@ public class Soldier extends Entity {
         int playerCenterY = gp.player.worldY + gp.tileSize / 2;
         timer++;
         double distance = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
-        if (!collisionOn && delayTime <= 0 && distance <= 15*gp.tileSize && distance >= 5*gp.tileSize) {
+        if (!collisionOn && delayTime <= 0 && distance <= 15*gp.tileSize && distance >= 5*gp.tileSize && awake) {
             if(aniCount != 1) {
                 spriteNum = 0;
                 spriteCounter = 0;
@@ -133,6 +133,7 @@ public class Soldier extends Entity {
                     worldY += (int) (speed / Math.sqrt(2));
                     break;
             }
+            gp.cCheck.checkMapObject(this);
             timer = 0;
         }
 

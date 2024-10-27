@@ -9,7 +9,7 @@ TreeSnowman 1
 Forest 4
 41,79 41,61 69,79 69,61
 House4 1
-76,39
+76,40
 Shop 1
 54,42
 Bulletin 1
@@ -19,7 +19,7 @@ Grave 18
 Tomb 1
 81,17
 Log_Cabin 1
-11,69
+11,70
 FenceH1 1
 10,10
 FenceV1 1

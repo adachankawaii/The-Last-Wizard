@@ -43,12 +43,10 @@ public class ObjectSetter {
                         // Đọc các rect từ file và thêm vào item
                         newObj.loadRectsFromFile(rectFilePath);
 
-                        if (newObj != null) {
-                            newObj.worldX = x * gp.tileSize;
-                            newObj.worldY = y * gp.tileSize;
-                            newObj.gp = gp;
-                            gp.objMap1.add(newObj);
-                        }
+                        newObj.worldX = x * gp.tileSize;
+                        newObj.worldY = y * gp.tileSize;
+                        newObj.gp = gp;
+                        gp.objMap1.add(newObj);
                     }
                 }
             }

@@ -159,7 +159,7 @@ public class Entity {
         Composite originalComposite = g2.getComposite();
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         BufferedImage image = animations.get(aniCount).get(spriteNum); // Import ảnh từ Animations
-        g2.drawImage(image, screenX, screenY, 56, 56, null);
+        g2.drawImage(image, screenX, screenY, 48, 48, null);
     }
     
     public void drawObjImage(Graphics2D g2, GamePanel gp) {

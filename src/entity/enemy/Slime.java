@@ -127,6 +127,7 @@ public class Slime extends Entity {
                     flip = true;
                     break;
             }
+            gp.cCheck.checkMapObject(this);
         }
         timer++;
         if(timer >= 60 && distance <= gp.tileSize && gp.player.alpha >= 1){

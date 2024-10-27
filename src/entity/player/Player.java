@@ -39,12 +39,12 @@ public class Player extends Entity{
         isTrigger = true;
         // Khởi tạo giá trị ban đầu, gọi các hàm khởi tạo trong Entity
         setDefaultValue(
-        gp.tileSize * 23,
-        gp.tileSize * 21,
+        gp.tileSize * 42,
+        gp.tileSize * 50,
         5,
         "down");
 
-        rectGet(8, 16, 32, 32);
+        rectGet(8, 4, 32, 42);
         getPlayerImage(); // Lấy hình ảnh Player
 
         try(InputStream is = getClass().getResourceAsStream("/effect/coin.png")){
@@ -168,7 +168,7 @@ public class Player extends Entity{
                         direction = "right";
                     }
                 }
-                gp.cCheck.checkTile(this);
+                gp.cCheck.checkMapObject(this);
                 if (!collisionOn) {
                     switch (direction) {
                         case "up" -> worldY -= speed;
