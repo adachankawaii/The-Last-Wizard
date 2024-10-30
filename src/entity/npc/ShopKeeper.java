@@ -19,9 +19,9 @@ public class ShopKeeper extends Entity {
     int timer = 0;
     GamePanel gp;
     String[] choices = {"Choice 1", "Choice 2","Choice 3",""}; // Các lựa chọn
-    int[] cost = {0,1,1,0};
+    int[] cost = {0,1,1,0,0};
     Vector<Integer> tmp = new Vector<>(choices.length);
-    String[] items = {"Slime","ThrowingBottle","HPBottle","Key"};
+    String[] items = {"Slime","ThrowingBottle","HPBottle","Key","InvisiblePotion"};
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
 
     public ShopKeeper(GamePanel gp) {
@@ -192,10 +192,11 @@ public class ShopKeeper extends Entity {
                             index = 1;
                             Entity newObj = createObject(items[tmp.get(selectedChoice)]);
                             if (newObj != null) {
-                                newObj.worldX = worldX;
-                                newObj.worldY = worldY + gp.tileSize;
-                                newObj.gp = gp;
-                                gp.obj.add(newObj);
+                                    newObj.worldX = worldX;
+                                    newObj.worldY = worldY + gp.tileSize;
+                                    newObj.gp = gp;
+                                    gp.obj.add(newObj);
+
                             }
                             gp.player.money -= cost[tmp.get(selectedChoice)];
                             tmp.set(selectedChoice, -1);
@@ -280,7 +281,9 @@ public class ShopKeeper extends Entity {
             case "ThrowingBottle":
                 return new ThrowingBottle();
             case "HPBottle":
-                return new HPBottle();
+                return new HPBottle("HPBottle");
+            case "InvisiblePotion":
+                return new HPBottle("InvisiblePotion");
             case "Key":
                 return new CommonItem("Key","/bullet/HP potion.png", gp);
             default:

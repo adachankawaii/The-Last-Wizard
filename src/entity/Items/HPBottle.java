@@ -5,10 +5,11 @@ import entity.bullet.ThrowingObj;
 import main.GamePanel;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class HPBottle extends Entity {
-    public HPBottle() {
-        objName = "HPBottle";
+    public HPBottle(String name) {
+        objName = name;
         collision = true;
         this.isTrigger = true;
         rectGet(0, 0, 48, 48);
@@ -39,6 +40,9 @@ public class HPBottle extends Entity {
     }
     @Override
     public void effect(){
-        gp.player.HP += 4;
+        if(Objects.equals(objName, "HPBottle")) gp.player.HP += 4;
+        else if (Objects.equals(objName, "InvisiblePotion")) {
+            gp.player.alpha = 0.5f;
+        }
     }
 }

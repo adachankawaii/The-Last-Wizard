@@ -19,6 +19,7 @@ public class Player extends Entity{
     public int Energy = 200;
     int timer = 0;
     int itemTimer = 50;
+    int invisibleTimer = 150;
     public int money = 0;
     public ArrayList<Entity> items = new ArrayList<>(8);
     public ArrayList<Integer> itemsCount = new ArrayList<>(8);
@@ -137,10 +138,10 @@ public class Player extends Entity{
     public void update() {
         if(combat) {
             System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
-            // Xử lí di chuyển khi bấm phím
             int objIndex = gp.cCheck.checkObject(this, true);
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
                 alpha = 1;
+                invisibleTimer = 150;
                 timer = 20;
                 //HP--;
             }
@@ -203,16 +204,14 @@ public class Player extends Entity{
                     Energy++;
                 }
             } else spriteNum = 0; // Nếu không bấm gì thì nhân vật trở về trạng thái cơ bản
-            /*if (keyH.EPressed) alpha = 0.5f;
-            else alpha = 1;
-            // COLLISION
+
             if (alpha < 0.9) {
-                Energy--;
+                invisibleTimer--;
             }
-            if (Energy <= 0) {
+            if (invisibleTimer <= 0) {
                 alpha = 1;
-                keyH.EPressed = false;
-            }*/
+                invisibleTimer = 150;
+            }
             collisionOn = false;
             isTriggerOn = false;
             if (objIndex != 999 && gp.obj.get(objIndex) != null) {
@@ -267,14 +266,13 @@ public class Player extends Entity{
     public void pickUpObj(int i) {
         if(i != 999) {
             String objName = gp.obj.get(i).objName;
-            System.out.println(objName);
             if(objName != null){
                 switch (objName) {
                     case "Slime" -> {
                         hasKey++;
                         System.out.println(objName + " " + hasKey);
                     }
-                    case "ThrowingBottle", "HPBottle", "Key" -> {
+                    case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion" -> {
                         if (items.size() < 8) {
                             boolean flag = false;
                             for (int j = 0; j < items.size(); j++) {
@@ -306,6 +304,14 @@ public class Player extends Entity{
     public void draw(Graphics2D g2) {
         if(combat) {
             detectMoveAndDraw(g2);  // Nhận diện chuyển động và vẽ nhân vật
+            rectDraw(g2);  // Vẽ ô collision
+        }
+    }
+    public ArrayList<Quest> quests = new ArrayList<>();
+    @Override
+    public void drawUI(Graphics2D g2, GamePanel gp){
+        if(combat){
+            if(!quests.isEmpty()) drawQuests(g2);
             drawItems(g2);  // Vẽ danh sách các item
 
             // Hiển thị tên của item đang được chọn
@@ -338,11 +344,35 @@ public class Player extends Entity{
             if (close) {
                 closeItem(g2);
             }
-            if(!quests.isEmpty()) drawQuests(g2);
-            rectDraw(g2);  // Vẽ ô collision
+            if (alpha <= 0.9) {
+                int barX = this.screenX + 8;
+                int barY = this.screenY - 10; // Thanh máu cách đầu Slime 10 pixel
+
+                // Kích thước của thanh máu
+                int barWidth = this.solidArea.width; // Chiều rộng của thanh máu bằng với kích thước của Slime
+                int barHeight = 4; // Chiều cao của thanh máu
+
+                // Tính toán phần trăm HP
+
+                // Lưu trạng thái gốc của Graphics2D
+                screenY = worldY - gp.player.worldY + gp.player.screenY;
+                screenX = worldX - gp.player.worldX + gp.player.screenX;   // Chiều cao của thanh
+                int maxTime = 150;   // Thời gian tàng hình tối đa
+
+                // Tính độ rộng hiện tại của thanh dựa trên thời gian còn lại
+                int currentWidth = (int) ((double) invisibleTimer / maxTime * barWidth);
+
+                // Vẽ khung ngoài của thanh
+                g2.setColor(Color.GRAY);
+                g2.fillRect(barX,barY, barWidth, barHeight);
+
+                // Vẽ phần thanh báo hiệu thời gian còn lại
+                g2.setColor(new Color(0, 255, 0, 180));  // Màu xanh với độ trong suốt
+                g2.fillRect(barX, barY, currentWidth, barHeight);
+            }
         }
+
     }
-    public ArrayList<Quest> quests = new ArrayList<>();
 
     // Thêm phương thức để thêm nhiệm vụ
     public void addQuest(Quest quest) {

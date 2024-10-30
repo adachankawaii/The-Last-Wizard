@@ -193,7 +193,7 @@ public class GamePanel extends JPanel implements Runnable{
         if(player.combat){
             if(reloadTime <= 0){
                 if(mouseInfo == 1 && player.Energy >= 10){
-                    NormalBullet b = new NormalBullet(null,"bullet",20,20, 8, 8, player.worldX, player.worldY,20,this ,0, 12, 1, 1, mouseX, mouseY);
+                    NormalBullet b = new NormalBullet(null,"bullet",12,12, 8, 8, player.worldX, player.worldY,20,this ,0, 12, 1, 1, mouseX, mouseY);
                     obj.add(b);
                     Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5, mouseX, mouseY);
                     obj.add(c);
@@ -220,26 +220,24 @@ public class GamePanel extends JPanel implements Runnable{
     public void draw(Graphics2D g2) {
         // Vẽ Map
         tileMng.draw(g2);
-
-        // Vẽ nhân vật
-        player.draw(g2);
         for (int i = 0; i < objMap1.size(); i++) {
             if (objMap1.get(i) != null) {
                 objMap1.get(i).draw(g2, this);
             }
         }
-        // Vẽ Obj
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
                 obj.get(i).draw(g2, this);
             }
         }
+        // Vẽ nhân vật
+        player.draw(g2);
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
                 obj.get(i).drawUI(g2, this);
             }
         }
-
+        player.drawUI(g2,this);
         HPbar.draw(g2);
         EnergyBar.draw(g2);
 

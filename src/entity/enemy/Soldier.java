@@ -21,8 +21,9 @@ public class Soldier extends Entity {
     int HP;
     double angle = 0;
     int animationDelay = 3;
-    private int rootX, rootY;
+    private int rootX = -1, rootY = -1;
     boolean back = false;
+    private int targetX, targetY;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
     public Soldier(GamePanel gp) {
         this.isTrigger = true;
@@ -38,8 +39,6 @@ public class Soldier extends Entity {
         aniCount = 1;
         map.put("bullet", 1);
         map.put("Bigbullet", 3);
-        this.rootX = 23*gp.tileSize;
-        this.rootY = 21*gp.tileSize;
     }
     boolean awake = false;
     public void getImage() {
@@ -50,16 +49,38 @@ public class Soldier extends Entity {
     }
     @Override
     public void update() {
-        System.out.println(rootX + " " + rootY);
-        spriteCounter++; // Đếm số lần cập nhật
-        if(spriteCounter > animationDelay) { //
-            spriteNum++; // Tăng lên để ch
-            if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
+        spriteCounter++;
+        if (spriteCounter > animationDelay) {
+            spriteNum++;
+            if (spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
             spriteCounter = 0;
         }
         isTriggerOn = false;
         timer++;
-        angle = Math.atan2(gp.player.worldY - worldY, gp.player.worldX - worldX);
+
+        if (rootY == -1) {
+            rootY = this.worldY;
+            rootX = this.worldX;
+        }
+        // Kiểm tra khoảng cách giữa root và enemy
+        double distanceToRoot = Math.sqrt(Math.pow(rootX - worldX, 2) + Math.pow(rootY - worldY, 2));
+        if (!back && distanceToRoot > 15 * gp.tileSize) {
+            back = true;
+            HP = 8;
+            awake = false;
+        }
+        if(back && distanceToRoot <= 0.5*gp.tileSize){
+            back  =false;
+        }
+        if (!back) {
+            targetX = gp.player.worldX;
+            targetY = gp.player.worldY;
+        } else {
+            targetX = rootX;
+            targetY = rootY;
+        }
+
+        angle = Math.atan2(targetY - worldY, targetX - worldX);
         double angleDegrees = Math.toDegrees(angle);
         if (angleDegrees > -22.5 && angleDegrees <= 22.5) {
             direction = "right";
@@ -85,18 +106,104 @@ public class Soldier extends Entity {
             flip = false;
         }
 
-// Kiểm tra va chạm và di chuyển
         gp.cCheck.checkTileForObj(this);
         gp.cCheck.checkObjectForObj(this);
+
         int npcCenterX = worldX + gp.tileSize / 2;
         int npcCenterY = worldY + gp.tileSize / 2;
 
-        int playerCenterX = gp.player.worldX + gp.tileSize / 2;
-        int playerCenterY = gp.player.worldY + gp.tileSize / 2;
-        timer++;
-        double distance = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
-        if (!collisionOn && delayTime <= 0 && distance <= 15*gp.tileSize && distance >= 5*gp.tileSize && awake) {
-            if(aniCount != 1) {
+        int playerCenterX = targetX + gp.tileSize / 2;
+        int playerCenterY = targetY + gp.tileSize / 2;
+
+        double distanceToTarget = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
+        gp.cCheck.checkMapObject(this);
+
+        // Xử lý va chạm với tường và di chuyển sang hai bên nếu có va chạm
+        /*if (collisionOn) {
+            Random rand = new Random();
+            if (rand.nextBoolean()) {
+                // Thử di chuyển lên hoặc xuống khi gặp va chạm
+                if (direction.contains("up")) worldY += speed;
+                else if (direction.contains("down")) worldY -= speed;
+            } else {
+                // Thử di chuyển trái hoặc phải khi gặp va chạm
+                if (direction.contains("left")) worldX += speed;
+                else if (direction.contains("right")) worldX -= speed;
+            }
+            collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
+        }*/
+        if(!back) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 7 * gp.tileSize && awake) {
+                if (aniCount != 1) {
+                    spriteNum = 0;
+                    spriteCounter = 0;
+                }
+                aniCount = 1;
+                animationDelay = 3;
+                switch (direction) {
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                    case "up-right":
+                        worldX += (int) (speed / Math.sqrt(2));
+                        worldY -= (int) (speed / Math.sqrt(2));
+                        break;
+                    case "up-left":
+                        worldX -= (int) (speed / Math.sqrt(2));
+                        worldY -= (int) (speed / Math.sqrt(2));
+                        break;
+                    case "down-right":
+                        worldX += (int) (speed / Math.sqrt(2));
+                        worldY += (int) (speed / Math.sqrt(2));
+                        break;
+                    case "down-left":
+                        worldX -= (int) (speed / Math.sqrt(2));
+                        worldY += (int) (speed / Math.sqrt(2));
+                        break;
+                }
+
+                timer = 0;
+            } else if (distanceToTarget <= 7 * gp.tileSize && gp.player.alpha >= 1) {
+                if (timer >= 50) {
+                    aniCount = 2;
+                    animationDelay = 10;
+                    if (spriteNum == animations.get(aniCount).size() - 1) {
+                        NormalBullet b = new NormalBullet(null, "enemyBullet", 20, 20, 4, 4, this.worldX, this.worldY, 50, gp, 0, 7, 2, 2, targetX, targetY);
+                        b.root = this.objName;
+                        gp.obj.add(b);
+                        timer = 0;
+                        spriteNum = 0;
+                    }
+                } else if (timer <= 30) {
+                    aniCount = 0;
+                    animationDelay = 7;
+                } else {
+                    aniCount = 2;
+                    animationDelay = 13;
+                    spriteNum = 0;
+
+                }
+            } else {
+                if (aniCount != 0) {
+                    spriteNum = 0;
+                    spriteCounter = 0;
+                }
+                aniCount = 0;
+                animationDelay = 7;
+                timer = 0;
+            }
+        }
+        else{
+            if (aniCount != 1) {
                 spriteNum = 0;
                 spriteCounter = 0;
             }
@@ -116,7 +223,7 @@ public class Soldier extends Entity {
                     worldX += speed;
                     break;
                 case "up-right":
-                    worldX += (int) (speed / Math.sqrt(2)); // Di chuyển theo cả 2 trục với tỷ lệ cân đối
+                    worldX += (int) (speed / Math.sqrt(2));
                     worldY -= (int) (speed / Math.sqrt(2));
                     break;
                 case "up-left":
@@ -126,51 +233,17 @@ public class Soldier extends Entity {
                 case "down-right":
                     worldX += (int) (speed / Math.sqrt(2));
                     worldY += (int) (speed / Math.sqrt(2));
-                    flip = false;
                     break;
                 case "down-left":
                     worldX -= (int) (speed / Math.sqrt(2));
                     worldY += (int) (speed / Math.sqrt(2));
                     break;
             }
-            gp.cCheck.checkMapObject(this);
-            timer = 0;
-        }
-
-        else if(distance <= 5*gp.tileSize && gp.player.alpha >= 1){
-            if(timer >= 50) {
-                aniCount = 2;
-                animationDelay = 10;
-                if(spriteNum == animations.get(aniCount).size()-1) {
-                    NormalBullet b = new NormalBullet(null,"enemyBullet", 20, 20,4,4, this.worldX, this.worldY,50,gp ,0, 7, 2, 2, gp.player.worldX, gp.player.worldY);                    b.root = this.objName;
-                    gp.obj.add(b);
-                    timer = 0;
-                    spriteNum = 0;
-                }
-            }
-            else if(timer <= 30){
-                aniCount = 0;
-                animationDelay = 7;
-            }
-            else {
-                aniCount = 2;
-                animationDelay = 13;
-                spriteNum = 0;
-
-            }
-        }
-        else{
-            if(aniCount != 0) {
-                spriteNum = 0;
-                spriteCounter = 0;
-            }
-            aniCount = 0;
-            animationDelay = 7;
-            timer = 0;
         }
         collisionOn = false;
         delayTime--;
     }
+
     boolean flip = false;
 
     @Override

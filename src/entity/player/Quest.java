@@ -48,26 +48,37 @@ public class Quest {
     }
     public Entity createObject(String objectType) {
         switch (objectType) {
-            case "ThrowingBottle":
-                Entity e =  new ThrowingBottle();
+            case "ThrowingBottle" -> {
+                Entity e = new ThrowingBottle();
                 e.worldX = gp.player.worldX;
                 e.worldY = gp.player.worldY;
                 return e;
-            case "HPBottle":
-                Entity a =  new HPBottle();
+            }
+            case "HPBottle" -> {
+                Entity a = new HPBottle("HPBottle");
                 a.worldX = gp.player.worldX;
                 a.worldY = gp.player.worldY;
                 return a;
-            case "Key":
-                Entity n = new CommonItem("Key","/bullet/HP potion.png", gp);
+            }
+            case "InvisiblePotion" -> {
+                Entity bottle = new HPBottle("InvisiblePotion");
+                bottle.worldX = gp.player.worldX;
+                bottle.worldY = gp.player.worldY;
+                return bottle;
+            }
+            case "Key" -> {
+                Entity n = new CommonItem("Key", "/bullet/HP potion.png", gp);
                 n.worldX = gp.player.worldX;
                 n.worldY = gp.player.worldY;
                 return n;
-            case "Coin":
-                return new Coin(gp.player.worldX + new Random().nextInt(gp.tileSize*2), gp.player.worldY + new Random().nextInt(gp.tileSize*2), gp);
-            default:
+            }
+            case "Coin" -> {
+                return new Coin(gp.player.worldX + new Random().nextInt(gp.tileSize * 2), gp.player.worldY + new Random().nextInt(gp.tileSize * 2), gp);
+            }
+            default -> {
                 System.out.println("Unknown object type: " + objectType);
                 return null;
+            }
         }
     }
 

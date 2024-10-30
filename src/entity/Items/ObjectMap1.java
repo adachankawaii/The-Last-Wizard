@@ -99,7 +99,22 @@ public class ObjectMap1 extends Entity {
             g2.drawImage(image, screenX, screenY, width, height, null);
         }
     }
-    
+    // Kiểm tra xem vị trí có nằm trong vùng collision của bất kỳ rect nào trong rectList không
+    public boolean isCollisionArea(Point position) {
+        for (Rectangle rect : rectList) {
+            int rectLeft = worldX + rect.x;
+            int rectRight = rectLeft + rect.width;
+            int rectTop = worldY + rect.y;
+            int rectBottom = rectTop + rect.height;
+
+            if (position.x >= rectLeft && position.x < rectRight &&
+                    position.y >= rectTop && position.y < rectBottom) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // @Override
     // public void effect(){
     //     CommonItem commonItem = new CommonItem(this.objName, this.path, gp);
