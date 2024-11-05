@@ -32,6 +32,15 @@ public class ObjectMap1 extends Entity {
 
     }
 
+    public int getWidth() {
+        imgWidth = animations.get(aniCount).get(0).getWidth();
+        return imgWidth;
+    }
+
+    public int getHeight() {
+        imgHeight = animations.get(aniCount).get(0).getHeight();
+        return imgHeight;
+    }
     // Phương thức để khởi tạo các rect dựa trên tọa độ
     public void mapRectGet(int a, int b, int w, int h) {
         Rectangle solidArea = new Rectangle();
@@ -53,15 +62,20 @@ public class ObjectMap1 extends Entity {
         // Phương thức đọc từ file và thêm vào danh sách rect
     public void loadRectsFromFile(String rectFilePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(rectFilePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
+            String line = br.readLine();
+            if (line == null) {
+                BufferedImage image = animations.get(aniCount).get(spriteNum);
+                mapRectGet(0, 0, image.getWidth(), image.getHeight());
+                return;
+            }
+            do {
                 String[] values = line.split(",");
                 int a = Integer.parseInt(values[0].trim());
                 int b = Integer.parseInt(values[1].trim());
                 int w = Integer.parseInt(values[2].trim());
                 int h = Integer.parseInt(values[3].trim());
                 mapRectGet(a, b, w, h);
-            }
+            } while ((line = br.readLine()) != null);
         } catch (IOException e) {
             e.printStackTrace();
         }
