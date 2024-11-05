@@ -23,6 +23,7 @@ public class Bullet extends Entity {
     public Bullet(String path, String name,int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY){
         this.solidArea = new Rectangle();
         animationDelay = 2;
+        layer = 2;
         if(path != null) importAndSlice(path, 4, 0,w);
         else{
             BufferedImage image = new BufferedImage(rectX, rectY, BufferedImage.TYPE_INT_ARGB);
@@ -135,7 +136,7 @@ public class Bullet extends Entity {
                 if(gp.obj.get(i).objName != null) {
                     if (gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root) || gp.obj.get(i).isItem || Objects.equals(gp.obj.get(i).objName, "Coin")) {
                         isTriggerOn = false;
-                    } else if (gp.obj.get(i).objName.equals("Slime") && this.objName.contains("ullet")) {
+                    } else{
                         gp.obj.get(i).onTriggerEnter(this);
                     }
                 }

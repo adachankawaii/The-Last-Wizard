@@ -17,6 +17,7 @@ public class GuildMaster extends Entity {
     GamePanel gp;
     Vector<Quest> questsLine = new Vector<>();
     public GuildMaster(GamePanel gp) {
+        layer = 0;
         objName = "GuildMaster";
         collision = true;
         this.isTrigger = true;

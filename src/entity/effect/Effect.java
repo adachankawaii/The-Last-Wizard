@@ -15,6 +15,7 @@ public class Effect extends Entity {
     public Effect(String path,int rectX, int rectY, int worldX, int worldY,
     int lifeTime, GamePanel gp, int speed, double scaleX, double scaleY,int targetX, int targetY){
         this.solidArea = new Rectangle();
+        layer = 2;
         if(path != null) importAndSlice(path, 4, 0,0);
         else{
             BufferedImage image = new BufferedImage(rectX/8, rectY/8, BufferedImage.TYPE_INT_ARGB);

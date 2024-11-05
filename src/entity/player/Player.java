@@ -21,6 +21,7 @@ public class Player extends Entity{
     int itemTimer = 50;
     int invisibleTimer = 150;
     public int money = 0;
+    int delay = 8;
     public ArrayList<Entity> items = new ArrayList<>(8);
     public ArrayList<Integer> itemsCount = new ArrayList<>(8);
     public int pointer = 0;
@@ -33,7 +34,7 @@ public class Player extends Entity{
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
-
+        layer = 1;
         // Khởi tạo vị trí nhân vật
         screenX = gp.screenWidth/2 - gp.tileSize/2;
         screenY = gp.screenHeight/2 - gp.tileSize/2;
@@ -45,7 +46,7 @@ public class Player extends Entity{
         5,
         "down");
 
-        rectGet(8, 4, 32, 42);
+        rectGet(0, -10, 32, 52);
         getPlayerImage(); // Lấy hình ảnh Player
 
         try(InputStream is = getClass().getResourceAsStream("/effect/coin.png")){
@@ -86,13 +87,12 @@ public class Player extends Entity{
     }
 
     public void getPlayerImage() {
-
         // Lấy từng chuyển động của nhân vật. Mỗi chuyển động lên/xuống/trái/phải tương ứng với 4 ảnh
         // Quy ước ở đây: [0]: lên - [1]: xuống - [2]: trái - [3]: phải
-        importEachImage(new String[]{"/player/move/up_0.png","/player/move/up_1.png","/player/move/up_2.png","/player/move/up_3.png"}, true);
-        importEachImage(new String[]{"/player/move/down_0.png","/player/move/down_1.png","/player/move/down_2.png","/player/move/down_3.png"}, true);
-        importEachImage(new String[]{"/player/move/left_0.png","/player/move/left_1.png","/player/move/left_2.png","/player/move/left_3.png"}, true);
-        importEachImage(new String[]{"/player/move/right_0.png","/player/move/right_1.png","/player/move/right_2.png","/player/move/right_3.png"}, true);
+        importAndSliceVertical("/player/move/B_witch_idle.png",6, 0,0);
+        importAndSliceVertical("/player/move/B_witch_run.png",8, 0,0);
+        importAndSliceVertical("/player/move/B_witch_take_damage.png",2, 0,0);
+
     }
     public void drawItems(Graphics2D g2) {
 
@@ -134,21 +134,28 @@ public class Player extends Entity{
         }
     }
 
-
     public void update() {
-        if(combat) {
-            System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
+        if (combat) {
             int objIndex = gp.cCheck.checkObject(this, true);
-            if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
+
+            // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
+            if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
                 alpha = 1;
                 invisibleTimer = 150;
                 timer = 20;
-                //HP--;
+                isHurt = true;
             }
+
+            // Giới hạn HP và Energy
             if (HP >= 10) HP = 10;
             if (Energy >= 200) Energy = 200;
             else if (Energy < 200) Energy = 200;
-            if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+
+            // Kiểm tra các phím di chuyển
+            if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed)) {
+                delay = 8;
+                aniCount = 1;
+
                 // Di chuyển chéo
                 if (keyH.upPressed && keyH.leftPressed) {
                     direction = "up-left";
@@ -169,6 +176,8 @@ public class Player extends Entity{
                         direction = "right";
                     }
                 }
+
+                // Kiểm tra va chạm bản đồ
                 gp.cCheck.checkMapObject(this);
                 if (!collisionOn) {
                     switch (direction) {
@@ -178,7 +187,7 @@ public class Player extends Entity{
                         case "right" -> worldX += speed;
                         case "up-left" -> {
                             worldY -= (int) (speed / Math.sqrt(2));
-                            worldX -= (int) (speed / Math.sqrt(2)); // Chia căn 2 để giảm tốc về bình thường
+                            worldX -= (int) (speed / Math.sqrt(2));
                         }
                         case "up-right" -> {
                             worldY -= (int) (speed / Math.sqrt(2));
@@ -194,50 +203,63 @@ public class Player extends Entity{
                         }
                     }
                 }
+            } else if (!isHurt) {
+                aniCount = 0;
+                delay = 8;// Đặt về animation idle nếu không di chuyển và không bị thương
+            }
 
-                // Đếm số lượng sprite đã chạy
-                spriteCounter++; // Đếm số lần cập nhật
-                if (spriteCounter > 8) { // Chuyển sang khung hình tiếp theo
-                    spriteNum++; // Tăng lên để chuyển
-                    if (spriteNum >= animations.get(aniCount).size()) spriteNum = 0; // Lặp lại hoạt hình
-                    spriteCounter = 0; // Reset cho khung hình tiếp theo
-                    Energy++;
-                }
-            } else spriteNum = 0; // Nếu không bấm gì thì nhân vật trở về trạng thái cơ bản
-
+            // Quản lý khung hình của animation
+            spriteCounter++;
+            if (spriteCounter > delay) {
+                spriteNum++;
+                if (spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
+                spriteCounter = 0;
+                Energy++;
+            }
+            if(timer <= 10){
+                isHurt = false;
+            }
+            // Giảm invisible timer khi alpha < 0.9
             if (alpha < 0.9) {
                 invisibleTimer--;
             }
+
+            // Khi invisible timer hết, kết thúc trạng thái "hurt"
             if (invisibleTimer <= 0) {
                 alpha = 1;
                 invisibleTimer = 150;
             }
+
             collisionOn = false;
             isTriggerOn = false;
+
             if (objIndex != 999 && gp.obj.get(objIndex) != null) {
                 close = (gp.obj.get(objIndex).isItem);
-                if(!close && gp.obj.get(objIndex).objName.equals("Coin")){
+                if (!close && gp.obj.get(objIndex).objName.equals("Coin")) {
                     money++;
                     gp.obj.remove(gp.obj.get(objIndex));
                 }
                 if (keyH.EPressed && close) {
-                    pickUpObj(objIndex);  // Nhặt item nếu người chơi nhấn phím E và gần item
-                    close = false;  // Sau khi nhặt item, không hiển thị thông báo nữa
+                    pickUpObj(objIndex);
+                    close = false;
                 }
-
             } else {
-                close = false;  // Không có item gần, tắt thông báo
+                close = false;
             }
+
             updateQuests();
+
             if (gp.keyH.i != -1 && !items.isEmpty() && (gp.keyH.i < items.size())) {
-                // Chỉ xóa item tại vị trí gp.keyH.i, không ảnh hưởng đến các phần tử khác
-                if(pointer != gp.keyH.i) itemTimer = 50;
+                if (pointer != gp.keyH.i) itemTimer = 50;
                 pointer = gp.keyH.i;
             }
+
             timer--;
             itemTimer--;
         }
     }
+
+
     int hasKey = 0;
     boolean close = false;
     void closeItem(Graphics2D g2){

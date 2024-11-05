@@ -93,30 +93,36 @@ public class TileManager {
     // VẼ MAP
     public void draw(Graphics2D gd) {
 
-        int worldRow = 0, worldCol = 0;
-        while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
-            int num = mapTile[worldCol][worldRow];
+        // Vùng giới hạn tính từ player để render map
+        int startCol = gp.player.worldX / gp.tileSize - 15;
+        int endCol = gp.player.worldX / gp.tileSize + gp.player.screenX / gp.tileSize + 15;
+        int startRow = gp.player.worldY / gp.tileSize - 20;
+        int endRow = gp.player.worldY / gp.tileSize + gp.player.screenY / gp.tileSize + 20;
 
-            int worldX = worldCol * gp.tileSize;
-            int worldY = worldRow * gp.tileSize; 
-            int screenX = worldX - gp.player.worldX + gp.player.screenX;
-            int screenY = worldY - gp.player.worldY + gp.player.screenY;
-        
-            // Chỉ render phần trong khung camera
-            if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
-            && worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
-            && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
-            && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-                gd.drawImage(tile[num].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-            }
-            worldCol++;
+        for (int worldCol = startCol; worldCol <= endCol; worldCol++) {
+            for (int worldRow = startRow; worldRow <= endRow; worldRow++) {
 
-            if(worldCol == gp.maxWorldCol) {
-                worldCol = 0;
-                worldRow++;
+                int worldX = worldCol * gp.tileSize;
+                int worldY = worldRow * gp.tileSize;
+                int screenX = worldX - gp.player.worldX + gp.player.screenX;
+                int screenY = worldY - gp.player.worldY + gp.player.screenY;
+
+                // Chỉ render phần trong khung camera
+                if (worldX + 10*gp.tileSize > gp.player.worldX - gp.player.screenX
+                        && worldX - 10*gp.tileSize < gp.player.worldX + gp.player.screenX
+                        && worldY + 10*gp.tileSize > gp.player.worldY - gp.player.screenY
+                        && worldY - 10*gp.tileSize < gp.player.worldY + gp.player.screenY) {
+                    if (worldCol < 0 || worldRow < 0 || worldCol >= gp.maxWorldCol || worldRow >= gp.maxWorldRow) {
+                        gd.drawImage(tile[1].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                    } else {
+                        int num = mapTile[worldCol][worldRow];
+                        gd.drawImage(tile[num].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                    }
+                }
             }
         }
     }
+
 
     // TRẢ VỀ TILE THEO MA TRẬN
 

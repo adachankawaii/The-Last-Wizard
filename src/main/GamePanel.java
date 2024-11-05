@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int tileSize = originalTitleSize * scale;  // Size 1 tile sau khi scale
 
     // Cài đặt size màn hình
-    public final int maxScreenCol = 25 * 3/2;  // Số cột hiện ở màn hình (Width)
+    public final int maxScreenCol =20*3/2;  // Số cột hiện ở màn hình (Width)
     public final int maxScreenRow = 15*3/2;  // Số hàng hiện ở màn hình (Height)
     public final int screenWidth = maxScreenCol * tileSize;  // Width tính theo pixel
     public final int screenHeight = maxScreenRow * tileSize;  // Height tính theo pixel
@@ -221,17 +221,27 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ Map
         tileMng.draw(g2);
         for (int i = 0; i < objMap1.size(); i++) {
-            if (objMap1.get(i) != null) {
+            if (objMap1.get(i) != null && objMap1.get(i).layer < 1) {
                 objMap1.get(i).draw(g2, this);
             }
         }
         for (int i = 0; i < obj.size(); i++) {
-            if (obj.get(i) != null) {
+            if (obj.get(i) != null && obj.get(i).layer < 1) {
                 obj.get(i).draw(g2, this);
             }
         }
         // Vẽ nhân vật
         player.draw(g2);
+        for (int i = 0; i < objMap1.size(); i++) {
+            if (objMap1.get(i) != null && objMap1.get(i).layer >= 1) {
+                objMap1.get(i).draw(g2, this);
+            }
+        }
+        for (int i = 0; i < obj.size(); i++) {
+            if (obj.get(i) != null && obj.get(i).layer >= 1) {
+                obj.get(i).draw(g2, this);
+            }
+        }
         for (int i = 0; i < obj.size(); i++) {
             if (obj.get(i) != null) {
                 obj.get(i).drawUI(g2, this);

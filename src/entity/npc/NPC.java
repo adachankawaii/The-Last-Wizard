@@ -18,6 +18,7 @@ public class NPC extends Entity {
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
 
     public NPC(GamePanel gp) {
+        layer = 0;
         objName = "Te Quiero";
         collision = true;
         this.isTrigger = true;

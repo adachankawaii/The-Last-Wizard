@@ -1,7 +1,9 @@
 package entity;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.InputStream;
 import java.util.Vector;
 import javax.imageio.ImageIO;
@@ -22,7 +24,7 @@ public class Entity {
     public Rectangle solidArea; // Rect
     public int solidAreaDefaultX;
     public int solidAreaDefaultY;
-
+    public int layer = 0;
     public int imgWidth, imgHeight;
 
     public GamePanel gp;
@@ -33,7 +35,7 @@ public class Entity {
     public boolean collision;
     public boolean isTrigger;
     public boolean isTriggerOn = false;
-
+    protected boolean isHurt = false;
     // Dành cho importImage
     protected int aniCount = 0;
     protected int spriteCounter = 0;
@@ -41,6 +43,7 @@ public class Entity {
     BufferedImage source;
     protected BufferedImage img;
     public Vector<Vector<BufferedImage>> animations = new Vector<>();
+    protected boolean flip = false;
 
     // CẮT VÀ IMPORT ẢNH
     public void importAndSlice(String path, int count, int x, int y){
@@ -101,7 +104,20 @@ public class Entity {
             e.printStackTrace();
         }
     }
-    
+    public void importAndSliceVertical(String path, int count, int x, int y) {
+        Vector<BufferedImage> a = new Vector<>();
+        try (InputStream is = getClass().getResourceAsStream(path)) {
+            source = ImageIO.read(is);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < count; i++) {
+            BufferedImage tmp = source.getSubimage(x, source.getHeight() / count * i, source.getWidth(), source.getHeight() / count);
+            a.add(tmp);
+        }
+        animations.add(a);
+    }
+
 
     // VẼ KHUNG RECT CỦA OBJECT
     public void rectDraw(Graphics2D g2) {
@@ -127,42 +143,69 @@ public class Entity {
         this.speed = speed;
         this.direction = direction;
     }
+    public BufferedImage makeSpriteWhite(BufferedImage original) {
+        int width = original.getWidth();
+        int height = original.getHeight();
+
+        BufferedImage whiteSprite = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int rgba = original.getRGB(x, y);
+                int alpha = (rgba >> 24) & 0xff;  // Lấy độ trong suốt
+
+                // Chỉ thay đổi màu sắc nếu pixel không trong suốt
+                if (alpha != 0) {
+                    // Đặt pixel thành màu trắng nhưng giữ độ trong suốt ban đầu
+                    whiteSprite.setRGB(x, y, (alpha << 24) | 0x00FFFFFF);
+                } else {
+                    // Giữ nguyên pixel trong suốt
+                    whiteSprite.setRGB(x, y, rgba);
+                }
+            }
+        }
+
+        return whiteSprite;
+    }
 
     // PHÁT HIỆN CHUYỂN ĐỘNG VÀ VẼ TƯƠNG ỨNG
     public void detectMoveAndDraw(Graphics2D g2) {
-        switch(direction) {
+        switch (direction) {
             case "up":
-                aniCount = 0;
                 break;
             case "down":
-                aniCount = 1;
                 break;
-            case "left":
-                aniCount = 2;
+            case "left", "up-left", "down-left":
+                flip = true;
                 break;
-            case "right":
-                aniCount = 3;
-                break;  
-            case "up-left":
-                aniCount = 0; // Có thể dùng hoạt ảnh cho di chuyển lên
+            case "right", "up-right", "down-right":
+                flip = false;
                 break;
-            case "up-right":
-                aniCount = 0; // Có thể dùng hoạt ảnh cho di chuyển lên
-                break;
-            case "down-left":
-                aniCount = 1; // Có thể dùng hoạt ảnh cho di chuyển xuống
-                break;
-            case "down-right":
-                aniCount = 1; // Có thể dùng hoạt ảnh cho di chuyển xuống
-                break;         
         }
-        Composite originalComposite = g2.getComposite();
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-        BufferedImage image = animations.get(aniCount).get(spriteNum); // Import ảnh từ Animations
-        g2.drawImage(image, screenX, screenY, 48, 48, null);
-        g2.setComposite(originalComposite);
+
+        // Lấy hình ảnh từ animations
+        BufferedImage image = spriteNum < animations.get(aniCount).size() ? animations.get(aniCount).get(spriteNum) : animations.get(aniCount).get(0);
+        AffineTransform old = g2.getTransform(); // Lưu trạng thái ban đầu của Graphics2D
+
+        // Tính toán vị trí trung tâm màn hình
+        int centerX = gp.screenWidth / 2;
+        int centerY = gp.screenHeight / 2;
+
+        // Dịch hệ tọa độ đến vị trí trung tâm màn hình
+        g2.translate(centerX, centerY);
+
+        // Lật hình ảnh theo trục Ox nếu cần
+        if (flip) g2.scale(-1, 1);
+        if (isHurt) { // Giả sử đây là trạng thái bị thương
+            image = makeSpriteWhite(image); // Làm trắng hình ảnh nếu bị thương
+        }
+        // Vẽ hình ảnh đã lật, căn chỉnh để hình ảnh được hiển thị ở giữa
+        g2.drawImage(image, -gp.tileSize, -gp.tileSize, gp.tileSize * 2, gp.tileSize * 2, null);
+
+        // Khôi phục lại trạng thái ban đầu của Graphics2D
+        g2.setTransform(old);
     }
-    
+
     public void drawObjImage(Graphics2D g2, GamePanel gp) {
         screenX = worldX - gp.player.worldX + gp.player.screenX;
         screenY = worldY - gp.player.worldY + gp.player.screenY;

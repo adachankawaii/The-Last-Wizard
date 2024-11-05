@@ -26,15 +26,15 @@ public class Soldier extends Entity {
     private int targetX, targetY;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
     public Soldier(GamePanel gp) {
-        this.isTrigger = true;
-        objName = "Slime";
+        layer = 2;
+        objName = "Soldier";
         collision = true;
         direction = "down";
         HP = 8;
         speed = 3;
         isTrigger = false;
         this.gp = gp;
-        rectGet(0, 0, 48, 48);
+        rectGet(0, 0, 32, 48);
         getImage();
         aniCount = 1;
         map.put("bullet", 1);
@@ -64,7 +64,7 @@ public class Soldier extends Entity {
         }
         // Kiểm tra khoảng cách giữa root và enemy
         double distanceToRoot = Math.sqrt(Math.pow(rootX - worldX, 2) + Math.pow(rootY - worldY, 2));
-        if (!back && distanceToRoot > 15 * gp.tileSize) {
+        if (!back && distanceToRoot > 25 * gp.tileSize) {
             back = true;
             HP = 8;
             awake = false;
@@ -133,7 +133,7 @@ public class Soldier extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 7 * gp.tileSize && awake) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 9 * gp.tileSize && awake) {
                 if (aniCount != 1) {
                     spriteNum = 0;
                     spriteCounter = 0;
@@ -172,12 +172,12 @@ public class Soldier extends Entity {
                 }
 
                 timer = 0;
-            } else if (distanceToTarget <= 7 * gp.tileSize && gp.player.alpha >= 1) {
+            } else if (distanceToTarget <= 9 * gp.tileSize && gp.player.alpha >= 1) {
                 if (timer >= 50) {
                     aniCount = 2;
                     animationDelay = 10;
                     if (spriteNum == animations.get(aniCount).size() - 1) {
-                        NormalBullet b = new NormalBullet(null, "enemyBullet", 20, 20, 4, 4, this.worldX, this.worldY, 50, gp, 0, 7, 2, 2, targetX, targetY);
+                        NormalBullet b = new NormalBullet(null, "enemyBullet", 12,12, 8, 8, this.worldX, this.worldY, 50, gp, 0, 7, 1, 1, targetX, targetY);
                         b.root = this.objName;
                         gp.obj.add(b);
                         timer = 0;
@@ -314,6 +314,7 @@ public class Soldier extends Entity {
             System.out.println(entity.objName);
             delayTime = 10;
             HP-= map.get(entity.objName);
+            isHurt = true;
             if(HP <= 0){
                 int tmp = new Random().nextInt(3);
                 for(int i = 0;i< tmp;i++){

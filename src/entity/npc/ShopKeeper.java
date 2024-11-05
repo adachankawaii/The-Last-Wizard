@@ -26,6 +26,7 @@ public class ShopKeeper extends Entity {
 
     public ShopKeeper(GamePanel gp) {
         objName = "ShopKeeper";
+        layer = 0;
         collision = true;
         this.isTrigger = true;
         this.gp = gp;
