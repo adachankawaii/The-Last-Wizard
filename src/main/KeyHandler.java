@@ -13,6 +13,7 @@ public class KeyHandler implements KeyListener{
     public boolean volumeUpPressed = false; // Thêm biến cho tăng âm lượng
     public boolean volumeDownPressed = false; // Thêm biến cho giảm âm lượng
     public int i = -1;
+    public boolean escPressed = false;
 
     @Override
     public void keyPressed(KeyEvent e) { // Khi nhấn phím
@@ -55,6 +56,7 @@ public class KeyHandler implements KeyListener{
             case KeyEvent.VK_8 -> i = 7;
         }
         if(code == KeyEvent.VK_SPACE) SpacePressed = true;
+        if(code == KeyEvent.VK_ESCAPE) escPressed = true;
     }
 
     @Override
@@ -87,6 +89,7 @@ public class KeyHandler implements KeyListener{
         }
         if(code == KeyEvent.VK_ALPHANUMERIC) i = -1;
         if(code == KeyEvent.VK_SPACE) SpacePressed = false;
+        if(code == KeyEvent.VK_ESCAPE) escPressed = false;
     }
 
     @Override

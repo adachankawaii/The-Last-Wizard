@@ -6,3 +6,5 @@ ShopKeeper 1
 56,54
 GuildMaster 1
 50,51
+Portal 1
+88,74

@@ -133,7 +133,7 @@ public class Soldier extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 9 * gp.tileSize && awake) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 9 * gp.tileSize && awake && gp.player.alpha >= 1f) {
                 if (aniCount != 1) {
                     spriteNum = 0;
                     spriteCounter = 0;

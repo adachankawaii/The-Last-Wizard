@@ -170,6 +170,7 @@ public class Entity {
 
     // PHÁT HIỆN CHUYỂN ĐỘNG VÀ VẼ TƯƠNG ỨNG
     public void detectMoveAndDraw(Graphics2D g2) {
+
         switch (direction) {
             case "up":
                 break;
@@ -186,7 +187,7 @@ public class Entity {
         // Lấy hình ảnh từ animations
         BufferedImage image = spriteNum < animations.get(aniCount).size() ? animations.get(aniCount).get(spriteNum) : animations.get(aniCount).get(0);
         AffineTransform old = g2.getTransform(); // Lưu trạng thái ban đầu của Graphics2D
-
+        Composite originalComposite = g2.getComposite();
         // Tính toán vị trí trung tâm màn hình
         int centerX = gp.screenWidth / 2;
         int centerY = gp.screenHeight / 2;
@@ -199,9 +200,10 @@ public class Entity {
         if (isHurt) { // Giả sử đây là trạng thái bị thương
             image = makeSpriteWhite(image); // Làm trắng hình ảnh nếu bị thương
         }
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         // Vẽ hình ảnh đã lật, căn chỉnh để hình ảnh được hiển thị ở giữa
         g2.drawImage(image, -gp.tileSize, -gp.tileSize, gp.tileSize * 2, gp.tileSize * 2, null);
-
+        g2.setComposite(originalComposite);
         // Khôi phục lại trạng thái ban đầu của Graphics2D
         g2.setTransform(old);
     }

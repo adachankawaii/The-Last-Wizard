@@ -33,9 +33,13 @@ public class GamePanel extends JPanel implements Runnable{
     public final int maxWorldRow = 100;  // Max world rows
     public final int worldWidth = maxWorldCol * tileSize;
     public final int worldHeight = maxWorldRow * tileSize;
+    public boolean startMenu = true;  // Kiểm tra trạng thái của Start Menu
+    public float fadeAlpha = 0f;   // Độ trong suốt cho hiệu ứng mờ dần
+    public boolean fadingIn = false; // Kiểm tra nếu đang chuyển cảnh từ trắng sang game
 
     // Cài đặt FPS
     public final int FPS = 60;
+    public int map = 1;
 
     // CONSTRUCTOR
     public GamePanel() {
@@ -86,8 +90,8 @@ public class GamePanel extends JPanel implements Runnable{
     // Setup các sự vật trong game
     public void setupGame() {
         // Đọc đường dẫn tới file thông tin và nhập
-        String url = "res/maps/set_obj.txt";
-        String url1 = "res/maps/map1obj.txt";
+        String url = "res/maps/set_obj" + map +".txt";
+        String url1 = "res/maps/map" + map +"obj.txt";
         aSetter.setObject(url);
         oSetter.setObject(url1);
     }
@@ -135,6 +139,7 @@ public class GamePanel extends JPanel implements Runnable{
                 5,
                 "down");
         obj.clear(); // Xóa tất cả các object
+        objMap1.clear();
         gameOver = false;
         running = true;
         player.HP = 10;
@@ -149,10 +154,33 @@ public class GamePanel extends JPanel implements Runnable{
         soundManager.setVolume("background", -30.0f);
         soundManager.play("background");
         soundManager.loop("background");
+        tileMng = new TileManager(this);
+        setupGame(); // Gọi lại setup ban đầu của game
+        repaint();
+    }
+    public void nextMap(){
+        player.setDefaultValue(
+                tileSize * 42,
+                tileSize * 50,
+                5,
+                "down");
+        obj.clear(); // Xóa tất cả các object
+        objMap1.clear();
+        gameOver = false;
+        running = true;
+        player.Energy = 200;
+        reloadTime = 0;
+        player.kills= 0;
+        soundManager.setVolumeAll(-20.0f);
+        soundManager.setVolume("background", -30.0f);
+        soundManager.play("background");
+        soundManager.loop("background");
+        tileMng = new TileManager(this);
         setupGame(); // Gọi lại setup ban đầu của game
         repaint();
     }
     // NƠI CHỨA UPDATE NÈ
+    public boolean pauseMenu = false;
     public void update() {
         if (gameOver) {
             if(keyH.RPressed){
@@ -162,7 +190,14 @@ public class GamePanel extends JPanel implements Runnable{
             }
             return;
         }
+        if (keyH.escPressed) {
+            pauseMenu = !pauseMenu; // Chuyển đổi trạng thái pause khi nhấn ESC
+            keyH.escPressed = false; // Đặt lại trạng thái phím ESC
+        }
 
+        if (pauseMenu) {
+            return; // Nếu đang pause hoặc game over, không cập nhật game
+        }
         if (keyH.volumeUpPressed) {
             soundManager.increaseVolume("background"); // Tăng âm lượng của nhạc nền
             keyH.volumeUpPressed = false;
@@ -190,7 +225,13 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
     public void onClick(int mouseInfo){
-        if(player.combat){
+        if (startMenu) { // Kiểm tra nếu đang ở trạng thái Start Menu
+            if (mouseInfo == 1) { // Nếu nhấn chuột trái
+                startMenu = false; // Tắt Start Menu
+                fadingIn = true; // Bắt đầu hiệu ứng chuyển cảnh
+            }
+        }
+        else if(player.combat && !gameOver){
             if(reloadTime <= 0){
                 if(mouseInfo == 1 && player.Energy >= 10){
                     NormalBullet b = new NormalBullet(null,"bullet",12,12, 8, 8, player.worldX, player.worldY,20,this ,0, 12, 1, 1, mouseX, mouseY);
@@ -215,6 +256,7 @@ public class GamePanel extends JPanel implements Runnable{
         }
 
     }
+
 
     // NƠI CHỨA VẼ NÈ
     public void draw(Graphics2D g2) {
@@ -252,25 +294,104 @@ public class GamePanel extends JPanel implements Runnable{
         EnergyBar.draw(g2);
 
     }
+    public void drawStartMenu(Graphics2D g2) {
+        // Vẽ background đen
+        g2.setColor(Color.WHITE);
+        g2.fillRect(0, 0, screenWidth, screenHeight);
+
+        // Vẽ tên game
+        g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Arial", Font.BOLD, 50));
+        g2.drawString("The Last Wizard", screenWidth / 2 - 200, screenHeight / 2 - 100);
+
+        // Vẽ nút Start
+        g2.setFont(new Font("Arial", Font.PLAIN, 30));
+        g2.drawString("Click to Start", screenWidth / 2 - 100, screenHeight / 2 + 50);
+    }
     // VẼ OBJ Ở ĐÂY
+    private boolean introPhase = true;  // Đang ở giai đoạn giới thiệu
+    private float introAlpha = 0f;      // Độ trong suốt cho phần giới thiệu
+    private boolean introFadingIn = true; // Kiểm tra nếu đang mờ dần để hiện lên
+    private boolean showMadeBy = true;   // Kiểm tra xem có hiển thị "made by" không
+    // Các phần khác của GamePanel...
+
+    // Hàm vẽ phần giới thiệu (Intro)
+    private void drawIntro(Graphics2D g2) {
+        g2.setColor(Color.WHITE);
+        g2.fillRect(0, 0, screenWidth, screenHeight);
+
+        g2.setFont(new Font("Arial", Font.BOLD, 30));
+        g2.setColor(new Color(0, 0, 0, introAlpha));
+
+        if (showMadeBy) {
+            int textWidth = g2.getFontMetrics(new Font("Arial", Font.BOLD, 30)).stringWidth("from DM THA with luv <3");
+            g2.drawString("from DM THA with luv <3", screenWidth / 2 - textWidth/2, screenHeight / 2);
+        }
+
+        if (introFadingIn) {
+            introAlpha += 0.05f; // Hiệu ứng mờ dần hiện lên
+            if (introAlpha >= 1.0f) {
+                introAlpha = 1.0f;
+                introFadingIn = false; // Đổi sang mờ dần đi
+            }
+        } else {
+            introAlpha -= 0.02f; // Hiệu ứng mờ dần biến mất
+            if (introAlpha <= 0) {
+                introAlpha = 0;
+                introFadingIn = true; // Đổi sang mờ dần hiện lên lần nữa
+                if (showMadeBy) {
+                    showMadeBy = false;    // Kết thúc "Made by", chuyển sang "ChatGPT"
+                    introPhase = false;    // Kết thúc phần giới thiệu
+                    startMenu = true;      // Chuyển sang Start Menu
+                }
+            }
+        }
+    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        if (gameOver) {
-            // Mute all sounds
-            soundManager.muteAll();
-
-            // Vẽ màn hình game over
-            g2.setColor(Color.RED);
-            g2.setFont(new Font("Arial", Font.BOLD, 50));
-            g2.drawString("GAME OVER", screenWidth / 2 - 150, screenHeight / 2);
-            g2.setFont(new Font("Arial", Font.PLAIN, 30));
-            g2.drawString("Press R to Restart", screenWidth / 2 - 130, screenHeight / 2 + 50);
+        if (introPhase) {
+            drawIntro(g2); // Vẽ phần giới thiệu
+        } else if (startMenu) {
+            drawStartMenu(g2); // Vẽ màn hình Start Menu
         } else {
-            // Vẽ game
-            draw(g2);
+            // Các phần còn lại của game
+            if (fadingIn) {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeAlpha));
+                draw(g2); // Vẽ màn hình game
+                fadeAlpha += 0.02f; // Giảm dần độ trong suốt
+                if (fadeAlpha >= 1.0) {
+                    fadeAlpha = 1;
+                    fadingIn = false; // Kết thúc hiệu ứng chuyển cảnh
+                }
+            } else if (gameOver) {
+                // Hiển thị màn hình Game Over
+                g2.setColor(Color.RED);
+                g2.setFont(new Font("Arial", Font.BOLD, 50));
+                g2.drawString("GAME OVER", screenWidth / 2 - 150, screenHeight / 2);
+                g2.setFont(new Font("Arial", Font.PLAIN, 30));
+                g2.drawString("Press R to Restart", screenWidth / 2 - 130, screenHeight / 2 + 50);
+            } else if (pauseMenu) {
+                draw(g2); // Vẽ nội dung game phía sau khung pause
+
+                // Vẽ menu pause
+                int pauseWidth = screenWidth / 3;
+                int pauseHeight = screenHeight / 3;
+                int pauseX = (screenWidth - pauseWidth) / 2;
+                int pauseY = (screenHeight - pauseHeight) / 2;
+
+                g2.setColor(new Color(0, 0, 0, 150)); // Nền mờ
+                g2.fillRect(pauseX, pauseY, pauseWidth, pauseHeight);
+
+                g2.setColor(Color.WHITE);
+                g2.setFont(new Font("Arial", Font.BOLD, 20));
+                g2.drawString("PAUSED", pauseX + pauseWidth / 2 - 40, pauseY + pauseHeight / 2);
+            } else {
+                // Vẽ game
+                draw(g2);
+            }
         }
         g2.dispose();
     }

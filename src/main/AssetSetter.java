@@ -10,6 +10,7 @@ import entity.enemy.Slime;
 import entity.enemy.Soldier;
 import entity.npc.GuildMaster;
 import entity.npc.NPC;
+import entity.npc.Portal;
 import entity.npc.ShopKeeper;
 
 public class AssetSetter {
@@ -66,6 +67,8 @@ public class AssetSetter {
                 return new Slime(gp);
             case "NPC":
                 return new NPC(gp);
+            case "Portal":
+                return new Portal(gp);
             case "ThrowingBottle":
                 return new ThrowingBottle();
             case "HPBottle":

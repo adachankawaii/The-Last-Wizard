@@ -157,4 +157,10 @@ public class Bullet extends Entity {
     public void specialMethod(){
 
     }
+    @Override
+    public void onTriggerEnter(Entity entity){
+        Effect a = new Effect("/effect/effect2.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 1, 1, targetX, targetY);
+        gp.obj.add(a);
+        gp.obj.remove(this);
+    }
 }
