@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.Objects;
 
 public class HPBottle extends Entity {
+    String path;
     public HPBottle(String name) {
         objName = name;
         collision = true;
@@ -18,9 +19,18 @@ public class HPBottle extends Entity {
     }
 
     public void getNPCImage() {
-
+        switch (objName) {
+            case "HPBottle":
+                path = "/item/HP potion.png";
+                break;
+            case "InvisiblePotion":
+                path = "/item/Invisible potion.png";
+                break;
+            default:
+                break;
+        }
         // IMPORT NPC
-        importAnImage("/bullet/HP potion.png", true);
+        importAnImage(path, true);
     }
 
     @Override
@@ -40,9 +50,15 @@ public class HPBottle extends Entity {
     }
     @Override
     public void effect(){
-        if(Objects.equals(objName, "HPBottle")) gp.player.HP += 4;
-        else if (Objects.equals(objName, "InvisiblePotion")) {
-            gp.player.alpha = 0.5f;
+        switch (objName) {
+            case "HPBottle":
+                gp.player.HP += 4;
+                break;
+            case "InvisiblePotion":
+                gp.player.alpha = 0.5f;
+                break;
+            default:
+                break;
         }
     }
 }

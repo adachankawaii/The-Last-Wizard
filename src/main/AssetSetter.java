@@ -76,7 +76,7 @@ public class AssetSetter {
             case "InvisiblePotion":
                 return new HPBottle("InvisiblePotion");
             case "Key":
-                return new CommonItem("Key","/bullet/HP potion.png", gp);
+                return new CommonItem("Key", gp);
             case "ShopKeeper":
                 return new ShopKeeper(gp);
             case "Soldier":

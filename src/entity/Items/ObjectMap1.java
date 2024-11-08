@@ -6,6 +6,7 @@ import main.GamePanel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,6 +62,11 @@ public class ObjectMap1 extends Entity {
 
         // Phương thức đọc từ file và thêm vào danh sách rect
     public void loadRectsFromFile(String rectFilePath) {
+        File file = new File(rectFilePath);
+        if (!file.exists()) {
+            // Không làm gì nếu file không tồn tại
+            return;
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(rectFilePath))) {
             String line = br.readLine();
             if (line == null) {

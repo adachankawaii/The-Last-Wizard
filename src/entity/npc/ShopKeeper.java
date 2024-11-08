@@ -21,7 +21,7 @@ public class ShopKeeper extends Entity {
     String[] choices = {"Choice 1", "Choice 2","Choice 3",""}; // Các lựa chọn
     int[] cost = {0,1,1,0,0};
     Vector<Integer> tmp = new Vector<>(choices.length);
-    String[] items = {"Slime","ThrowingBottle","HPBottle","Key","InvisiblePotion"};
+    String[] items = {"ThrowingBottle","HPBottle","Key","InvisiblePotion"};
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
 
     public ShopKeeper(GamePanel gp) {
@@ -47,7 +47,7 @@ public class ShopKeeper extends Entity {
     }
 
     public void getNPCImage() {
-        importAnImage("/npc/merchant.png", true);
+        importAndSliceVertical("/npc/shopkeeper.png",8, 0,0);
     }
 
     @Override
@@ -286,7 +286,7 @@ public class ShopKeeper extends Entity {
             case "InvisiblePotion":
                 return new HPBottle("InvisiblePotion");
             case "Key":
-                return new CommonItem("Key","/bullet/HP potion.png", gp);
+                return new CommonItem("Key", gp);
             default:
                 System.out.println("Unknown object type: " + objectType);
                 return null;

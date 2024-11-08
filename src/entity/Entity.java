@@ -220,6 +220,7 @@ public class Entity {
             g2.drawImage(image, screenX, screenY, 48, 48, null);
         }
     }
+    
 
     public void draw(Graphics2D g2d, GamePanel gamePanel) {
     }

@@ -67,7 +67,7 @@ public class Quest {
                 return bottle;
             }
             case "Key" -> {
-                Entity n = new CommonItem("Key", "/bullet/HP potion.png", gp);
+                Entity n = new CommonItem("Key", gp);
                 n.worldX = gp.player.worldX;
                 n.worldY = gp.player.worldY;
                 return n;

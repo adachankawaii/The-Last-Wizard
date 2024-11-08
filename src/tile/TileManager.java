@@ -17,7 +17,7 @@ public class TileManager {
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        tile = new Tile[100]; // Mảng lưu trữ các tile cần dùng
+        tile = new Tile[200]; // Mảng lưu trữ các tile cần dùng
         mapTile = new int[gp.maxWorldCol][gp.maxWorldRow]; // Tạo mảng map
         getTileImage(); // Lấy tile từ res
         loadMap("res/maps/world0" + gp.map +".txt"); // Match với ma trận ở file txt
@@ -27,35 +27,15 @@ public class TileManager {
     public void getTileImage() {
         try { // Lấy các tile
             if(gp.map == 1) {
-                tile[1] = new Tile();
-                tile[1].image = ImageIO.read(new File("res/tiles/map1/1.png"));
-
-                tile[2] = new Tile();
-                tile[2].image = ImageIO.read(new File("res/tiles/map1/2.png"));
-
-                tile[3] = new Tile();
-                tile[3].image = ImageIO.read(new File("res/tiles/map1/3.png"));
-
-                tile[4] = new Tile();
-                tile[4].image = ImageIO.read(new File("res/tiles/map1/4.png"));
-
-                tile[5] = new Tile();
-                tile[5].image = ImageIO.read(new File("res/tiles/map1/5.png"));
-
-                tile[6] = new Tile();
-                tile[6].image = ImageIO.read(new File("res/tiles/map1/6.png"));
-
-                tile[7] = new Tile();
-                tile[7].image = ImageIO.read(new File("res/tiles/map1/7.png"));
-
-                tile[8] = new Tile();
-                tile[8].image = ImageIO.read(new File("res/tiles/map1/8.png"));
+                for (int i = 1; i <= 8; i++) {
+                    tile[i] = new Tile();
+                    tile[i].image = ImageIO.read(new File("res/tiles/map1/" + i + ".png"));
+                }
             } else if (gp.map == 2) {
-                tile[1] = new Tile();
-                tile[1].image = ImageIO.read(new File("res/tiles/map2/1.png"));
-
-                tile[2] = new Tile();
-                tile[2].image = ImageIO.read(new File("res/tiles/map2/2.png"));
+                for (int i = 1; i <= 33; i++) {
+                    tile[i] = new Tile();
+                    tile[i].image = ImageIO.read(new File("res/tiles/map2/" + i + ".png"));
+                }
             }
         }catch (Exception e) {
             e.printStackTrace();

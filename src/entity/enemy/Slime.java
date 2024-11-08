@@ -45,10 +45,10 @@ public class Slime extends Entity {
 
         // CHUYỂN ĐỘNG IDLE CỦA SLIME.
         // [1] - IDLE
-        importEachImage(new String[]{"/enemy/slime_0.png",
-                "/enemy/slime_1.png","/enemy/slime_2.png",
-                "/enemy/slime_3.png", "/enemy/slime_4.png",
-                "/enemy/slime_5.png", "/enemy/slime_6.png"}, true);
+        importEachImage(new String[]{"/enemy/Slime/slime_0.png",
+                "/enemy/Slime/slime_1.png","/enemy/Slime/slime_2.png",
+                "/enemy/Slime/slime_3.png", "/enemy/Slime/slime_4.png",
+                "/enemy/Slime/slime_5.png", "/enemy/Slime/slime_6.png"}, true);
 
         // [2] - BỊ TẤN CÔNG
 
@@ -117,7 +117,6 @@ public class Slime extends Entity {
             flip = false;
         }
 
-        gp.cCheck.checkTileForObj(this);
         gp.cCheck.checkObjectForObj(this);
 
         int npcCenterX = worldX + gp.tileSize / 2;

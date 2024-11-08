@@ -44,10 +44,10 @@ public class ObjectSetter {
                         int y = Integer.parseInt(coords[1].trim());
 
                         // Tạo đường dẫn tới file tọa độ rect cho obj này
-                        String rectFilePath = "res/collisionmap/" + objName + ".txt";
+                        String rectFilePath = "res/collisionmap/map" + gp.map + "/" + objName + ".txt";
 
                         // Khởi tạo Map1Item với các thông tin và đường dẫn file tọa độ
-                        ObjectMap1 newObj = new ObjectMap1(objName, "/map1/" + objName + ".png", gp);
+                        ObjectMap1 newObj = new ObjectMap1(objName, "/mapobj/map" + gp.map +"/" + objName + ".png", gp);
 
                         // Đọc các rect từ file và thêm vào item
                         newObj.loadRectsFromFile(rectFilePath);

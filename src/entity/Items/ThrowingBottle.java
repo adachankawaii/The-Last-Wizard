@@ -19,7 +19,7 @@ public class ThrowingBottle extends Entity {
     public void getNPCImage() {
 
         // IMPORT NPC
-        importAnImage("/bullet/HP potion.png", true);
+        importAnImage("/bullet/Throwing potion.png", true);
     }
 
     @Override

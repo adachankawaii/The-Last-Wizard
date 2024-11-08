@@ -8,19 +8,24 @@ import java.awt.*;
 public class CommonItem extends Entity {
     GamePanel gp;
     String path;
-    public CommonItem(String name, String path, GamePanel gp) {
+    public CommonItem(String name, GamePanel gp) {
         objName = name;
         collision = true;
         this.isTrigger = true;
         rectGet(0, 0, 48, 48);
-        this.path = path;
         getNPCImage(path);
         this.gp = gp;
         isItem = true;
     }
 
     public void getNPCImage(String path) {
-
+        switch (objName) {
+            case "Key":
+                path = "/item/key.png";
+                break;
+            default:
+                break;
+        }
         // IMPORT NPC
         importAnImage(path, true);
     }
@@ -42,7 +47,7 @@ public class CommonItem extends Entity {
     }
     @Override
     public void effect(){
-        CommonItem commonItem = new CommonItem(this.objName, this.path, gp);
+        CommonItem commonItem = new CommonItem(this.objName, gp);
         commonItem.worldX = gp.player.worldX;
         commonItem.worldY = gp.player.worldY;
         gp.obj.add(commonItem);

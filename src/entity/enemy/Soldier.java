@@ -106,7 +106,6 @@ public class Soldier extends Entity {
             flip = false;
         }
 
-        gp.cCheck.checkTileForObj(this);
         gp.cCheck.checkObjectForObj(this);
 
         int npcCenterX = worldX + gp.tileSize / 2;
