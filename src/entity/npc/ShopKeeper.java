@@ -21,7 +21,7 @@ public class ShopKeeper extends Entity {
     String[] choices = {"Choice 1", "Choice 2","Choice 3",""}; // Các lựa chọn
     int[] cost = {0,1,1,0,0};
     Vector<Integer> tmp = new Vector<>(choices.length);
-    String[] items = {"ThrowingBottle","HPBottle","Key","InvisiblePotion"};
+    String[] items = {"Key","HPBottle","Key","InvisiblePotion"};
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
 
     public ShopKeeper(GamePanel gp) {

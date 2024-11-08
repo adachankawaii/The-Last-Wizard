@@ -1,8 +1,4 @@
 package main;
-
-import entity.Entity;
-import entity.player.Quest;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 

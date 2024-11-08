@@ -6,8 +6,6 @@ import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
 import main.GamePanel;
-
-import java.io.Serializable;
 import java.util.Random;
 
 public class Quest{

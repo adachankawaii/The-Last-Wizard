@@ -11,7 +11,6 @@ import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ObjectMap1;
 import entity.Items.ThrowingBottle;
-import entity.bullet.ThrowingObj;
 import entity.enemy.Slime;
 import entity.enemy.Soldier;
 import entity.npc.GuildMaster;
@@ -19,7 +18,6 @@ import entity.npc.NPC;
 import entity.npc.Portal;
 import entity.npc.ShopKeeper;
 import entity.player.Player;
-import entity.player.Quest;
 import tile.TileManager;
 import entity.effect.Effect;
 import entity.bullet.NormalBullet;
@@ -144,18 +142,27 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
     public void resetGame() {
+        if(map == 1){
+            player.locX = 18;
+            player.locY = 81;
+        }
+        else if(map == 2){
+            player.locX = 51;
+            player.locY = 48;
+        }
         // Đặt lại tất cả các thành phần của trò chơi về trạng thái ban đầu
         player.setDefaultValue(
-                tileSize * 42,
-                tileSize * 50,
-                5,
-                "down");
+            tileSize * player.locX,
+            tileSize * player.locY,
+            5,
+            "down");
         obj.clear(); // Xóa tất cả các object
         objMap1.clear();
         gameOver = false;
         running = true;
         reloadTime = 0;
         player.kills= 0;
+        player.money = 5;
         soundManager.setVolumeAll(-20.0f);
         soundManager.setVolume("background", -30.0f);
         soundManager.play("background");
@@ -168,12 +175,20 @@ public class GamePanel extends JPanel implements Runnable{
         repaint();
     }
     public void nextMap(){
+        if(map == 1){
+            player.locX = 18;
+            player.locY = 81;
+        }
+        else if(map == 2){
+            player.locX = 51;
+            player.locY = 48;
+        }
         fadingIn = true;
         player.setDefaultValue(
-                tileSize * 42,
-                tileSize * 50,
-                5,
-                "down");
+            tileSize * player.locX,
+            tileSize * player.locY,
+            5,
+            "down");
         obj.clear(); // Xóa tất cả các object
         objMap1.clear();
         gameOver = false;
@@ -303,10 +318,20 @@ public class GamePanel extends JPanel implements Runnable{
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("savegame.dat"))) {
             GameSaveData saveData = (GameSaveData) ois.readObject();
             System.out.println("Game đã được tải thành công!");
-
+            System.out.println("Map: " + saveData.map);
+            if(saveData.map == 1){
+                player.locX = 18;
+                player.locY = 81;
+            }
+            else if(saveData.map == 2){
+                player.locX = 51;
+                player.locY = 48;
+            }
+            player.setDefaultValue(tileSize*player.locX, tileSize*player.locY, 5, "down");
             // Thiết lập trạng thái game từ saveData
             player.HP = (saveData.HP);
             map = saveData.map;
+
             for(String item : saveData.items){
                 player.items.add(createObject(item));
             }
@@ -490,6 +515,7 @@ public class GamePanel extends JPanel implements Runnable{
                 }
             } else if (gameOver) {
                 // Hiển thị màn hình Game Over
+                soundManager.muteAll();
                 g2.setColor(Color.RED);
                 g2.setFont(new Font("Arial", Font.BOLD, 50));
                 g2.drawString("GAME OVER", screenWidth / 2 - 150, screenHeight / 2);

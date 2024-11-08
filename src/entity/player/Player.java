@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Vector;
 
 import entity.Entity;
 import main.GamePanel;
@@ -20,7 +19,7 @@ public class Player extends Entity{
     int timer = 0;
     int itemTimer = 50;
     int invisibleTimer = 150;
-    public int money = 0;
+    public int money = 2;
     int delay = 8;
     public ArrayList<Entity> items = new ArrayList<>(8);
     public ArrayList<Integer> itemsCount = new ArrayList<>(8);
@@ -31,7 +30,16 @@ public class Player extends Entity{
     public String interact = null;
     // --------------------------Hết tham số cho nhiệm vụ-----------------------------------------
     BufferedImage coin;
+    public int locX = 0, locY = 0;
     public Player(GamePanel gp, KeyHandler keyH) {
+        if(gp.map == 1){
+            locX = 18;
+            locY = 81;
+        }
+        else if(gp.map == 2){
+            locX = 51;
+            locY = 48;
+        }
         this.gp = gp;
         this.keyH = keyH;
         layer = 1;
@@ -40,13 +48,14 @@ public class Player extends Entity{
         screenY = gp.screenHeight/2 - gp.tileSize/2;
         isTrigger = true;
         // Khởi tạo giá trị ban đầu, gọi các hàm khởi tạo trong Entity
+        
         setDefaultValue(
-        gp.tileSize * 42,
-        gp.tileSize * 50,
+        gp.tileSize * locX,
+        gp.tileSize * locY,
         5,
         "down");
 
-        rectGet(0, -10, 32, 52);
+        rectGet(5, 3, 20, 30);
         getPlayerImage(); // Lấy hình ảnh Player
 
         try(InputStream is = getClass().getResourceAsStream("/effect/coin.png")){

@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.Vector;
 import javax.imageio.ImageIO;
 
