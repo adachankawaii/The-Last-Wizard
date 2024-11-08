@@ -4,13 +4,14 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Vector;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.KeyHandler;
 
-public class Entity {
+public class Entity{
     public boolean isItem = false;
     // BIẾN LƯU
     public int worldX, worldY;
@@ -216,7 +217,8 @@ public class Entity {
         && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
         && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
             BufferedImage image = animations.get(aniCount).get(spriteNum);
-            g2.drawImage(image, screenX, screenY, 48, 48, null);
+            if(isItem) g2.drawImage(image, screenX, screenY, 32, 32, null);
+            else g2.drawImage(image, screenX, screenY, 48, 48, null);
         }
     }
     

@@ -7,13 +7,14 @@ import main.GamePanel;
 import java.awt.*;
 
 public class ThrowingBottle extends Entity {
-    public ThrowingBottle() {
+    public ThrowingBottle(GamePanel gp) {
         objName = "ThrowingBottle";
         collision = true;
         this.isTrigger = true;
         rectGet(0, 0, 48, 48);
         getNPCImage();
         isItem = true;
+        this.gp = gp;
     }
 
     public void getNPCImage() {

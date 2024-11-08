@@ -60,6 +60,12 @@ public class NPC extends Entity {
 
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
+
+        drawObjImage(g2, gp);
+        rectDraw(g2);
+    }
+    @Override
+    public void drawUI(Graphics2D g2, GamePanel gp){
         int npcCenterX = worldX + gp.tileSize / 2;
         int npcCenterY = worldY + gp.tileSize / 2;
 
@@ -79,21 +85,9 @@ public class NPC extends Entity {
             g2.setColor(Color.WHITE);
             g2.drawString(objName, screenX, screenY);
         }
-        drawObjImage(g2, gp);
-        rectDraw(g2);
-    }
-    @Override
-    public void drawUI(Graphics2D g2, GamePanel gp){
-
 
         Font font = new Font("Arial", Font.PLAIN, 20);
-        int npcCenterX = worldX + gp.tileSize / 2;
-        int npcCenterY = worldY + gp.tileSize / 2;
 
-        int playerCenterX = gp.player.worldX + gp.tileSize / 2;
-        int playerCenterY = gp.player.worldY + gp.tileSize / 2;
-
-        double distance = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
 
         // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
         if (distance <= 1.5 * gp.tileSize) {

@@ -12,7 +12,7 @@ public class CommonItem extends Entity {
         objName = name;
         collision = true;
         this.isTrigger = true;
-        rectGet(0, 0, 48, 48);
+        rectGet(0, 0, 32, 32);
         getNPCImage(path);
         this.gp = gp;
         isItem = true;

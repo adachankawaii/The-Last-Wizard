@@ -7,9 +7,10 @@ import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
 import main.GamePanel;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Quest {
+public class Quest{
     public String name;
     public String description;
     public boolean isComplete;
@@ -49,19 +50,19 @@ public class Quest {
     public Entity createObject(String objectType) {
         switch (objectType) {
             case "ThrowingBottle" -> {
-                Entity e = new ThrowingBottle();
+                Entity e = new ThrowingBottle(gp);
                 e.worldX = gp.player.worldX;
                 e.worldY = gp.player.worldY;
                 return e;
             }
             case "HPBottle" -> {
-                Entity a = new HPBottle("HPBottle");
+                Entity a = new HPBottle("HPBottle", gp);
                 a.worldX = gp.player.worldX;
                 a.worldY = gp.player.worldY;
                 return a;
             }
             case "InvisiblePotion" -> {
-                Entity bottle = new HPBottle("InvisiblePotion");
+                Entity bottle = new HPBottle("InvisiblePotion", gp);
                 bottle.worldX = gp.player.worldX;
                 bottle.worldY = gp.player.worldY;
                 return bottle;

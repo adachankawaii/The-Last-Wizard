@@ -104,13 +104,12 @@ public class ObjectMap1 extends Entity {
     }
 
     public void drawObjMapImage(Graphics2D g2, GamePanel gp) {
+        // Tính toán vị trí vẽ của đối tượng (screenX, screenY)
         screenX = worldX - gp.player.worldX + gp.player.screenX;
         screenY = worldY - gp.player.worldY + gp.player.screenY;
-    
-        if(worldX + 50*gp.tileSize > gp.player.worldX - gp.player.screenX
-        && worldX - 50*gp.tileSize < gp.player.worldX + gp.player.screenX
-        && worldY + 50*gp.tileSize > gp.player.worldY - gp.player.screenY
-        && worldY - 50*gp.tileSize < gp.player.worldY + gp.player.screenY) {
+
+        // Kiểm tra xem đối tượng có nằm trong phạm vi màn hình không
+        if (isObjectInScreen(gp)) {
             BufferedImage image = animations.get(aniCount).get(spriteNum);
             imgWidth = image.getWidth();
             imgHeight = image.getHeight();
@@ -119,6 +118,23 @@ public class ObjectMap1 extends Entity {
             g2.drawImage(image, screenX, screenY, width, height, null);
         }
     }
+
+    // Phương thức kiểm tra xem đối tượng có nằm trong phạm vi màn hình không
+    // Phương thức kiểm tra xem đối tượng có nằm trong phạm vi màn hình không
+    private boolean isObjectInScreen(GamePanel gp) {
+        // Lấy chiều rộng và chiều cao của đối tượng hiện tại
+        BufferedImage image = animations.get(aniCount).get(spriteNum);
+        int objectWidth = image.getWidth();
+        int objectHeight = image.getHeight();
+
+        // Tính toán các giới hạn của đối tượng trong tọa độ màn hình
+        int rightEdge = screenX + objectWidth;
+        int bottomEdge = screenY + objectHeight;
+
+        // Kiểm tra nếu bất kỳ phần nào của đối tượng nằm trong phạm vi màn hình
+        return (screenX < gp.screenWidth && rightEdge > 0 && screenY < gp.screenHeight && bottomEdge > 0);
+    }
+
     // Kiểm tra xem vị trí có nằm trong vùng collision của bất kỳ rect nào trong rectList không
     public boolean isCollisionArea(Point position) {
         for (Rectangle rect : rectList) {

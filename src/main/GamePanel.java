@@ -1,13 +1,25 @@
 package main;
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import UI.Bar;
 import collision.CollisionCheck;
 import entity.Entity;
+import entity.Items.CommonItem;
+import entity.Items.HPBottle;
 import entity.Items.ObjectMap1;
+import entity.Items.ThrowingBottle;
+import entity.bullet.ThrowingObj;
+import entity.enemy.Slime;
+import entity.enemy.Soldier;
+import entity.npc.GuildMaster;
+import entity.npc.NPC;
+import entity.npc.Portal;
+import entity.npc.ShopKeeper;
 import entity.player.Player;
+import entity.player.Quest;
 import tile.TileManager;
 import entity.effect.Effect;
 import entity.bullet.NormalBullet;
@@ -78,7 +90,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     // TẠO SET OBJECT
     AssetSetter aSetter = new AssetSetter(this);
-    ObjectSetter oSetter = new ObjectSetter(this);    
+    ObjectSetter oSetter = new ObjectSetter(this);
 
     // MOUSE
     MouseHandler mouseH = new MouseHandler(this);
@@ -93,6 +105,7 @@ public class GamePanel extends JPanel implements Runnable{
         String url1 = "res/maps/map" + map +"obj.txt";
         aSetter.setObject(url);
         oSetter.setObject(url1);
+        tileMng = new TileManager(this);
     }
 
     // CHẠY GAME
@@ -141,23 +154,21 @@ public class GamePanel extends JPanel implements Runnable{
         objMap1.clear();
         gameOver = false;
         running = true;
-        player.HP = 10;
-        player.Energy = 200;
         reloadTime = 0;
-        player.items.clear();
-        player.itemsCount.clear();
-        player.money = 0;
-        player.quests.clear();
         player.kills= 0;
         soundManager.setVolumeAll(-20.0f);
         soundManager.setVolume("background", -30.0f);
         soundManager.play("background");
         soundManager.loop("background");
         tileMng = new TileManager(this);
+        loadGame();
+        player.HP = 10;
+        player.Energy = 200;
         setupGame(); // Gọi lại setup ban đầu của game
         repaint();
     }
     public void nextMap(){
+        fadingIn = true;
         player.setDefaultValue(
                 tileSize * 42,
                 tileSize * 50,
@@ -177,6 +188,7 @@ public class GamePanel extends JPanel implements Runnable{
         tileMng = new TileManager(this);
         setupGame(); // Gọi lại setup ban đầu của game
         repaint();
+        saveGame();
     }
     // NƠI CHỨA UPDATE NÈ
     public boolean pauseMenu = false;
@@ -225,9 +237,19 @@ public class GamePanel extends JPanel implements Runnable{
     }
     public void onClick(int mouseInfo){
         if (startMenu) { // Kiểm tra nếu đang ở trạng thái Start Menu
-            if (mouseInfo == 1) { // Nếu nhấn chuột trái
+            if (mouseInfo == 1 && keyH.i != -1) { // Nếu nhấn chuột trái
+                if(keyH.i % 3 == 0){
+                    clearGameData();
+                }
+                else if(keyH.i % 3 == 1){
+                    loadGame();
+                }
+                else if(keyH.i % 3 == 2){
+                    System.exit(0);
+                }
                 startMenu = false; // Tắt Start Menu
                 fadingIn = true; // Bắt đầu hiệu ứng chuyển cảnh
+                setupGame();
             }
         }
         else if(player.combat && !gameOver){
@@ -255,58 +277,159 @@ public class GamePanel extends JPanel implements Runnable{
         }
 
     }
+    public void saveGame() {
+        // Thu thập các giá trị cần lưu từ game
+        int currentHP = player.HP;
+        int currentMap = map;
+        ArrayList<String> currentItems = new ArrayList<>();
+        ArrayList<Integer> currentItemsCount = player.itemsCount;
+        for(Entity item : player.items){
+            currentItems.add(item.objName);
+        }
+        int currentMoney = player.money;
+        // Tạo đối tượng GameSaveData với trạng thái hiện tại của game
+        GameSaveData saveData = new GameSaveData(currentHP, currentMap, currentItems, currentItemsCount,currentMoney);
 
+        // Lưu đối tượng GameSaveData vào file
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("savegame.dat"))) {
+            oos.writeObject(saveData);
+            System.out.println("Game đã được lưu thành công!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Lưu game thất bại.");
+        }
+    }
+    public void loadGame() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("savegame.dat"))) {
+            GameSaveData saveData = (GameSaveData) ois.readObject();
+            System.out.println("Game đã được tải thành công!");
 
+            // Thiết lập trạng thái game từ saveData
+            player.HP = (saveData.HP);
+            map = saveData.map;
+            for(String item : saveData.items){
+                player.items.add(createObject(item));
+            }
+            player.itemsCount = (saveData.itemsCount);
+            player.money = saveData.money;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Tải game thất bại.");
+        }
+    }
+    public void clearGameData() {
+        File saveFile = new File("savegame.dat");
+
+        if (saveFile.exists()) {
+            if (saveFile.delete()) {
+                System.out.println("File lưu game đã được xóa thành công!");
+            } else {
+                System.out.println("Không thể xóa file lưu game.");
+            }
+        } else {
+            System.out.println("Không có file lưu game để xóa.");
+        }
+    }
     // NƠI CHỨA VẼ NÈ
     public void draw(Graphics2D g2) {
         // Vẽ Map
         tileMng.draw(g2);
+
+        // Vẽ các đối tượng trong objMap1, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < objMap1.size(); i++) {
-            if (objMap1.get(i) != null && objMap1.get(i).layer < 1) {
-                objMap1.get(i).draw(g2, this);
+            ObjectMap1 object = objMap1.get(i);
+            if (object != null) {
+                object.draw(g2, this);
             }
         }
+
+        // Vẽ các đối tượng trong obj, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < obj.size(); i++) {
-            if (obj.get(i) != null && obj.get(i).layer < 1) {
-                obj.get(i).draw(g2, this);
+            Entity entity = obj.get(i);
+            if (entity != null && isObjectInScreen(entity)) {
+                entity.draw(g2, this);
             }
         }
-        // Vẽ nhân vật
+
+        // Vẽ nhân vật (Player)
         player.draw(g2);
+
+        // Vẽ các đối tượng ở layer >= 1 trong objMap1, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < objMap1.size(); i++) {
-            if (objMap1.get(i) != null && objMap1.get(i).layer >= 1) {
-                objMap1.get(i).draw(g2, this);
+            ObjectMap1 object = objMap1.get(i);
+            if (object != null && object.layer >= 1) {
+                object.draw(g2, this);
             }
         }
+
+        // Vẽ các đối tượng ở layer >= 1 trong obj, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < obj.size(); i++) {
-            if (obj.get(i) != null && obj.get(i).layer >= 1) {
-                obj.get(i).draw(g2, this);
+            Entity entity = obj.get(i);
+            if (entity != null && entity.layer >= 1 && isObjectInScreen(entity)) {
+                entity.draw(g2, this);
             }
         }
+
+        // Vẽ các đối tượng UI
         for (int i = 0; i < obj.size(); i++) {
-            if (obj.get(i) != null) {
-                obj.get(i).drawUI(g2, this);
+            Entity entity = obj.get(i);
+            if (entity != null) {
+                entity.drawUI(g2, this);
             }
         }
-        player.drawUI(g2,this);
+
+        // Vẽ UI cho nhân vật
+        player.drawUI(g2, this);
+
+        // Vẽ thanh HP và Energy
         HPbar.draw(g2);
         EnergyBar.draw(g2);
+    }
 
+    // Kiểm tra xem đối tượng có nằm trong phạm vi màn hình không
+    private boolean isObjectInScreen(Entity entity){
+        if(Math.abs(entity.worldX - player.worldX) <= 15*tileSize && Math.abs(entity.worldY - player.worldY) <= 12*tileSize){
+            return true;
+        }
+        return false;
     }
     public void drawStartMenu(Graphics2D g2) {
-        // Vẽ background đen
+        // Vẽ background trắng
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, screenWidth, screenHeight);
 
         // Vẽ tên game
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 50));
-        g2.drawString("The Last Wizard", screenWidth / 2 - 200, screenHeight / 2 - 100);
+        g2.drawString("The Last Wizard", screenWidth / 2 - 200, screenHeight / 2 - 150);
 
-        // Vẽ nút Start
-        g2.setFont(new Font("Arial", Font.PLAIN, 30));
-        g2.drawString("Click to Start", screenWidth / 2 - 100, screenHeight / 2 + 50);
+        // Cấu hình các lựa chọn menu
+        String[] choices = {"New Game", "Load Game", "Quit"};
+        int choiceBoxX = screenWidth / 2 - 200; // Vị trí X của hộp lựa chọn
+        int choiceBoxY = screenHeight / 2 - 20; // Vị trí Y ban đầu của hộp lựa chọn
+        int choiceBoxWidth = 400; // Chiều rộng hộp lựa chọn
+        int choiceBoxHeight = 50; // Chiều cao mỗi hộp lựa chọn
+        int selectedChoice = keyH.i % 3; // Chọn mặc định (có thể điều chỉnh sau theo yêu cầu)
+        g2.setFont(new Font("Arial", Font.PLAIN, 24));
+        // Vẽ các lựa chọn
+        for (int i = 0; i < choices.length; i++) {
+            // Vẽ hộp lựa chọn
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
+            g2.setColor(Color.WHITE);
+            g2.drawRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
+            g2.drawString("Key " + (i + 1) + ": " + choices[i], choiceBoxX + 10, choiceBoxY + i * choiceBoxHeight + 28);
+
+            // Đánh dấu lựa chọn hiện tại
+            if (i == selectedChoice) {
+                g2.setColor(Color.WHITE);
+                g2.drawRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth + 10, 40, 15, 15);
+                g2.setColor(new Color(100, 100, 100, 100));
+                g2.fillRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth + 10, 40, 15, 15);
+            }
+        }
     }
+
     // VẼ OBJ Ở ĐÂY
     private boolean introPhase = true;  // Đang ở giai đoạn giới thiệu
     private float introAlpha = 0f;      // Độ trong suốt cho phần giới thiệu
@@ -339,7 +462,7 @@ public class GamePanel extends JPanel implements Runnable{
                 introAlpha = 0;
                 introFadingIn = true; // Đổi sang mờ dần hiện lên lần nữa
                 if (showMadeBy) {
-                    showMadeBy = false;    // Kết thúc "Made by", chuyển sang "ChatGPT"
+                    showMadeBy = false;    // Kết thúc "Made by", chuyển sang "ChatthisT"
                     introPhase = false;    // Kết thúc phần giới thiệu
                     startMenu = true;      // Chuyển sang Start Menu
                 }
@@ -393,5 +516,32 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
         g2.dispose();
+    }
+    public Entity createObject(String objectType) {
+        switch (objectType) {
+            case "Slime":
+                return new Slime(this);
+            case "NPC":
+                return new NPC(this);
+            case "Portal":
+                return new Portal(this);
+            case "ThrowingBottle":
+                return new ThrowingBottle(this);
+            case "HPBottle":
+                return new HPBottle("HPBottle",this);
+            case "InvisiblePotion":
+                return new HPBottle("InvisiblePotion",this);
+            case "Key":
+                return new CommonItem("Key", this);
+            case "ShopKeeper":
+                return new ShopKeeper(this);
+            case "Soldier":
+                return new Soldier(this);
+            case "GuildMaster":
+                return new GuildMaster(this);
+            default:
+                System.out.println("Unknown object type: " + objectType);
+                return null;
+        }
     }
 }

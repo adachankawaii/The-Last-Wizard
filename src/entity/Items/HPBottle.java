@@ -6,13 +6,14 @@ import java.awt.*;
 
 public class HPBottle extends Entity {
     String path;
-    public HPBottle(String name) {
+    public HPBottle(String name, GamePanel gp) {
         objName = name;
         collision = true;
         this.isTrigger = true;
-        rectGet(0, 0, 48, 48);
+        rectGet(0, 0, 32, 32);
         getNPCImage();
         isItem = true;
+        this.gp = gp;
     }
 
     public void getNPCImage() {

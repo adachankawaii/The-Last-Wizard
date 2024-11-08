@@ -22,7 +22,6 @@ public class Main {
         window.setVisible(true); // Hiển thị màn hình
 
         // ĐẶT ĐỒ LÊN MAP
-        gp.setupGame();
         // CHẠY THREAD
         gp.startGameThread();
     }   

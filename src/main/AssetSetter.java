@@ -70,11 +70,11 @@ public class AssetSetter {
             case "Portal":
                 return new Portal(gp);
             case "ThrowingBottle":
-                return new ThrowingBottle();
+                return new ThrowingBottle(gp);
             case "HPBottle":
-                return new HPBottle("HPBottle");
+                return new HPBottle("HPBottle",gp);
             case "InvisiblePotion":
-                return new HPBottle("InvisiblePotion");
+                return new HPBottle("InvisiblePotion",gp);
             case "Key":
                 return new CommonItem("Key", gp);
             case "ShopKeeper":

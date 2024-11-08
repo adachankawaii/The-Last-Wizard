@@ -59,32 +59,6 @@ public class Player extends Entity{
     }
 
         // IMPORT NHIỀU ẢNH 1 LOẠI CHUYỂN ĐỘNG
-    public void importEachImageForPlayer(String[] path, boolean newAnimation){
-        if(newAnimation){
-            Vector<BufferedImage> a = new Vector<>();
-            for(int i = 0;i<path.length;i++){
-                try(InputStream is = getClass().getResourceAsStream(path[i])){
-                    img = ImageIO.read(is);
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-                a.add(img);
-            }
-            animations.add(a);
-        }
-        else{
-            for(int i = 0;i<path.length;i++){
-                try(InputStream is = getClass().getResourceAsStream(path[i])){
-                    img = ImageIO.read(is);
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-                animations.get(animations.size() - 1).add(img);
-            }
-        }
-    }
 
     public void getPlayerImage() {
         // Lấy từng chuyển động của nhân vật. Mỗi chuyển động lên/xuống/trái/phải tương ứng với 4 ảnh
@@ -137,12 +111,12 @@ public class Player extends Entity{
     public void update() {
         if (combat) {
             int objIndex = gp.cCheck.checkObject(this, true);
-            // System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
                 alpha = 1;
                 invisibleTimer = 150;
                 timer = 20;
+                HP--;
                 isHurt = true;
             }
 
