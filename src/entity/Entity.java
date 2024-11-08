@@ -3,7 +3,6 @@ package entity;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
 import java.io.InputStream;
 import java.util.Vector;
 import javax.imageio.ImageIO;

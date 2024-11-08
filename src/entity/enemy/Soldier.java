@@ -5,12 +5,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Random;
-
 import entity.Entity;
 import entity.Items.Coin;
-import entity.bullet.Bullet;
 import entity.bullet.NormalBullet;
-import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
 import main.GamePanel;
 

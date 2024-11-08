@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import entity.Items.ObjectMap1;
-import main.GamePanel;
 
 public class ObjectSetter {
     GamePanel gp;

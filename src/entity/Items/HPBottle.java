@@ -1,11 +1,8 @@
 package entity.Items;
 
 import entity.Entity;
-import entity.bullet.ThrowingObj;
 import main.GamePanel;
-
 import java.awt.*;
-import java.util.Objects;
 
 public class HPBottle extends Entity {
     String path;

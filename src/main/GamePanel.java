@@ -7,7 +7,6 @@ import UI.Bar;
 import collision.CollisionCheck;
 import entity.Entity;
 import entity.Items.ObjectMap1;
-import entity.bullet.ThrowingObj;
 import entity.player.Player;
 import tile.TileManager;
 import entity.effect.Effect;
