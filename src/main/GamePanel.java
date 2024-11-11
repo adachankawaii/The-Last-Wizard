@@ -45,6 +45,8 @@ public class GamePanel extends JPanel implements Runnable{
     public boolean startMenu = true;  // Kiểm tra trạng thái của Start Menu
     public float fadeAlpha = 0f;   // Độ trong suốt cho hiệu ứng mờ dần
     public boolean fadingIn = false; // Kiểm tra nếu đang chuyển cảnh từ trắng sang game
+    public double loadingTime = 0;
+
 
     // Cài đặt FPS
     public final int FPS = 60;
@@ -56,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true); // Chất lượng render tốt hơn
         this.addKeyListener(keyH); // Thêm vào để game detect key input
         this.addMouseListener(mouseH); // Detect Mouse input
+        this.addMouseMotionListener(mouseH);
         this.setFocusable(true); // Tập trung vào nhận diện và xử lí key input
         soundManager = new Sound();
         soundManager.setVolumeAll(-20.0f);
@@ -91,7 +94,7 @@ public class GamePanel extends JPanel implements Runnable{
     ObjectSetter oSetter = new ObjectSetter(this);
 
     // MOUSE
-    MouseHandler mouseH = new MouseHandler(this);
+    public MouseHandler mouseH = new MouseHandler(this);
     public int mouseX = 0, mouseY = 0;
     int reloadTime = 0;
     Bar HPbar = new Bar(10,15, 15, 200, 20, this, new Color(255,0,0));
@@ -171,7 +174,7 @@ public class GamePanel extends JPanel implements Runnable{
         loadGame();
         player.HP = 10;
         player.Energy = 200;
-        setupGame(); // Gọi lại setup ban đầu của game
+         // Gọi lại setup ban đầu của game
         repaint();
     }
     public void nextMap(){
@@ -200,19 +203,25 @@ public class GamePanel extends JPanel implements Runnable{
         soundManager.setVolume("background", -30.0f);
         soundManager.play("background");
         soundManager.loop("background");
-        tileMng = new TileManager(this);
-        setupGame(); // Gọi lại setup ban đầu của game
+        tileMng = new TileManager(this);// Gọi lại setup ban đầu của game
+        loadingTime = 100;
         repaint();
         saveGame();
     }
     // NƠI CHỨA UPDATE NÈ
     public boolean pauseMenu = false;
+    private Rectangle restartButton;
+    private Rectangle menuButton;
+
+    // Khởi tạo vị trí và kích thước nút
     public void update() {
         if (gameOver) {
             if(keyH.RPressed){
                 System.out.println("isReset");
-                keyH.RPressed = false;
                 resetGame();
+                loadingTime = 100;
+                keyH.RPressed = false;
+                player.dead = false;
             }
             return;
         }
@@ -240,31 +249,46 @@ public class GamePanel extends JPanel implements Runnable{
                 obj.get(i).update();
             }
         }
+        loadingTime--;
         reloadTime--;
         HPbar.update(player.HP);
         EnergyBar.update(player.Energy);
         // Kiểm tra điều kiện game over (ví dụ: HP <= 0)
-        if (player.HP <= 0) {
+        if (player.dead) {
             // Dừng nhạc nền khi người chơi chết
             soundManager.play("player_die"); // Phát âm thanh khi người chơi chết
             gameOver = true;
         }
     }
+    int selectedChoice = -1;
+
     public void onClick(int mouseInfo){
         if (startMenu) { // Kiểm tra nếu đang ở trạng thái Start Menu
-            if (mouseInfo == 1 && keyH.i != -1) { // Nếu nhấn chuột trái
-                if(keyH.i % 3 == 0){
+            if (mouseInfo == 1 && selectedChoice != -1) { // Nếu nhấn chuột trái
+                if(selectedChoice % 3 == 0){
                     clearGameData();
                 }
-                else if(keyH.i % 3 == 1){
+                else if(selectedChoice % 3 == 1){
                     loadGame();
                 }
-                else if(keyH.i % 3 == 2){
+                else if(selectedChoice % 3 == 2){
                     System.exit(0);
                 }
                 startMenu = false; // Tắt Start Menu
-                fadingIn = true; // Bắt đầu hiệu ứng chuyển cảnh
-                setupGame();
+                loadingTime = 100; // Bắt đầu hiệu ứng chuyển cảnh
+
+            }
+        }
+        else if(pauseMenu){
+            int screenMouseX = mouseX - (player.worldX - player.screenX);
+            int screenMouseY = mouseY - (player.worldY - player.screenY);
+            if (restartButton.contains(screenMouseX, screenMouseY)) {
+                resetGame();  // Gọi hàm resetGame
+                loadingTime = 100;
+                pauseMenu = false;
+            } else if (menuButton.contains(screenMouseX, screenMouseY)) {
+                pauseMenu = false;
+                startMenu = true;  // Quay lại màn hình startMenu
             }
         }
         else if(player.combat && !gameOver){
@@ -343,16 +367,21 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
     public void clearGameData() {
-        File saveFile = new File("savegame.dat");
+        int currentHP = 10;
+        int currentMap = 1;
+        ArrayList<String> currentItems = new ArrayList<>();
+        ArrayList<Integer> currentItemsCount =new ArrayList<>();
+        int currentMoney = 0;
+        // Tạo đối tượng GameSaveData với trạng thái hiện tại của game
+        GameSaveData saveData = new GameSaveData(currentHP, currentMap, currentItems, currentItemsCount,currentMoney);
 
-        if (saveFile.exists()) {
-            if (saveFile.delete()) {
-                System.out.println("File lưu game đã được xóa thành công!");
-            } else {
-                System.out.println("Không thể xóa file lưu game.");
-            }
-        } else {
-            System.out.println("Không có file lưu game để xóa.");
+        // Lưu đối tượng GameSaveData vào file
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("savegame.dat"))) {
+            oos.writeObject(saveData);
+            System.out.println("Game đã được lưu thành công!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Lưu game thất bại.");
         }
     }
     // NƠI CHỨA VẼ NÈ
@@ -423,6 +452,10 @@ public class GamePanel extends JPanel implements Runnable{
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, screenWidth, screenHeight);
 
+        // Tính toán lại tọa độ chuột trên màn hình
+        int screenMouseX = mouseX - (player.worldX - player.screenX);
+        int screenMouseY = mouseY - (player.worldY - player.screenY);
+
         // Vẽ tên game
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 50));
@@ -434,10 +467,13 @@ public class GamePanel extends JPanel implements Runnable{
         int choiceBoxY = screenHeight / 2 - 20; // Vị trí Y ban đầu của hộp lựa chọn
         int choiceBoxWidth = 400; // Chiều rộng hộp lựa chọn
         int choiceBoxHeight = 50; // Chiều cao mỗi hộp lựa chọn
-        int selectedChoice = keyH.i % 3; // Chọn mặc định (có thể điều chỉnh sau theo yêu cầu)
         g2.setFont(new Font("Arial", Font.PLAIN, 24));
-        // Vẽ các lựa chọn
+
+        // Vẽ các lựa chọn và kiểm tra vị trí chuột
+          // Đặt mặc định là không chọn lựa chọn nào
         for (int i = 0; i < choices.length; i++) {
+            Rectangle r = new Rectangle(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40);
+
             // Vẽ hộp lựa chọn
             g2.setColor(new Color(0, 0, 0, 180));
             g2.fillRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
@@ -445,14 +481,29 @@ public class GamePanel extends JPanel implements Runnable{
             g2.drawRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
             g2.drawString("Key " + (i + 1) + ": " + choices[i], choiceBoxX + 10, choiceBoxY + i * choiceBoxHeight + 28);
 
+            // Kiểm tra nếu chuột đang ở trong vị trí của lựa chọn này
+            if (r.contains(screenMouseX, screenMouseY)) {
+                selectedChoice = i;  // Gán lựa chọn dựa trên vị trí của chuột
+            }
+
             // Đánh dấu lựa chọn hiện tại
             if (i == selectedChoice) {
                 g2.setColor(Color.WHITE);
-                g2.drawRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth + 10, 40, 15, 15);
+                g2.drawRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
                 g2.setColor(new Color(100, 100, 100, 100));
-                g2.fillRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth + 10, 40, 15, 15);
+                g2.fillRoundRect(choiceBoxX - 5, choiceBoxY + i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
             }
         }
+    }
+    private void drawLoadingScreen(Graphics g) {
+        // Thiết lập nền màn hình loading
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        // Thêm text hoặc biểu tượng loading
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        g.drawString("Loading...", getWidth() / 2 - 70, getHeight() / 2);
     }
 
     // VẼ OBJ Ở ĐÂY
@@ -494,6 +545,38 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
     }
+
+    public void drawPauseMenu(Graphics g) {
+        // Màu nền và các thiết lập cơ bản khác của menu pause
+        int buttonWidth = 100;
+        int buttonHeight = 50;
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
+
+        restartButton = new Rectangle(centerX - buttonWidth / 2, centerY - 100, buttonWidth, buttonHeight);
+        menuButton = new Rectangle(centerX - buttonWidth / 2, centerY, buttonWidth, buttonHeight);
+        g.setColor(new Color(0, 0, 0, 150));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        int screenMouseX = mouseX - (player.worldX - player.screenX);
+        int screenMouseY = mouseY - (player.worldY - player.screenY);
+        // Vẽ nút Restart
+        g.setColor(Color.WHITE);
+        if (restartButton.contains(screenMouseX, screenMouseY)) {
+            g.setColor(Color.YELLOW); // Đổi màu khi hover
+        }
+        g.fillRect(restartButton.x, restartButton.y, restartButton.width, restartButton.height);
+        g.setColor(Color.BLACK);
+        g.drawString("Restart", restartButton.x + 20, restartButton.y + 30);
+
+        // Vẽ nút Menu
+        g.setColor(Color.WHITE);
+        if (menuButton.contains(screenMouseX, screenMouseY)) {
+            g.setColor(Color.YELLOW);
+        }
+        g.fillRect(menuButton.x, menuButton.y, menuButton.width, menuButton.height);
+        g.setColor(Color.BLACK);
+        g.drawString("Menu", menuButton.x + 25, menuButton.y + 30);
+    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -503,14 +586,24 @@ public class GamePanel extends JPanel implements Runnable{
             drawIntro(g2); // Vẽ phần giới thiệu
         } else if (startMenu) {
             drawStartMenu(g2); // Vẽ màn hình Start Menu
-        } else {
+        }
+        else {
             // Các phần còn lại của game
-            if (fadingIn) {
+            if(loadingTime >= 0){
+                drawLoadingScreen(g2);
+                if(loadingTime <= 0) {
+                    resetGame();
+                    fadingIn = true;
+                    setupGame();
+                    loadingTime = -10;
+                }
+            }
+            else if (fadingIn) {
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeAlpha));
                 draw(g2); // Vẽ màn hình game
                 fadeAlpha += 0.02f; // Giảm dần độ trong suốt
                 if (fadeAlpha >= 1.0) {
-                    fadeAlpha = 1;
+                    fadeAlpha = 0;
                     fadingIn = false; // Kết thúc hiệu ứng chuyển cảnh
                 }
             } else if (gameOver) {
@@ -523,19 +616,9 @@ public class GamePanel extends JPanel implements Runnable{
                 g2.drawString("Press R to Restart", screenWidth / 2 - 130, screenHeight / 2 + 50);
             } else if (pauseMenu) {
                 draw(g2); // Vẽ nội dung game phía sau khung pause
-
+                drawPauseMenu(g2);
                 // Vẽ menu pause
-                int pauseWidth = screenWidth / 3;
-                int pauseHeight = screenHeight / 3;
-                int pauseX = (screenWidth - pauseWidth) / 2;
-                int pauseY = (screenHeight - pauseHeight) / 2;
 
-                g2.setColor(new Color(0, 0, 0, 150)); // Nền mờ
-                g2.fillRect(pauseX, pauseY, pauseWidth, pauseHeight);
-
-                g2.setColor(Color.WHITE);
-                g2.setFont(new Font("Arial", Font.BOLD, 20));
-                g2.drawString("PAUSED", pauseX + pauseWidth / 2 - 40, pauseY + pauseHeight / 2);
             } else {
                 // Vẽ game
                 draw(g2);

@@ -143,16 +143,18 @@ public class ShopKeeper extends Entity {
                     int choiceBoxHeight = (int)(dialogueBoxHeight * 3 / 4);
                     int choiceBoxY = dialogueBoxY - dialogueBoxHeight - choiceBoxHeight; // Di chuyển xuống dưới khung hội thoại
                     int choiceBoxX = dialogueBoxX + dialogueBoxWidth - (dialogueBoxWidth * 2 / 3) - 20; // Đặt bên phải khung hội thoại
-
+                    int screenMouseX = gp.mouseX - (gp.player.worldX - gp.player.screenX);
+                    int screenMouseY = gp.mouseY - (gp.player.worldY - gp.player.screenY);
                     isChoosing = true;
-                    // Hiển thị các lựa chọn
+
                     for (int i = 0; i < choices.length; i++) {
+                        // Tạo một hình chữ nhật để kiểm tra chuột di chuyển vào
                         gp.player.interact = objName;
                         g2.setColor(new Color(0, 0, 0, 180));
                         g2.fillRoundRect(choiceBoxX, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
                         g2.setColor(Color.WHITE);
                         g2.drawRoundRect(choiceBoxX, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
-
+                        Rectangle r = new Rectangle(choiceBoxX, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth, 40);
                         String info = "Sold out";
                         if(tmp.get(i) != -1) info = items[tmp.get(i)] + " || cost " + cost[tmp.get(i)];
                         if(i == 0) info = "* Leave *";
@@ -167,19 +169,24 @@ public class ShopKeeper extends Entity {
                                 g2.drawImage(itemSprite, spriteX, spriteY, 40, 40, null); // Vẽ sprite
                             }
                         }
+                        // Kiểm tra chuột có nằm trong vùng lựa chọn không và thay đổi lựa chọn
+                        if (r.contains(screenMouseX, screenMouseY)) {
+                            selectedChoice = i;  // Gán lựa chọn dựa trên vị trí của chuột
+                        }
 
                         // Đánh dấu lựa chọn hiện tại
                         if (i == selectedChoice) {
                             g2.setColor(Color.WHITE);
-                            g2.drawRoundRect(choiceBoxX - 5, choiceBoxY - i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
+                            g2.drawRoundRect(choiceBoxX - 5, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth + 10, 40, 15, 15);
                             g2.setColor(new Color(100, 100, 100, 100));
-                            g2.fillRoundRect(choiceBoxX - 5, choiceBoxY - i * choiceBoxHeight , choiceBoxWidth + 10, 40, 15, 15);
+                            g2.fillRoundRect(choiceBoxX - 5, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth + 10, 40, 15, 15);
                         }
                     }
 
 
+
                     // Xử lý khi người chơi nhấn 'Space' để chọn
-                    if (gp.keyH.SpacePressed && selectedChoice != -1 && timer <= 0) {
+                    if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && selectedChoice != -1 && timer <= 0) {
                         dialogueIndex = 0; // Chuyển sang đoạn hội thoại tương ứng
 
                         if(tmp.get(selectedChoice) != -1 && selectedChoice != 0 && gp.player.money >= cost[tmp.get(selectedChoice)]) {
@@ -207,17 +214,13 @@ public class ShopKeeper extends Entity {
                 // Sau khi hoàn thành lựa chọn, tiếp tục hiển thị đoạn hội thoại
                 else if (!isChoosing) {
                     // Sau khi chọn, nếu có đoạn hội thoại tiếp theo
-                    if (gp.keyH.SpacePressed && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
+                    if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
                         dialogueIndex++; // Chuyển sang đoạn tiếp theo
                         gp.keyH.SpacePressed = false;
                         timer = 20;
                     }
                 }
 
-                // Cập nhật lựa chọn
-                if (isChoosing) {
-                    selectedChoice = (gp.keyH.i + choices.length) % choices.length; // Đảm bảo chỉ chọn trong khoảng từ 0 đến số lượng lựa chọn
-                }
 
                 // Khi kết thúc hội thoại
                 if (dialogueIndex >= words.get(index).size() - 1) {

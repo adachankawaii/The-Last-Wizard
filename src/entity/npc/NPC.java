@@ -110,7 +110,8 @@ public class NPC extends Entity {
                 int shopKeeperHeight = gp.tileSize * 3; // Chiều cao hình ShopKeeper
                 int shopKeeperX = dialogueBoxX + 10; // Vị trí x của ShopKeeper
                 int shopKeeperY = dialogueBoxY - shopKeeperHeight - 10; // Vị trí y của ShopKeeper
-
+                int screenMouseX = gp.mouseX - (gp.player.worldX - gp.player.screenX);
+                int screenMouseY = gp.mouseY - (gp.player.worldY - gp.player.screenY);
                 // Vẽ hình ShopKeeper (ảnh đã được load vào trong biến 'image' thông qua getNPCImage)
                 g2.drawImage(animations.get(0).get(0), shopKeeperX, shopKeeperY, shopKeeperWidth, shopKeeperHeight, null);
                 g2.setColor(Color.WHITE);
@@ -128,12 +129,15 @@ public class NPC extends Entity {
                     isChoosing = true;
                     // Hiển thị các lựa chọn
                     for (int i = 0; i < choices.length; i++) {
+                        Rectangle r = new Rectangle(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40);
                         g2.setColor(new Color(0, 0, 0, 180));
                         g2.fillRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
                         g2.setColor(Color.WHITE);
                         g2.drawRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
                         g2.drawString("Key " + (i + 1) + ": " + choices[i], choiceBoxX + 10, choiceBoxY + i * choiceBoxHeight + 20);
-
+                        if (r.contains(screenMouseX, screenMouseY)) {
+                            selectedChoice = i;  // Gán lựa chọn dựa trên vị trí của chuột
+                        }
                         // Đánh dấu lựa chọn hiện tại
                         if (i == selectedChoice) {
                             g2.setColor(Color.WHITE);
@@ -144,7 +148,7 @@ public class NPC extends Entity {
                     }
 
                     // Xử lý khi người chơi nhấn 'Space' để chọn
-                    if (gp.keyH.SpacePressed && selectedChoice != -1 && timer <= 0) {
+                    if ((gp.keyH.SpacePressed || gp.mouseH.isClicked)&& selectedChoice != -1 && timer <= 0) {
                         dialogueIndex = 0; // Chuyển sang đoạn hội thoại tương ứng
                         index = selectedChoice + 1;
                         gp.keyH.SpacePressed = false;
@@ -156,7 +160,7 @@ public class NPC extends Entity {
                 // Sau khi hoàn thành lựa chọn, tiếp tục hiển thị đoạn hội thoại
                 else if (!isChoosing) {
                     // Sau khi chọn, nếu có đoạn hội thoại tiếp theo
-                    if (gp.keyH.SpacePressed && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
+                    if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
                         dialogueIndex++; // Chuyển sang đoạn tiếp theo
                         gp.keyH.SpacePressed = false;
                         timer = 20;
@@ -164,9 +168,7 @@ public class NPC extends Entity {
                 }
 
                 // Cập nhật lựa chọn
-                if (isChoosing) {
-                    selectedChoice = (gp.keyH.i + choices.length) % choices.length; // Đảm bảo chỉ chọn trong khoảng từ 0 đến số lượng lựa chọn
-                }
+
 
                 // Khi kết thúc hội thoại
                 if (dialogueIndex >= words.get(index).size() - 1) {

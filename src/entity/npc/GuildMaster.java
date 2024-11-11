@@ -129,7 +129,7 @@ public class GuildMaster extends Entity {
                 // Khi đến đoạn hội thoại yêu cầu lựa chọn
 
 
-                if (gp.keyH.SpacePressed && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
+                if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
                     dialogueIndex++; // Chuyển sang đoạn tiếp theo
                     gp.keyH.SpacePressed = false;
                     timer = 20;
@@ -191,7 +191,7 @@ public class GuildMaster extends Entity {
                 g2.setColor(Color.WHITE);
                 g2.drawString(prompt, promptX, promptY);
 
-                if (gp.keyH.SpacePressed && timer <= 0) {
+                if ((gp.keyH.SpacePressed) && timer <= 0) {
                     gp.player.combat = false;
                     gp.keyH.SpacePressed = false;
                     timer = 20;

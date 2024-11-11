@@ -3,6 +3,7 @@ package entity.player;
 import main.KeyHandler;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class Player extends Entity{
     public ArrayList<Entity> items = new ArrayList<>(8);
     public ArrayList<Integer> itemsCount = new ArrayList<>(8);
     public int pointer = 0;
+    public boolean dead = false;
     public boolean combat = true;
     // --------------------------Tham số cho nhiệm vụ--------------------------------------------
     public int kills = 0;
@@ -74,7 +76,7 @@ public class Player extends Entity{
         // Quy ước ở đây: [0]: lên - [1]: xuống - [2]: trái - [3]: phải
         importAndSliceVertical("/player/move/B_witch_idle.png",6, 0,0);
         importAndSliceVertical("/player/move/B_witch_run.png",8, 0,0);
-        importAndSliceVertical("/player/move/B_witch_take_damage.png",2, 0,0);
+        importAndSliceVertical("/player/move/B_witch_death.png",12, 0,0);
 
     }
     public void drawItems(Graphics2D g2) {
@@ -116,9 +118,9 @@ public class Player extends Entity{
             itemY += itemSize + 10; // Thêm khoảng cách giữa các item
         }
     }
-
+    boolean isDead = false;
     public void update() {
-        if (combat) {
+        if (combat && !isDead) {
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
@@ -126,7 +128,11 @@ public class Player extends Entity{
                 invisibleTimer = 150;
                 timer = 20;
                 HP--;
-                isHurt = true;
+                if(HP >= 0) isHurt = true;
+                else{
+
+                    isDead = true;
+                }
             }
 
             // Giới hạn HP và Energy
@@ -240,9 +246,46 @@ public class Player extends Entity{
             timer--;
             itemTimer--;
         }
+        else if(isDead){
+            aniCount = 2;
+            spriteCounter++;
+            if (spriteCounter > delay) {
+                if (spriteNum >= animations.get(aniCount).size() - 1) {
+                    dead = true;
+                    spriteNum = animations.get(aniCount).size() -1;
+                    isDead = false;
+                }
+                spriteNum++;
+                spriteCounter = 0;
+            }
+        }
     }
 
+    public void drawTorchEffect(Graphics2D g2, int playerX, int playerY) {
+        // Lưu trạng thái ban đầu của Graphics2D
+        Composite originalComposite = g2.getComposite();
 
+        // Kích thước và bán kính của vòng sáng quanh người chơi
+        int radius = 150;  // Bán kính của vùng sáng
+        float[] dist = {0.0f, 0.5f, 1.0f}; // Phân bố độ sáng (trong phạm vi 0-1)
+        Color[] colors = {new Color(1f, 1f, 1f, 0f), new Color(0f, 0f, 0f, 0.6f), new Color(0f, 0f, 0f, 1f)};
+
+        // Tạo một đối tượng RadialGradientPaint để làm hiệu ứng sáng mờ dần
+        RadialGradientPaint radialGradient = new RadialGradientPaint(
+                new Point2D.Float(playerX, playerY), // Tâm của ánh sáng
+                radius, // Bán kính
+                dist, // Vị trí của màu
+                colors // Các màu sắc từ trong ra ngoài
+        );
+
+        // Vẽ lớp phủ tối
+        g2.setPaint(radialGradient);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        g2.fillRect(0, 0, gp.getWidth(), gp.getHeight());
+
+        // Khôi phục trạng thái ban đầu
+        g2.setComposite(originalComposite);
+    }
     int hasKey = 0;
     boolean close = false;
     void closeItem(Graphics2D g2){
@@ -306,8 +349,10 @@ public class Player extends Entity{
 
         }
     }
+    public boolean isDarken = true;
     public void draw(Graphics2D g2) {
         if(combat) {
+
             detectMoveAndDraw(g2);  // Nhận diện chuyển động và vẽ nhân vật
             rectDraw(g2);  // Vẽ ô collision
         }
@@ -315,7 +360,9 @@ public class Player extends Entity{
     public ArrayList<Quest> quests = new ArrayList<>();
     @Override
     public void drawUI(Graphics2D g2, GamePanel gp){
-        if(combat){
+        if(combat && !isDead){
+
+            if(isDarken) drawTorchEffect(g2, gp.screenWidth/2, gp.screenHeight/2);
             if(!quests.isEmpty()) drawQuests(g2);
             drawItems(g2);  // Vẽ danh sách các item
 
