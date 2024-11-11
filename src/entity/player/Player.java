@@ -349,7 +349,7 @@ public class Player extends Entity{
 
         }
     }
-    public boolean isDarken = true;
+    public boolean isDarken = false;
     public void draw(Graphics2D g2) {
         if(combat) {
 

@@ -6,6 +6,7 @@ import entity.Entity;
 import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
+import entity.enemy.Knight;
 import entity.enemy.Slime;
 import entity.enemy.Soldier;
 import entity.npc.GuildMaster;
@@ -81,6 +82,8 @@ public class AssetSetter {
                 return new ShopKeeper(gp);
             case "Soldier":
                 return new Soldier(gp);
+            case "Knight":
+                return new Knight(gp);
             case "GuildMaster":
                 return new GuildMaster(gp);
             default:

@@ -25,7 +25,7 @@ public class NormalBullet extends Bullet{
         createExplosionEffect();
 
         // Tạo hiệu ứng laser nhấp nháy từ vị trí hiện tại đến mục tiêu
-        if (timer >= 1) {
+        if (timer >= 0) {
             createLaserEffect();
         }
 
@@ -38,8 +38,8 @@ public class NormalBullet extends Bullet{
 
     private void createExplosionEffect() {
         for (int i = 0; i < 8; i++) {
-            int offsetX = random.nextInt(20) - 10;
-            int offsetY = random.nextInt(20) - 10;
+            int offsetX = random.nextInt(10) - 5;
+            int offsetY = random.nextInt(10) - 5;
             Effect explosionFragment = new Effect(null, 8, 8, this.worldX + offsetX, this.worldY + offsetY, 8, gp, 4, 1.2, 1.2, targetX, targetY);
             gp.obj.add(explosionFragment);
         }
@@ -48,8 +48,8 @@ public class NormalBullet extends Bullet{
     private void createLaserEffect() {
         int startX = this.worldX;
         int startY = this.worldY;
-        int laserEndX = targetX + random.nextInt(10) - 5;  // Rung nhẹ
-        int laserEndY = targetY + random.nextInt(10) - 5;
+        int laserEndX = targetX + random.nextInt(5) - 2;  // Rung nhẹ
+        int laserEndY = targetY + random.nextInt(5) - 2;
 
         for (int i = 0; i < 7; i++) {
             int segmentX = startX + (laserEndX - startX) * i / 7;

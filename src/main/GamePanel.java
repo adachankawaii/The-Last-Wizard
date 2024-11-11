@@ -294,7 +294,7 @@ public class GamePanel extends JPanel implements Runnable{
         else if(player.combat && !gameOver){
             if(reloadTime <= 0){
                 if(mouseInfo == 1 && player.Energy >= 10){
-                    NormalBullet b = new NormalBullet(null,"bullet",12,12, 8, 8, player.worldX, player.worldY,20,this ,0, 12, 1, 1, mouseX, mouseY);
+                    NormalBullet b = new NormalBullet("/bullet/bullet.png","bullet",12,12, 8, 8, player.worldX, player.worldY,20,this ,0, 12, 1, 1, mouseX, mouseY);
                     obj.add(b);
                     Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5, mouseX, mouseY);
                     obj.add(c);
@@ -321,10 +321,10 @@ public class GamePanel extends JPanel implements Runnable{
         int currentHP = player.HP;
         int currentMap = map;
         ArrayList<String> currentItems = new ArrayList<>();
-        ArrayList<Integer> currentItemsCount = player.itemsCount;
         for(Entity item : player.items){
             currentItems.add(item.objName);
         }
+        ArrayList<Integer> currentItemsCount = new ArrayList<>(player.itemsCount);
         int currentMoney = player.money;
         // Tạo đối tượng GameSaveData với trạng thái hiện tại của game
         GameSaveData saveData = new GameSaveData(currentHP, currentMap, currentItems, currentItemsCount,currentMoney);
@@ -359,7 +359,7 @@ public class GamePanel extends JPanel implements Runnable{
             for(String item : saveData.items){
                 player.items.add(createObject(item));
             }
-            player.itemsCount = (saveData.itemsCount);
+            player.itemsCount = new ArrayList<>(saveData.itemsCount);
             player.money = saveData.money;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

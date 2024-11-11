@@ -20,18 +20,22 @@ public class Bullet extends Entity {
     public String root = null;
     double scaleX, scaleY;
     int targetX, targetY;
+    public boolean isSlash = false;
     public Bullet(String path, String name,int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY){
         this.solidArea = new Rectangle();
         animationDelay = 2;
         layer = 2;
-        if(path != null) importAndSlice(path, 4, 0,w);
+        if(path != null) {
+            if(!path.equals("/bullet/Slash.png")) importAndSlice(path, 4, 0, w);
+            else importAnImage(path, true);
+        }
         else{
             BufferedImage image = new BufferedImage(rectX, rectY, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = image.createGraphics();
 
-            int b = 255; // Giá trị ngẫu nhiên cho Blue
+            int b = 0; // Giá trị ngẫu nhiên cho Blue
 
-            Color randomColor = new Color(0, 250, b); // Tạo màu ngẫu nhiên từ RGB
+            Color randomColor = new Color(0, 0, 0, 0); // Tạo màu ngẫu nhiên từ RGB
             g2d.setColor(randomColor);
             g2d.fillRect(0, 0, rectX, rectY); // Vẽ hình chữ nhật đỏ kích thước 100x100
 
@@ -76,7 +80,7 @@ public class Bullet extends Entity {
 
         // Kích thước của hình ảnh
         int imageWidth = (int) (image.getWidth() * scaleX);
-        int imageHeight = (int) (image.getHeight() * scaleY);
+        int imageHeight = (int) (image.getHeight() * scaleY * (isSlash ? 2 : 1));
 
         // Tính toán chính xác tâm của hình ảnh
         int centerX = screenX + gp.tileSize / 2 ;
@@ -89,7 +93,7 @@ public class Bullet extends Entity {
         g.rotate(angle);
 
         // Lật hình ảnh theo trục Ox (nếu cần)
-        g.scale(-1, 1);
+        if(!isSlash) g.scale(-1, 1);
 
         // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
         g.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth), (int)(imageHeight), null);
@@ -130,7 +134,7 @@ public class Bullet extends Entity {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));
         }
-        if(!interact.isEmpty()) {
+        if(!interact.isEmpty() && death) {
             for(int i : interact){
                 if(gp.obj.get(i).objName != null) {
                     if (gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root) || gp.obj.get(i).isItem || Objects.equals(gp.obj.get(i).objName, "Coin")) {
