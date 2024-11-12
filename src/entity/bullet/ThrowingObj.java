@@ -3,6 +3,8 @@ package entity.bullet;
 import entity.effect.Effect;
 import main.GamePanel;
 
+import java.awt.*;
+
 public class ThrowingObj extends Bullet {
         int x0, y0;
         double vx, vy, gravity = 0.98; // Giá trị trọng lực
@@ -52,6 +54,15 @@ public class ThrowingObj extends Bullet {
             Effect a = new Effect(null, 16,16,this.worldX ,this.worldY,10, gp, 2, 2,2, targetX, targetY);
             gp.soundManager.play("wand");
             gp.obj.add(a);
+        }
+        @Override
+        public void specialDraw(Graphics2D g2){
+            int redBoxX = targetX - gp.player.worldX + gp.player.screenX - 30*9/ 4;
+            int redBoxY = targetY - gp.player.worldY + gp.player.screenY - 30*9/ 4;
+
+            // Vẽ hình vuông màu đỏ với kích thước bằng kích thước của vật thể
+            g2.setColor(new Color(255, 0, 0, 50)); // Màu đỏ trong suốt
+            g2.fillRect(redBoxX, redBoxY, 30*9/2, 30*9/2);
         }
     }
 

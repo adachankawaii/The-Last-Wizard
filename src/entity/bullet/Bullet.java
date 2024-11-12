@@ -26,7 +26,7 @@ public class Bullet extends Entity {
         animationDelay = 2;
         layer = 2;
         if(path != null) {
-            if(!path.equals("/bullet/Slash.png")) importAndSlice(path, 4, 0, w);
+            if(!path.equals("/bullet/Slash.png") && !path.equals("/bullet/Bow and Arrows.png")) importAndSlice(path, 4, 0, w);
             else importAnImage(path, true);
         }
         else{
@@ -66,6 +66,32 @@ public class Bullet extends Entity {
         this.scaleY = scaleY;
         this.objName = name;
     }
+    public BufferedImage makeSpriteRed(BufferedImage original) {
+        int width = original.getWidth();
+        int height = original.getHeight();
+
+        // Tạo một hình ảnh mới để lưu sprite đã chuyển đổi
+        BufferedImage redSprite = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int rgba = original.getRGB(x, y);
+                int alpha = (rgba >> 24) & 0xff;  // Lấy độ trong suốt của pixel
+
+                // Chỉ thay đổi màu sắc nếu pixel không trong suốt
+                if (alpha != 0) {
+                    // Đặt pixel thành màu đỏ nhưng giữ độ trong suốt ban đầu
+                    redSprite.setRGB(x, y, (alpha << 24) | 0x00FF0000);
+                } else {
+                    // Giữ nguyên pixel trong suốt
+                    redSprite.setRGB(x, y, rgba);
+                }
+            }
+        }
+
+        return redSprite;
+    }
+
     @Override
     public void draw(Graphics2D g, GamePanel gp) {
         // Tính toán vị trí trên màn hình
@@ -73,7 +99,7 @@ public class Bullet extends Entity {
         screenX = worldX - gp.player.worldX + gp.player.screenX;
 
         // Tạo hình ảnh
-        BufferedImage image = animations.get(aniCount).get(spriteNum);
+        BufferedImage image = Objects.equals(this.objName, "enemyBullet") ? makeSpriteRed(animations.get(aniCount).get(spriteNum)) : animations.get(aniCount).get(spriteNum);
 
         // Lưu lại trạng thái ban đầu của Graphics2D
         AffineTransform old = g.getTransform();
@@ -109,6 +135,7 @@ public class Bullet extends Entity {
                 solidArea.width,
                 solidArea.height
         );
+        specialDraw(g);
     }
 
 
@@ -134,7 +161,7 @@ public class Bullet extends Entity {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));
         }
-        if(!interact.isEmpty() && death) {
+        if(!interact.isEmpty()) {
             for(int i : interact){
                 if(gp.obj.get(i).objName != null) {
                     if (gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root) || gp.obj.get(i).isItem || Objects.equals(gp.obj.get(i).objName, "Coin") || (Objects.equals(this.objName, "enemyBullet") && gp.obj.get(i).isEnemy)) {
@@ -160,6 +187,10 @@ public class Bullet extends Entity {
     public void specialMethod(){
 
     }
+    public void specialDraw(Graphics2D g2){
+
+    }
+
     @Override
     public void onTriggerEnter(Entity entity){
         Effect a = new Effect("/effect/effect2.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 1, 1, targetX, targetY);

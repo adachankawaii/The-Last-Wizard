@@ -10,6 +10,7 @@ import entity.Entity;
 import entity.Items.Coin;
 import entity.bullet.Bullet;
 import entity.bullet.NormalBullet;
+import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
 import main.GamePanel;
 
@@ -30,7 +31,7 @@ public class Mage extends Entity {
         collision = true;
         direction = "down";
         HP = 8;
-        speed = 3;
+        speed = 4;
         isTrigger = false;
         this.gp = gp;
         rectGet(-8, -8, 48, 48);
@@ -86,7 +87,7 @@ public class Mage extends Entity {
             targetY = rootY;
         }
 
-        angle = Math.atan2(targetY - worldY, targetX - worldX);
+        angle = Math.atan2(targetY + (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldY, targetX + (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldX);
         double angleDegrees = Math.toDegrees(angle);
         if (angleDegrees > -22.5 && angleDegrees <= 22.5) {
             direction = "right";
@@ -112,7 +113,7 @@ public class Mage extends Entity {
             flip = false;
         }
 
-        gp.cCheck.checkObjectForObj(this);
+        //gp.cCheck.checkObjectForObj(this);
 
         int npcCenterX = worldX + gp.tileSize / 2;
         int npcCenterY = worldY + gp.tileSize / 2;
@@ -173,34 +174,8 @@ public class Mage extends Entity {
                 timer = 0;
             } if (distanceToTarget <= 4 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
                 // Tạo hiệu ứng tại vị trí hiện tại của enemy
-                Effect a = new Effect("/effect/effect1.png", (int) (gp.tileSize - 10), (int) (gp.tileSize - 10),
-                        this.worldX, this.worldY, 8, gp, 0, 2, 2, this.targetX, this.targetY);
-                gp.obj.add(a);
-
-                // Các hướng di chuyển của viên đạn (8 hướng)
-                int[][] directions = {
-                        {0, -1},  // Lên
-                        {0, 1},   // Xuống
-                        {-1, 0},  // Trái
-                        {1, 0},   // Phải
-                        {-1, -1}, // Trái trên
-                        {-1, 1},  // Trái dưới
-                        {1, -1},  // Phải trên
-                        {1, 1}    // Phải dưới
-                };
-
-                // Tạo đạn cho mỗi hướng
-                for (int[] dir : directions) {
-                    int targetX = this.worldX + dir[0] * gp.tileSize;
-                    int targetY = this.worldY + dir[1] * gp.tileSize;
-
-                    NormalBullet b = new NormalBullet(
-                            null, "enemyBullet", 12, 12, 8, 8,
-                            this.worldX, this.worldY, 20, gp, 0, 7, 1, 1, targetX, targetY
-                    );
-                    b.root = this.objName;
-                    gp.obj.add(b);
-                }
+                ThrowingObj b = new ThrowingObj(null,"enemyBullet", 20, 20,1,1, worldX, worldY,50,gp ,0, 7, 4, 4, targetX, targetY);
+                gp.obj.add(b);
 
                 // Đặt lại thời gian chờ
                 delayTime = 50;
@@ -288,7 +263,6 @@ public class Mage extends Entity {
 
         // Lật hình ảnh theo trục Ox (nếu cần)
         if(flip) g2.scale(-1, 1);
-
         // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
         g2.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth) , (int)(imageHeight), null);
 

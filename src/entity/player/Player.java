@@ -95,7 +95,7 @@ public class Player extends Entity{
         g2.drawString("x" + money, itemX + itemSize, itemY + itemSize/2);
         itemY += 10 + itemSize;
         // Lặp qua các item trong danh sách
-        for (int i = 0; i < items.size(); i++) {
+        for (int i = 0; i < itemsCount.size(); i++) {
             Entity item = items.get(i); // Lấy item hiện tại
 
             // Nếu item này là item mà pointer đang chỉ đến, vẽ khung đỏ
@@ -120,6 +120,16 @@ public class Player extends Entity{
     }
     boolean isDead = false;
     public void update() {
+        for (int i = itemsCount.size() - 1; i >= 0; i--) {
+            if (itemsCount.get(i) <= 0) {
+                items.remove(i);
+                itemsCount.remove(i);
+                if (pointer >= items.size() && !items.isEmpty()) {
+                    pointer = 0;
+                }
+            }
+        }
+
         if (combat && !isDead) {
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi

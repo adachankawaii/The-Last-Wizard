@@ -25,9 +25,6 @@ public class NormalBullet extends Bullet{
         createExplosionEffect();
 
         // Tạo hiệu ứng laser nhấp nháy từ vị trí hiện tại đến mục tiêu
-        if (timer >= 0) {
-            createLaserEffect();
-        }
 
         // Tạo hiệu ứng ánh sáng cho đường đi của viên đạn
         if (timer >= 3) {
@@ -45,20 +42,7 @@ public class NormalBullet extends Bullet{
         }
     }
 
-    private void createLaserEffect() {
-        int startX = this.worldX;
-        int startY = this.worldY;
-        int laserEndX = targetX + random.nextInt(5) - 2;  // Rung nhẹ
-        int laserEndY = targetY + random.nextInt(5) - 2;
 
-        for (int i = 0; i < 7; i++) {
-            int segmentX = startX + (laserEndX - startX) * i / 7;
-            int segmentY = startY + (laserEndY - startY) * i / 7;
-
-            Effect laserSegment = new Effect(null, 8, 8, segmentX, segmentY, 5, gp, 3, 1, 1, laserEndX, laserEndY);
-            gp.obj.add(laserSegment);
-        }
-    }
 
     private void createGlowEffect() {
         Effect glowEffect = new Effect(null, 16, 16,

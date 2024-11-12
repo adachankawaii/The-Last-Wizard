@@ -29,7 +29,7 @@ public class Knight extends Entity {
         collision = true;
         direction = "down";
         HP = 8;
-        speed = 3;
+        speed = 4;
         isTrigger = false;
         this.gp = gp;
         rectGet(0, 0, 32, 48);
@@ -79,7 +79,7 @@ public class Knight extends Entity {
             targetY = rootY;
         }
 
-        angle = Math.atan2(targetY - worldY, targetX - worldX);
+        angle = Math.atan2(targetY+ (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldY, targetX + (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldX);
         double angleDegrees = Math.toDegrees(angle);
         if (angleDegrees > -22.5 && angleDegrees <= 22.5) {
             direction = "right";
@@ -105,7 +105,7 @@ public class Knight extends Entity {
             flip = false;
         }
 
-        gp.cCheck.checkObjectForObj(this);
+        //gp.cCheck.checkObjectForObj(this);
 
         int npcCenterX = worldX + gp.tileSize / 2;
         int npcCenterY = worldY + gp.tileSize / 2;
@@ -131,13 +131,13 @@ public class Knight extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 1.5 * gp.tileSize && gp.player.alpha >= 1f) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 12 * gp.tileSize && distanceToTarget >= 1.5 * gp.tileSize && gp.player.alpha >= 1f) {
                 if (aniCount != 1) {
                     spriteNum = 0;
                     spriteCounter = 0;
                 }
                 aniCount = 1;
-                animationDelay = 3;
+                animationDelay = 7;
                 switch (direction) {
                     case "up":
                         worldY -= speed;

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Random;
 import entity.Entity;
 import entity.Items.Coin;
+import entity.bullet.Bullet;
 import entity.bullet.NormalBullet;
 import entity.effect.Effect;
 import main.GamePanel;
@@ -104,7 +105,7 @@ public class Soldier extends Entity {
             flip = false;
         }
 
-        gp.cCheck.checkObjectForObj(this);
+        //gp.cCheck.checkObjectForObj(this);
 
         int npcCenterX = worldX + gp.tileSize / 2;
         int npcCenterY = worldY + gp.tileSize / 2;
@@ -174,7 +175,7 @@ public class Soldier extends Entity {
                     aniCount = 2;
                     animationDelay = 10;
                     if (spriteNum == animations.get(aniCount).size() - 1) {
-                        NormalBullet b = new NormalBullet(null, "enemyBullet", 12,12, 8, 8, this.worldX, this.worldY, 50, gp, 0, 7, 1, 1, targetX, targetY);
+                        Bullet b = new Bullet("/bullet/Bow and Arrows.png", "enemyBullet", 12,12, 8, 8, this.worldX, this.worldY, 50, gp, 0, 7, 1, 1, targetX, targetY);
                         b.root = this.objName;
                         gp.obj.add(b);
                         timer = 0;

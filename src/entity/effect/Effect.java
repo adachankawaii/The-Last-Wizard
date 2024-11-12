@@ -94,11 +94,15 @@ public class Effect extends Entity {
 
     @Override
     public void update() {
-        spriteCounter++;
-        if(spriteCounter > 2) {
-            spriteNum++;
-            if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
-            spriteCounter = 0;
+        if(animations.get(aniCount).size() == 1){
+            spriteNum  = 0;
+        }else {
+            spriteCounter++;
+            if (spriteCounter > 2) {
+                spriteNum++;
+                if (spriteNum >= animations.get(aniCount).size() - 1) spriteNum = 0;
+                spriteCounter = 0;
+            }
         }
         isTriggerOn = false;
         if (timer <= 60) {
