@@ -37,6 +37,7 @@ public class Knight extends Entity {
         aniCount = 1;
         map.put("bullet", 1);
         map.put("Bigbullet", 3);
+        isEnemy = true;
     }
     boolean awake = false;
     public void getImage() {
@@ -168,14 +169,14 @@ public class Knight extends Entity {
                         break;
                 }
                 isSlash = false;
-                timer = 0;
+                timer = 25;
             } else if (distanceToTarget <= 1.5 * gp.tileSize && gp.player.alpha >= 1) {
                 if (timer >= 25) {
                     if(aniCount != 2) spriteNum = 0;
                     aniCount = 2;
                     animationDelay = 2;
-                    if(spriteNum == 1 && !isSlash){
-                        Bullet b = new Bullet("/bullet/Slash.png", "enemyBullet", 0,0, 8*6, 8*6, this.worldX, this.worldY, 7, gp, 0, 6, 1, 1, targetX, targetY);
+                    if(spriteNum == 4 && !isSlash){
+                        Bullet b = new Bullet("/bullet/Slash.png", "enemyBullet", 0,0, 8*6, 8*6, this.worldX, this.worldY, 3, gp, 0, 10, 1, 1, targetX, targetY);
                         b.isSlash = true;
                         b.root = this.objName;
                         b.death = false;

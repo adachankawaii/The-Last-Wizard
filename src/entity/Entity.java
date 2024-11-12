@@ -34,6 +34,7 @@ public class Entity{
     public boolean collision;
     public boolean isTrigger;
     public boolean isTriggerOn = false;
+    public boolean isEnemy = false;
     protected boolean isHurt = false;
     // Dành cho importImage
     protected int aniCount = 0;

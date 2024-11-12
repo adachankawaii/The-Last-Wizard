@@ -137,7 +137,7 @@ public class Bullet extends Entity {
         if(!interact.isEmpty() && death) {
             for(int i : interact){
                 if(gp.obj.get(i).objName != null) {
-                    if (gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root) || gp.obj.get(i).isItem || Objects.equals(gp.obj.get(i).objName, "Coin")) {
+                    if (gp.obj.get(i).objName.contains("ullet") || gp.obj.get(i).objName.equals(root) || gp.obj.get(i).isItem || Objects.equals(gp.obj.get(i).objName, "Coin") || (Objects.equals(this.objName, "enemyBullet") && gp.obj.get(i).isEnemy)) {
                         isTriggerOn = false;
                     } else{
                         gp.obj.get(i).onTriggerEnter(this);

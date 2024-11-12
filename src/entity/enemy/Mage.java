@@ -9,11 +9,12 @@ import java.util.Random;
 import entity.Entity;
 import entity.Items.Coin;
 import entity.bullet.Bullet;
+import entity.bullet.NormalBullet;
 import entity.effect.Effect;
 import main.GamePanel;
 
 
-public class Slime extends Entity {
+public class Mage extends Entity {
     int timer = 0;
     int delayTime = 0;
     int HP;
@@ -23,9 +24,9 @@ public class Slime extends Entity {
     boolean back = false;
     private int targetX, targetY;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
-    public Slime(GamePanel gp) {
+    public Mage(GamePanel gp) {
         layer = 2;
-        objName = "Slime";
+        objName = "MageSeeker";
         collision = true;
         direction = "down";
         HP = 8;
@@ -43,22 +44,17 @@ public class Slime extends Entity {
     public void getImage() {
 
         // CHUYỂN ĐỘNG IDLE CỦA SLIME.
-        // [1] - IDLE
-        importEachImage(new String[]{"/enemy/Slime/slime_0.png",
-                "/enemy/Slime/slime_1.png","/enemy/Slime/slime_2.png",
-                "/enemy/Slime/slime_3.png", "/enemy/Slime/slime_4.png",
-                "/enemy/Slime/slime_5.png", "/enemy/Slime/slime_6.png"}, true);
-
+        importAndSlice("/enemy/MageSeeker/Character-Idle-Sprite-Sheet.png", 6,0,0);
+        importAndSlice("/enemy/MageSeeker/Character-Run-Sprite-Sheet.png", 8, 0,0);
         // [2] - BỊ TẤN CÔNG
 
         // [3] - TẤN CÔNG
 
         // [4] - DIE
     }
-    boolean isJumping = false;
+
     @Override
     public void update() {
-        aniCount = 0;
         spriteCounter++;
         if (spriteCounter > animationDelay) {
             spriteNum++;
@@ -142,8 +138,7 @@ public class Slime extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 1 * gp.tileSize && !isJumping && gp.player.alpha >= 1f) {
-                objName = "Slime";
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 4 * gp.tileSize&& gp.player.alpha >= 1f) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -174,17 +169,46 @@ public class Slime extends Entity {
                         worldY += (int) (speed / Math.sqrt(2));
                         break;
                 }
-
+                aniCount = 1;
                 timer = 0;
-            } else if (distanceToTarget <= 1 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
-                isJumping = true;
-                delayTime = 30;
-            }
-            if (isJumping) {
-                Bullet a = new Bullet("/effect/effect1.png","Slime_attack",-10,-10,(int)(gp.tileSize-10),(int)(gp.tileSize-10),this.worldX,this.worldY,8, gp, 0, 0,2, 2, this.targetX, this.targetY);
-                a.death = false;
+            } if (distanceToTarget <= 4 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
+                // Tạo hiệu ứng tại vị trí hiện tại của enemy
+                Effect a = new Effect("/effect/effect1.png", (int) (gp.tileSize - 10), (int) (gp.tileSize - 10),
+                        this.worldX, this.worldY, 8, gp, 0, 2, 2, this.targetX, this.targetY);
                 gp.obj.add(a);
-                isJumping = false;
+
+                // Các hướng di chuyển của viên đạn (8 hướng)
+                int[][] directions = {
+                        {0, -1},  // Lên
+                        {0, 1},   // Xuống
+                        {-1, 0},  // Trái
+                        {1, 0},   // Phải
+                        {-1, -1}, // Trái trên
+                        {-1, 1},  // Trái dưới
+                        {1, -1},  // Phải trên
+                        {1, 1}    // Phải dưới
+                };
+
+                // Tạo đạn cho mỗi hướng
+                for (int[] dir : directions) {
+                    int targetX = this.worldX + dir[0] * gp.tileSize;
+                    int targetY = this.worldY + dir[1] * gp.tileSize;
+
+                    NormalBullet b = new NormalBullet(
+                            null, "enemyBullet", 12, 12, 8, 8,
+                            this.worldX, this.worldY, 20, gp, 0, 7, 1, 1, targetX, targetY
+                    );
+                    b.root = this.objName;
+                    gp.obj.add(b);
+                }
+
+                // Đặt lại thời gian chờ
+                delayTime = 50;
+                aniCount = 0;
+            }
+
+            else {
+                aniCount = 0;
             }
         }
         else{
@@ -218,6 +242,7 @@ public class Slime extends Entity {
                     worldY += (int) (speed / Math.sqrt(2));
                     break;
             }
+            aniCount = 1;
         }
         collisionOn = false;
         delayTime--;

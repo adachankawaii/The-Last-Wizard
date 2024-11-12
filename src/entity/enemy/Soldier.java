@@ -36,6 +36,7 @@ public class Soldier extends Entity {
         aniCount = 1;
         map.put("bullet", 1);
         map.put("Bigbullet", 3);
+        isEnemy = true;
     }
     boolean awake = false;
     public void getImage() {
@@ -167,7 +168,7 @@ public class Soldier extends Entity {
                         break;
                 }
 
-                timer = 0;
+                timer = 50;
             } else if (distanceToTarget <= 9 * gp.tileSize && gp.player.alpha >= 1) {
                 if (timer >= 50) {
                     aniCount = 2;
