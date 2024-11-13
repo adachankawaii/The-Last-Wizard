@@ -590,12 +590,14 @@ public class GamePanel extends JPanel implements Runnable{
         else {
             // Các phần còn lại của game
             if(loadingTime >= 0){
+                player.combat = false;
                 drawLoadingScreen(g2);
                 if(loadingTime <= 0) {
                     resetGame();
                     fadingIn = true;
                     setupGame();
                     loadingTime = -10;
+                    player.combat = true;
                 }
             }
             else if (fadingIn) {

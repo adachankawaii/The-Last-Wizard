@@ -6,10 +6,7 @@ import entity.Entity;
 import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
-import entity.enemy.Knight;
-import entity.enemy.Mage;
-import entity.enemy.Slime;
-import entity.enemy.Soldier;
+import entity.enemy.*;
 import entity.npc.GuildMaster;
 import entity.npc.NPC;
 import entity.npc.Portal;
@@ -87,6 +84,8 @@ public class AssetSetter {
                 return new Knight(gp);
             case "MageSeeker":
                 return new Mage(gp);
+            case "Golem":
+                return new Golem(gp);
             case "GuildMaster":
                 return new GuildMaster(gp);
             default:

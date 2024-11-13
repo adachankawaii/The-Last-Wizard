@@ -66,6 +66,9 @@ public class Bullet extends Entity {
         this.scaleY = scaleY;
         this.objName = name;
     }
+    protected void getSprite(){
+
+    }
     public BufferedImage makeSpriteRed(BufferedImage original) {
         int width = original.getWidth();
         int height = original.getHeight();
@@ -141,12 +144,17 @@ public class Bullet extends Entity {
 
     @Override
     public void update() {
-        spriteCounter++;
-        if(spriteCounter > animationDelay) {
-            spriteNum++;
-            if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
-            spriteCounter = 0;
-            specialMethod();
+        if(animations.get(aniCount).size() > 1) {
+            spriteCounter++;
+            if (spriteCounter > animationDelay) {
+                spriteNum++;
+                if (spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
+                spriteCounter = 0;
+                specialMethod();
+            }
+        }
+        else{
+            spriteNum = 0;
         }
 
         collisionOn = false;

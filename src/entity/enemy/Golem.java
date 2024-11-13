@@ -5,15 +5,15 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Random;
-
 import entity.Entity;
 import entity.Items.Coin;
 import entity.bullet.Bullet;
+import entity.bullet.NormalBullet;
 import entity.effect.Effect;
 import main.GamePanel;
 
 
-public class Slime extends Entity {
+public class Golem extends Entity {
     int timer = 0;
     int delayTime = 0;
     int HP;
@@ -23,16 +23,16 @@ public class Slime extends Entity {
     boolean back = false;
     private int targetX, targetY;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
-    public Slime(GamePanel gp) {
+    public Golem(GamePanel gp) {
         layer = 2;
-        objName = "Slime";
+        objName = "Golem";
         collision = true;
         direction = "down";
         HP = 8;
-        speed = 3;
+        speed = 4;
         isTrigger = false;
         this.gp = gp;
-        rectGet(-8, -8, 48, 48);
+        rectGet(70*2, 70*2, 48*2, 48*2);
         getImage();
         aniCount = 1;
         map.put("bullet", 1);
@@ -41,24 +41,14 @@ public class Slime extends Entity {
     }
     boolean awake = false;
     public void getImage() {
-
-        // CHUYỂN ĐỘNG IDLE CỦA SLIME.
-        // [1] - IDLE
-        importEachImage(new String[]{"/enemy/Slime/slime_0.png",
-                "/enemy/Slime/slime_1.png","/enemy/Slime/slime_2.png",
-                "/enemy/Slime/slime_3.png", "/enemy/Slime/slime_4.png",
-                "/enemy/Slime/slime_5.png", "/enemy/Slime/slime_6.png"}, true);
-
-        // [2] - BỊ TẤN CÔNG
-
-        // [3] - TẤN CÔNG
-
-        // [4] - DIE
+        importAndSlice("/boss/Idle.png", 4, 0,0);
+        importAndSlice("/boss/Attack1.png", 8, 0,0);
+        importAndSlice("/boss/Attack2.png", 8, 0,0);
+        importAndSlice("/boss/die.png", 10, 0, 0);
     }
-    boolean isJumping = false;
+    boolean isSlash = false;
     @Override
     public void update() {
-        aniCount = 0;
         spriteCounter++;
         if (spriteCounter > animationDelay) {
             spriteNum++;
@@ -90,7 +80,7 @@ public class Slime extends Entity {
             targetY = rootY;
         }
 
-        angle = Math.atan2(targetY - worldY, targetX - worldX);
+        angle = Math.atan2(targetY+ (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldY, targetX + (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldX);
         double angleDegrees = Math.toDegrees(angle);
         if (angleDegrees > -22.5 && angleDegrees <= 22.5) {
             direction = "right";
@@ -116,7 +106,7 @@ public class Slime extends Entity {
             flip = false;
         }
 
-        gp.cCheck.checkObjectForObj(this);
+        //gp.cCheck.checkObjectForObj(this);
 
         int npcCenterX = worldX + gp.tileSize / 2;
         int npcCenterY = worldY + gp.tileSize / 2;
@@ -142,8 +132,13 @@ public class Slime extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 1 * gp.tileSize && !isJumping && gp.player.alpha >= 1f) {
-                objName = "Slime";
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 12 * gp.tileSize && distanceToTarget >= 1.5 * gp.tileSize && gp.player.alpha >= 1f) {
+                if (aniCount != 0) {
+                    spriteNum = 0;
+                    spriteCounter = 0;
+                }
+                aniCount = 0;
+                animationDelay = 7;
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -174,20 +169,49 @@ public class Slime extends Entity {
                         worldY += (int) (speed / Math.sqrt(2));
                         break;
                 }
-
+                isSlash = false;
+                timer = 25;
+            } else if (distanceToTarget <= 1.5 * gp.tileSize && gp.player.alpha >= 1) {
+                if (timer >= 25) {
+                    if(aniCount != 2) spriteNum = 0;
+                    aniCount = 2;
+                    animationDelay = 2;
+                    if(spriteNum == 4 && !isSlash){
+                        Bullet b = new Bullet("/bullet/Slash.png", "enemyBullet", 0,0, 8*6, 8*6, this.worldX, this.worldY, 3, gp, 0, 10, 1, 1, targetX, targetY);
+                        b.isSlash = true;
+                        b.root = this.objName;
+                        b.death = false;
+                        gp.obj.add(b);
+                        isSlash = true;
+                    }
+                    if (spriteNum == animations.get(aniCount).size() - 1) {
+                        isSlash = false;
+                        timer = 0;
+                        spriteNum = 0;
+                    }
+                } else{
+                    aniCount = 0;
+                    animationDelay = 7;
+                    isSlash = false;
+                }
+            } else {
+                if (aniCount != 0) {
+                    spriteNum = 0;
+                    spriteCounter = 0;
+                }
+                aniCount = 0;
+                animationDelay = 7;
                 timer = 0;
-            } else if (distanceToTarget <= 1 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
-                isJumping = true;
-                delayTime = 30;
-            }
-            if (isJumping) {
-                Bullet a = new Bullet("/effect/effect1.png","Slime_attack",-10,-10,(int)(gp.tileSize-10),(int)(gp.tileSize-10),this.worldX,this.worldY,8, gp, 0, 0,2, 2, this.targetX, this.targetY);
-                a.death = false;
-                gp.obj.add(a);
-                isJumping = false;
+                isSlash = false;
             }
         }
         else{
+            if (aniCount != 0) {
+                spriteNum = 0;
+                spriteCounter = 0;
+            }
+            aniCount = 0;
+            animationDelay = 7;
             switch (direction) {
                 case "up":
                     worldY -= speed;
@@ -218,9 +242,11 @@ public class Slime extends Entity {
                     worldY += (int) (speed / Math.sqrt(2));
                     break;
             }
+            isSlash = false;
         }
         collisionOn = false;
         delayTime--;
+
     }
 
     boolean flip = false;
@@ -249,12 +275,12 @@ public class Slime extends Entity {
         AffineTransform old = g2.getTransform();
 
         // Kích thước của hình ảnh
-        int imageWidth = (int)(gp.tileSize*3/2);
-        int imageHeight = (int)(gp.tileSize*3/2);
+        int imageWidth = (int)(image.getWidth()*2)*2;
+        int imageHeight = (int)(image.getHeight()*2)*2;
 
         // Tính toán chính xác tâm của hình ảnh
-        int centerX = screenX + gp.tileSize / 2 ;
-        int centerY = screenY + gp.tileSize / 2;
+        int centerX = screenX + imageWidth / 2 ;
+        int centerY = screenY + imageHeight / 2;
 
         // Dịch hệ tọa độ đến tâm của vật thể (tâm của hình ảnh)
         g2.translate(centerX, centerY);
@@ -287,8 +313,10 @@ public class Slime extends Entity {
 
     @Override
     public void onTriggerEnter(Entity entity){
+
         if(map.containsKey(entity.objName) && delayTime <= 0){
             awake = true;
+            System.out.println(entity.objName);
             delayTime = 10;
             HP-= map.get(entity.objName);
             isHurt = true;
