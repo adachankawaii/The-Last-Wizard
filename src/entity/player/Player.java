@@ -120,7 +120,7 @@ public class Player extends Entity{
     }
     boolean isDead = false;
     public void update() {
-        System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
+        // System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
         for (int i = itemsCount.size() - 1; i >= 0; i--) {
             if (itemsCount.get(i) <= 0) {
                 items.remove(i);

@@ -36,6 +36,11 @@ public class TileManager {
                     tile[i] = new Tile();
                     tile[i].image = ImageIO.read(new File("res/tiles/map2/" + i + ".png"));
                 }
+            } else if (gp.map == 3) {
+                for (int i = 1; i <= 2; i++) {
+                    tile[i] = new Tile();
+                    tile[i].image = ImageIO.read(new File("res/tiles/map3/" + i + ".png"));
+                }
             }
         }catch (Exception e) {
             e.printStackTrace();

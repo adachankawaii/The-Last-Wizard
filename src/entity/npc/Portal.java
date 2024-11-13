@@ -26,7 +26,7 @@ public class Portal extends Entity {
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        setWords("Do you want to go to map 2, end");
+        setWords("Do you want to go the next map?, end");
         setWords("Key required,end");
         setWords("..., end");
         setWords("end");
@@ -34,7 +34,7 @@ public class Portal extends Entity {
     }
 
     public void getNPCImage() {
-        importAnImage("/npc/merchant.png", true);
+        importAndSliceVertical("/npc/portal.png", 6, 0,0);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class Portal extends Entity {
                                 gp.fadeAlpha = 0;
                                 gp.fadingIn = true;
                                 index = 3;
-                                gp.map = 2;
+                                gp.map++;
                                 gp.nextMap();
                             }
                         }
