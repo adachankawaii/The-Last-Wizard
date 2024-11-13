@@ -3,17 +3,23 @@ package entity.enemy;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
+
 import entity.Entity;
 import entity.Items.Coin;
 import entity.bullet.Bullet;
 import entity.bullet.NormalBullet;
+import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
+import entity.player.Quest;
 import main.GamePanel;
 
 
 public class Golem extends Entity {
+    Vector<Vector<String>> words = new Vector<>();
+    int index = 0;
+    int dialogueIndex = 0;
     int timer = 0;
     int delayTime = 0;
     int HP;
@@ -22,22 +28,28 @@ public class Golem extends Entity {
     private int rootX = -1, rootY = -1;
     boolean back = false;
     private int targetX, targetY;
+    int moveSet = 0;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
     public Golem(GamePanel gp) {
         layer = 2;
         objName = "Golem";
         collision = true;
         direction = "down";
-        HP = 8;
+        HP = 25;
         speed = 4;
         isTrigger = false;
         this.gp = gp;
-        rectGet(70*2, 70*2, 48*2, 48*2);
+        rectGet(70*2, 70*2, 48*2, 52*2);
         getImage();
         aniCount = 1;
         map.put("bullet", 1);
         map.put("Bigbullet", 3);
         isEnemy = true;
+        addWords(new String[]{"Must","Protect","Her","end"});
+    }
+    public void addWords(String[] inputWords) {
+        words.add(new Vector<>());
+        words.get(words.size() - 1).addAll(List.of(inputWords));
     }
     boolean awake = false;
     public void getImage() {
@@ -46,224 +58,215 @@ public class Golem extends Entity {
         importAndSlice("/boss/Attack2.png", 8, 0,0);
         importAndSlice("/boss/die.png", 10, 0, 0);
     }
-    boolean isSlash = false;
+    int shootCounter = 0;
+    boolean isResting = false;
+    int restCounter = 160;
+    boolean startTalk = false;
+    boolean done = false;
     @Override
     public void update() {
+        int npcCenterX = worldX + solidArea.x + solidArea.width / 2;
+        int npcCenterY = worldY + solidArea.y + solidArea.height / 2;
         spriteCounter++;
         if (spriteCounter > animationDelay) {
             spriteNum++;
-            if (spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
+            if (spriteNum >= animations.get(aniCount).size()) {
+                if(!dead) spriteNum = 0;
+                else spriteNum = animations.get(aniCount).size() - 1;
+            }
             spriteCounter = 0;
         }
-        isTriggerOn = false;
-        timer++;
 
-        if (rootY == -1) {
-            rootY = this.worldY;
-            rootX = this.worldX;
-        }
-        // Kiểm tra khoảng cách giữa root và enemy
-        double distanceToRoot = Math.sqrt(Math.pow(rootX - worldX, 2) + Math.pow(rootY - worldY, 2));
-        if (!back && distanceToRoot > 25 * gp.tileSize) {
-            back = true;
-            HP = 8;
-            awake = false;
-        }
-        if(back && distanceToRoot <= 0.5*gp.tileSize){
-            back  =false;
-        }
-        if (!back) {
+        timer--;
+        if(!dead){
+            if (rootY == -1) {
+                rootY = this.worldY;
+                rootX = this.worldX;
+            }
+
+
+            int playerCenterX = targetX + gp.player.solidArea.x + gp.player.solidArea.width / 2;
+            int playerCenterY = targetY + gp.player.solidArea.y + gp.player.solidArea.height / 2;
+            angle = Math.atan2(
+                    targetY + (new Random().nextInt(gp.tileSize) - gp.tileSize / 2) - (worldY + solidArea.y + solidArea.height / 2),
+                    targetX + (new Random().nextInt(gp.tileSize) - gp.tileSize / 2) - (worldX + solidArea.x + solidArea.width / 2)
+            );
+
+            double angleDegrees = Math.toDegrees(angle);
+            if (angleDegrees > -22.5 && angleDegrees <= 22.5) {
+                direction = "right";
+                flip = false;
+            } else if (angleDegrees > 22.5 && angleDegrees <= 67.5) {
+                direction = "down-right";
+                flip = false;
+            } else if (angleDegrees > 67.5 && angleDegrees <= 112.5) {
+                direction = "down";
+            } else if (angleDegrees > 112.5 && angleDegrees <= 157.5) {
+                direction = "down-left";
+                flip = true;
+            } else if (angleDegrees > 157.5 || angleDegrees <= -157.5) {
+                direction = "left";
+                flip = true;
+            } else if (angleDegrees > -157.5 && angleDegrees <= -112.5) {
+                direction = "up-left";
+                flip = true;
+            } else if (angleDegrees > -112.5 && angleDegrees <= -67.5) {
+                direction = "up";
+            } else if (angleDegrees > -67.5 && angleDegrees <= -22.5) {
+                direction = "up-right";
+                flip = false;
+            }
+            double distanceToTarget = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
             targetX = gp.player.worldX;
             targetY = gp.player.worldY;
-        } else {
-            targetX = rootX;
-            targetY = rootY;
-        }
-
-        angle = Math.atan2(targetY+ (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldY, targetX + (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldX);
-        double angleDegrees = Math.toDegrees(angle);
-        if (angleDegrees > -22.5 && angleDegrees <= 22.5) {
-            direction = "right";
-            flip = false;
-        } else if (angleDegrees > 22.5 && angleDegrees <= 67.5) {
-            direction = "down-right";
-            flip = false;
-        } else if (angleDegrees > 67.5 && angleDegrees <= 112.5) {
-            direction = "down";
-        } else if (angleDegrees > 112.5 && angleDegrees <= 157.5) {
-            direction = "down-left";
-            flip = true;
-        } else if (angleDegrees > 157.5 || angleDegrees <= -157.5) {
-            direction = "left";
-            flip = true;
-        } else if (angleDegrees > -157.5 && angleDegrees <= -112.5) {
-            direction = "up-left";
-            flip = true;
-        } else if (angleDegrees > -112.5 && angleDegrees <= -67.5) {
-            direction = "up";
-        } else if (angleDegrees > -67.5 && angleDegrees <= -22.5) {
-            direction = "up-right";
-            flip = false;
-        }
-
-        //gp.cCheck.checkObjectForObj(this);
-
-        int npcCenterX = worldX + gp.tileSize / 2;
-        int npcCenterY = worldY + gp.tileSize / 2;
-
-        int playerCenterX = targetX + gp.tileSize / 2;
-        int playerCenterY = targetY + gp.tileSize / 2;
-
-        double distanceToTarget = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
-        gp.cCheck.checkMapObject(this);
-
-        // Xử lý va chạm với tường và di chuyển sang hai bên nếu có va chạm
-        /*if (collisionOn) {
-            Random rand = new Random();
-            if (rand.nextBoolean()) {
-                // Thử di chuyển lên hoặc xuống khi gặp va chạm
-                if (direction.contains("up")) worldY += speed;
-                else if (direction.contains("down")) worldY -= speed;
-            } else {
-                // Thử di chuyển trái hoặc phải khi gặp va chạm
-                if (direction.contains("left")) worldX += speed;
-                else if (direction.contains("right")) worldX -= speed;
+            if (distanceToTarget <= 10 * gp.tileSize && !done) {
+                startTalk = true;
+                done = true;
             }
-            collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
-        }*/
-        if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 12 * gp.tileSize && distanceToTarget >= 1.5 * gp.tileSize && gp.player.alpha >= 1f) {
-                if (aniCount != 0) {
-                    spriteNum = 0;
-                    spriteCounter = 0;
-                }
-                aniCount = 0;
-                animationDelay = 7;
-                switch (direction) {
-                    case "up":
-                        worldY -= speed;
-                        break;
-                    case "down":
-                        worldY += speed;
-                        break;
-                    case "left":
-                        worldX -= speed;
-                        break;
-                    case "right":
-                        worldX += speed;
-                        break;
-                    case "up-right":
-                        worldX += (int) (speed / Math.sqrt(2));
-                        worldY -= (int) (speed / Math.sqrt(2));
-                        break;
-                    case "up-left":
-                        worldX -= (int) (speed / Math.sqrt(2));
-                        worldY -= (int) (speed / Math.sqrt(2));
-                        break;
-                    case "down-right":
-                        worldX += (int) (speed / Math.sqrt(2));
-                        worldY += (int) (speed / Math.sqrt(2));
-                        break;
-                    case "down-left":
-                        worldX -= (int) (speed / Math.sqrt(2));
-                        worldY += (int) (speed / Math.sqrt(2));
-                        break;
-                }
-                isSlash = false;
-                timer = 25;
-            } else if (distanceToTarget <= 1.5 * gp.tileSize && gp.player.alpha >= 1) {
-                if (timer >= 25) {
-                    if(aniCount != 2) spriteNum = 0;
-                    aniCount = 2;
-                    animationDelay = 2;
-                    if(spriteNum == 4 && !isSlash){
-                        Bullet b = new Bullet("/bullet/Slash.png", "enemyBullet", 0,0, 8*6, 8*6, this.worldX, this.worldY, 3, gp, 0, 10, 1, 1, targetX, targetY);
-                        b.isSlash = true;
-                        b.root = this.objName;
-                        b.death = false;
-                        gp.obj.add(b);
-                        isSlash = true;
+            if (awake) {
+                if (isResting) {
+                    // Giai đoạn nghỉ
+                    restCounter--;
+                    if (distanceToTarget >= 5 * gp.tileSize) move(direction); // Di chuyển trong thời gian nghỉ
+                    if (restCounter <= 0) {
+                        isResting = false;
+                        selectNextMoveSet();
                     }
-                    if (spriteNum == animations.get(aniCount).size() - 1) {
-                        isSlash = false;
-                        timer = 0;
-                        spriteNum = 0;
-                    }
-                } else{
-                    aniCount = 0;
                     animationDelay = 7;
-                    isSlash = false;
+                } else {
+                    animationDelay = 3;
+                    // Giai đoạn thực hiện hành động
+                    executeMoveSet(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
                 }
             } else {
-                if (aniCount != 0) {
-                    spriteNum = 0;
-                    spriteCounter = 0;
-                }
                 aniCount = 0;
                 animationDelay = 7;
-                timer = 0;
-                isSlash = false;
             }
-        }
-        else{
-            if (aniCount != 0) {
-                spriteNum = 0;
-                spriteCounter = 0;
-            }
-            aniCount = 0;
-            animationDelay = 7;
-            switch (direction) {
-                case "up":
-                    worldY -= speed;
-                    break;
-                case "down":
-                    worldY += speed;
-                    break;
-                case "left":
-                    worldX -= speed;
-                    break;
-                case "right":
-                    worldX += speed;
-                    break;
-                case "up-right":
-                    worldX += (int) (speed / Math.sqrt(2));
-                    worldY -= (int) (speed / Math.sqrt(2));
-                    break;
-                case "up-left":
-                    worldX -= (int) (speed / Math.sqrt(2));
-                    worldY -= (int) (speed / Math.sqrt(2));
-                    break;
-                case "down-right":
-                    worldX += (int) (speed / Math.sqrt(2));
-                    worldY += (int) (speed / Math.sqrt(2));
-                    break;
-                case "down-left":
-                    worldX -= (int) (speed / Math.sqrt(2));
-                    worldY += (int) (speed / Math.sqrt(2));
-                    break;
-            }
-            isSlash = false;
-        }
-        collisionOn = false;
-        delayTime--;
 
+            collisionOn = false;
+            delayTime--;
+            delayMove--;
+        }
+        else {
+            aniCount = 3;
+        }
     }
+
+    private void selectNextMoveSet() {
+        moveSet = new Random().nextInt(3); // Random từ 0 đến 2 (3 moveSet)
+        shootCounter = 0; // Reset shootCounter cho moveSet mới
+        aniCount = 0; // Reset animation state nếu cần
+    }
+
+    private void executeMoveSet(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
+        switch (moveSet) {
+            case 0:
+                moveSetZero(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
+                break;
+            case 1:
+                moveSetOne(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
+                break;
+            case 2:
+                moveSetTwo(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
+                break;
+        }
+    }
+    int delayMove = 0;
+    private void moveSetZero(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
+        aniCount = 1;
+        if(delayMove <= 0){
+            ThrowingObj b = new ThrowingObj(null,"enemyBullet", -100*gp.tileSize, -100*gp.tileSize,1,1, npcCenterX, npcCenterY,50,gp ,0, 7, 2, 2, targetX + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize), targetY + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize));
+            gp.obj.add(b);
+            shootCounter++;
+            // Đặt lại thời gian chờ
+            delayMove = 28;
+        }
+
+        if (shootCounter >= 7) {
+            delayMove = 0;
+            startResting();
+        }
+    }
+
+    private void moveSetOne(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
+        aniCount = 2;
+        if(shootCounter == 8 || shootCounter == 14 || shootCounter == 20) {
+            Effect a = new Effect("/effect/effect1.png", 0, 0, npcCenterX + (flip  ? -100 : 100), npcCenterY - 67, 20, gp, 0, 2, 2, 0, 0);
+            gp.obj.add(a);
+            Bullet b = new Bullet("/bullet/Slash.png", "enemyBullet", 0,0, 8*6, 8*6, npcCenterX + (flip  ? -100 : 100), npcCenterY - 67, 30, gp, 0, 10, 1, 1, targetX, targetY);
+            b.isSlash = true;
+            b.root = this.objName;
+            b.death = false;
+            gp.obj.add(b);
+        }
+
+        shootCounter++;
+        if (shootCounter >= 24) startResting();
+    }
+
+    private void moveSetTwo(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
+        aniCount = 1;
+        if(delayMove <= 0){
+            Effect a = new Effect("/effect/effect1.png", 0, 0, npcCenterX + (flip ? -2 : 2), npcCenterY - 72, 20, gp, 0, 2, 2, 0, 0);
+            gp.obj.add(a);
+            Bullet b = new Bullet("/bullet/bullet.png", "enemyBullet", 12,12, 8, 8, npcCenterX +  (flip ? -2 : 2), npcCenterY - 72, 50, gp, 0, 7, 1, 1, targetX + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize), targetY + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize));
+            gp.obj.add(b);
+            shootCounter++;
+            // Đặt lại thời gian chờ
+            delayMove = 10;
+        }
+
+        if (shootCounter >= 20) {
+            delayMove = 0;
+            startResting();
+        }
+    }
+
+    private void startResting() {
+        aniCount = 0;
+        isResting = true;
+        restCounter = 60; // Thời gian nghỉ, ví dụ 60 frame
+    }
+
+
+    private void move(String direction) {
+        switch (direction) {
+            case "up":
+                worldY -= speed;
+                break;
+            case "down":
+                worldY += speed;
+                break;
+            case "left":
+                worldX -= speed;
+                break;
+            case "right":
+                worldX += speed;
+                break;
+            case "up-right":
+                worldX += (int) (speed / Math.sqrt(2));
+                worldY -= (int) (speed / Math.sqrt(2));
+                break;
+            case "up-left":
+                worldX -= (int) (speed / Math.sqrt(2));
+                worldY -= (int) (speed / Math.sqrt(2));
+                break;
+            case "down-right":
+                worldX += (int) (speed / Math.sqrt(2));
+                worldY += (int) (speed / Math.sqrt(2));
+                break;
+            case "down-left":
+                worldX -= (int) (speed / Math.sqrt(2));
+                worldY += (int) (speed / Math.sqrt(2));
+                break;
+        }
+    }
+
 
     boolean flip = false;
 
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
-        // Tọa độ để vẽ thanh máu trên đầu của Slime
-        int barX = this.screenX;
-        int barY = this.screenY - 10; // Thanh máu cách đầu Slime 10 pixel
-
-        // Kích thước của thanh máu
-        int barWidth = this.solidArea.width; // Chiều rộng của thanh máu bằng với kích thước của Slime
-        int barHeight = 4; // Chiều cao của thanh máu
-
-        // Tính toán phần trăm HP
-        double healthPercent = (double) HP / 8.0; // HP hiện tại chia cho HP tối đa
-
         // Lưu trạng thái gốc của Graphics2D
         screenY = worldY - gp.player.worldY + gp.player.screenY;
         screenX = worldX - gp.player.worldX + gp.player.screenX;
@@ -299,39 +302,85 @@ public class Golem extends Entity {
         // Vẽ khung hình chữ nhật (nếu cần)
         rectDraw(g2);
 
-        // Vẽ thanh máu
-        if (awake) {
-            // Vẽ nền thanh máu (màu xám)
-            g2.setColor(new Color(100, 100, 100));
-            g2.fillRect(barX, barY, barWidth, barHeight);
+    }
+    @Override
+    public void drawUI(Graphics2D g2, GamePanel gp){
+        if(!dead){
+            int dialogueBoxHeight = gp.tileSize * 2;
+            int dialogueBoxY = gp.screenHeight - dialogueBoxHeight - 10;
+            int dialogueBoxX = 20;
+            int dialogueBoxWidth = gp.screenWidth - 40;
 
-            // Vẽ thanh máu (màu đỏ) với độ dài tùy thuộc vào lượng HP
-            g2.setColor(Color.RED);
-            g2.fillRect(barX, barY, (int)(barWidth * healthPercent), barHeight);
+            int textX = dialogueBoxX + 20;
+            int textY = dialogueBoxY + 40;
+            Font font = new Font("Arial", Font.PLAIN, 20);
+            if (!gp.player.combat && !words.isEmpty() && startTalk) {
+                // Vẽ khung hội thoại
+                g2.setColor(new Color(0, 0, 0, 180));
+                g2.fillRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
+                g2.setColor(Color.WHITE);
+                g2.drawRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
+                String currentDialogue = words.get(index).get(dialogueIndex);
+
+                // Khi đến đoạn hội thoại yêu cầu lựa chọn
+
+                if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
+                    dialogueIndex++; // Chuyển sang đoạn tiếp theo
+                    gp.keyH.SpacePressed = false;
+                    timer = 20;
+                }
+                if (dialogueIndex >= words.get(index).size() - 1) {
+                    startTalk = false;
+                    gp.player.combat = true;
+                    gp.keyH.SpacePressed = false;
+                    awake = true;
+                }
+                g2.setFont(font);
+                g2.setColor(Color.WHITE);
+                g2.drawString(objName + ": " + currentDialogue, textX, textY);
+            } else {
+                if (startTalk) {
+                    gp.player.combat = false;
+                    gp.keyH.SpacePressed = false;
+                    timer = 20;
+                }
+            }
+            if (awake) {
+                // Vẽ thanh máu của boss ngay dưới khung hội thoại
+                int healthBarWidth = dialogueBoxWidth - 40; // Chiều dài thanh máu
+                int healthBarHeight = 20; // Chiều cao thanh máu
+                int healthBarX = dialogueBoxX;
+                int healthBarY = dialogueBoxY + dialogueBoxHeight - 40; // Vị trí ngay dưới khung chat
+
+                float healthPercentage = (float) HP / 25; // Tính phần trăm máu
+                int filledWidth = (int) (healthBarWidth * healthPercentage);
+
+                // Vẽ khung thanh máu
+                g2.setColor(Color.BLACK);
+                g2.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+                // Vẽ thanh máu dựa trên phần trăm máu còn lại
+                g2.setColor(Color.RED);
+                g2.fillRect(healthBarX, healthBarY, filledWidth, healthBarHeight);
+
+                // Vẽ viền cho thanh máu
+                g2.setColor(Color.WHITE);
+                g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+                g2.setFont(font);
+                g2.drawString(objName, healthBarX, healthBarY - 20);
+            }
         }
     }
-
+    boolean dead = false;
     @Override
     public void onTriggerEnter(Entity entity){
-
         if(map.containsKey(entity.objName) && delayTime <= 0){
             awake = true;
-            System.out.println(entity.objName);
             delayTime = 10;
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                int tmp = new Random().nextInt(3);
-                for(int i = 0;i< tmp;i++){
-                    Coin coin = new Coin(this.worldX + new Random().nextInt(gp.tileSize), this.worldY + new Random().nextInt(gp.tileSize), gp);
-                    gp.obj.add(coin);
-                }
-
-                Effect a = new Effect("/effect/effect1.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 2, 2, 0, 0);
-                gp.obj.add(a);
-                gp.soundManager.play("slime_die");
-                gp.player.kills++;
-                gp.obj.remove(this);
+                dead = true;
             }
         }
     }

@@ -18,6 +18,7 @@ import main.GamePanel;
 public class Mage extends Entity {
     int timer = 0;
     int delayTime = 0;
+    int delayHP = 0;
     int HP;
     double angle = 0;
     int animationDelay = 3;
@@ -172,19 +173,15 @@ public class Mage extends Entity {
                 }
                 aniCount = 1;
                 timer = 0;
-            } if (distanceToTarget <= 4 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
+            }if (distanceToTarget <= 4 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
                 // Tạo hiệu ứng tại vị trí hiện tại của enemy
-                ThrowingObj b = new ThrowingObj(null,"enemyBullet", 20, 20,1,1, worldX, worldY,50,gp ,0, 7, 4, 4, targetX, targetY);
+                ThrowingObj b = new ThrowingObj(null,"enemyBullet", 20*gp.tileSize, 20*gp.tileSize,1,1, worldX, worldY,50,gp ,0, 7, 4, 4, targetX, targetY);
                 gp.obj.add(b);
-
                 // Đặt lại thời gian chờ
                 delayTime = 50;
-                aniCount = 0;
             }
 
-            else {
-                aniCount = 0;
-            }
+            aniCount = 0;
         }
         else{
             switch (direction) {
@@ -221,6 +218,7 @@ public class Mage extends Entity {
         }
         collisionOn = false;
         delayTime--;
+        delayHP--;
     }
 
     boolean flip = false;
@@ -286,11 +284,9 @@ public class Mage extends Entity {
 
     @Override
     public void onTriggerEnter(Entity entity){
-
-        if(map.containsKey(entity.objName) && delayTime <= 0){
+        if(map.containsKey(entity.objName) && delayHP <= 0){
             awake = true;
-            System.out.println(entity.objName);
-            delayTime = 10;
+            delayHP = 10;
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
