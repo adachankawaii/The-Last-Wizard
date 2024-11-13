@@ -240,8 +240,9 @@ public class Soldier extends Entity {
         }
         collisionOn = false;
         delayTime--;
+        delayHP--;
     }
-
+    int delayHP = 0;
     boolean flip = false;
 
     @Override
@@ -307,10 +308,9 @@ public class Soldier extends Entity {
     @Override
     public void onTriggerEnter(Entity entity){
 
-        if(map.containsKey(entity.objName) && delayTime <= 0){
+        if(map.containsKey(entity.objName) && delayHP <= 0){
             awake = true;
-            System.out.println(entity.objName);
-            delayTime = 10;
+            delayHP = 10;
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){

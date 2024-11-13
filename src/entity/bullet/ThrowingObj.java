@@ -4,19 +4,21 @@ import entity.effect.Effect;
 import main.GamePanel;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class ThrowingObj extends Bullet {
         int x0, y0;
         double vx, vy, gravity = 0.98; // Giá trị trọng lực
-
         public ThrowingObj(String path, String name,int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY, int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int TtargetX, int TtargetY) {
             super(path, name,solidAreaX, solidAreaY, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY, TtargetX, TtargetY);
             x0 = this.worldX;
             y0 = this.worldY;
             int stargetX = (targetX-x0)/gp.tileSize;
             int stargetY = (targetY - y0)/gp.tileSize;
-            if(Math.abs(stargetX) >= 7) stargetX = (stargetX/Math.abs(stargetX))*7;
-            if(Math.abs(stargetY) >= 7) stargetY = (stargetY/Math.abs(stargetY))*7;
+            if(!Objects.equals(this.objName, "enemyBullet")){
+                if (Math.abs(stargetX) >= 7) stargetX = (stargetX / Math.abs(stargetX)) * 7;
+                if (Math.abs(stargetY) >= 7) stargetY = (stargetY / Math.abs(stargetY)) * 7;
+            }
             // Tính toán vận tốc theo trục x và y
             vx = (double) (stargetX*gp.tileSize) / lifeTime;
             isTrigger = false;
@@ -51,7 +53,7 @@ public class ThrowingObj extends Bullet {
             }
         }
         public void specialMethod(){
-            Effect a = new Effect(null, 16,16,this.worldX ,this.worldY,10, gp, 2, 2,2, targetX, targetY);
+            Effect a = new Effect(null, 16,16,this.worldX ,this.worldY,10, gp, 0, 2,2, targetX, targetY);
             gp.soundManager.play("wand");
             gp.obj.add(a);
         }
@@ -61,7 +63,7 @@ public class ThrowingObj extends Bullet {
             int redBoxY = targetY - gp.player.worldY + gp.player.screenY - 30*9/ 4;
 
             // Vẽ hình vuông màu đỏ với kích thước bằng kích thước của vật thể
-            g2.setColor(new Color(255, 0, 0, 50)); // Màu đỏ trong suốt
+            g2.setColor(new Color(255, 0, 0, 40)); // Màu đỏ trong suốt
             g2.fillRect(redBoxX, redBoxY, 30*9/2, 30*9/2);
         }
     }

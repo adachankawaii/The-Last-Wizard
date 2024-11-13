@@ -3,6 +3,7 @@ package main;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import javax.swing.*;
 import UI.Bar;
 import collision.CollisionCheck;
@@ -404,7 +405,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ các đối tượng trong objMap1, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < objMap1.size(); i++) {
             ObjectMap1 object = objMap1.get(i);
-            if (object != null) {
+            if (object != null && object.layer < 1) {
                 object.draw(g2, this);
             }
         }
@@ -412,7 +413,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ các đối tượng trong obj, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < obj.size(); i++) {
             Entity entity = obj.get(i);
-            if (entity != null && isObjectInScreen(entity)) {
+            if (entity != null && entity.layer < 1 && isObjectInScreen(entity)) {
                 entity.draw(g2, this);
             }
         }
@@ -431,7 +432,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ các đối tượng ở layer >= 1 trong obj, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < obj.size(); i++) {
             Entity entity = obj.get(i);
-            if (entity != null && entity.layer >= 1 && isObjectInScreen(entity)) {
+            if ((entity != null && entity.layer >= 1 && isObjectInScreen(entity)) || Objects.equals(Objects.requireNonNull(entity).objName, "Golem")) {
                 entity.draw(g2, this);
             }
         }
