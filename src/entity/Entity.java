@@ -106,6 +106,7 @@ public class Entity{
             e.printStackTrace();
         }
     }
+    
     public void importAndSliceVertical(String path, int count, int x, int y) {
         Vector<BufferedImage> a = new Vector<>();
         try (InputStream is = getClass().getResourceAsStream(path)) {

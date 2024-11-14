@@ -152,6 +152,10 @@ public class GamePanel extends JPanel implements Runnable{
             player.locX = 51;
             player.locY = 48;
         }
+        else if(map == 3){
+            player.locX = 17;
+            player.locY = 67;
+        }
         // Đặt lại tất cả các thành phần của trò chơi về trạng thái ban đầu
         player.setDefaultValue(
             tileSize * player.locX,
@@ -184,6 +188,10 @@ public class GamePanel extends JPanel implements Runnable{
         else if(map == 2){
             player.locX = 51;
             player.locY = 48;
+        }
+        else if(map == 3){
+            player.locX = 17;
+            player.locY = 67;
         }
         fadingIn = true;
         player.setDefaultValue(
@@ -390,6 +398,10 @@ public class GamePanel extends JPanel implements Runnable{
             else if(saveData.map == 2){
                 player.locX = 51;
                 player.locY = 48;
+            }
+            else if(map == 3){
+                player.locX = 17;
+                player.locY = 67;
             }
             player.setDefaultValue(tileSize*player.locX, tileSize*player.locY, 5, "down");
             // Thiết lập trạng thái game từ saveData
