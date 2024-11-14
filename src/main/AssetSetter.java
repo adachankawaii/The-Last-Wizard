@@ -7,10 +7,7 @@ import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
 import entity.enemy.*;
-import entity.npc.GuildMaster;
-import entity.npc.NPC;
-import entity.npc.Portal;
-import entity.npc.ShopKeeper;
+import entity.npc.*;
 
 public class AssetSetter {
     GamePanel gp;
@@ -57,6 +54,26 @@ public class AssetSetter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (gp.map == 1) {
+            // Tạo tường có kích thước width = 8, height = 1 ở vị trí (60,70) và (60,80)
+            int[][] horizontalWalls = {{60, 70}, {60, 80}};
+            for (int[] pos : horizontalWalls) {
+                CombatWall c = new CombatWall(gp, 10, 1); // Width = 8, Height = 1
+                c.worldX = pos[0] * gp.tileSize;
+                c.worldY = pos[1] * gp.tileSize;
+                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
+            }
+
+            // Tạo tường có kích thước width = 1, height = 8 ở vị trí (70,80)
+            int[][] verticalWalls = {{40,70},{70, 70},{39,42},{39,11}};
+            for (int[] pos : verticalWalls) {
+                CombatWall c = new CombatWall(gp, 1, 10); // Width = 1, Height = 8
+                c.worldX = pos[0] * gp.tileSize;
+                c.worldY = pos[1] * gp.tileSize;
+                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
+            }
+        }
+
     }
     
     // TẠO RA CÁC OBJ TƯƠNG ỨNG

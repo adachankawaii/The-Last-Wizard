@@ -19,24 +19,24 @@ public class ShopKeeper extends Entity {
     int timer = 0;
     GamePanel gp;
     String[] choices = {"Choice 1", "Choice 2","Choice 3",""}; // Các lựa chọn
-    int[] cost = {0,1,1,0,0};
+    int[] cost = {1,0,0};
     Vector<Integer> tmp = new Vector<>(choices.length);
-    String[] items = {"Key","HPBottle","Key","InvisiblePotion"};
+    String[] items = {"HPBottle","ThrowingBottle","InvisiblePotion"};
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
 
     public ShopKeeper(GamePanel gp) {
         objName = "ShopKeeper";
         layer = 0;
         collision = true;
-        this.isTrigger = true;
+        this.isTrigger = false;
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
         setWords("Welcome to my shop!,What would you like to buy?, end");
         setWords("Thank you !, end");
         setWords("Sorry we don't have what you need, end");
-
-        for(int i = 0; i<choices.length;i++) {
+        tmp.add(-1);
+        for(int i = 1; i<choices.length;i++) {
             int a = new Random().nextInt(items.length);
             while (tmp.contains(a)){
                 a = new Random().nextInt(items.length);
@@ -156,8 +156,9 @@ public class ShopKeeper extends Entity {
                         g2.drawRoundRect(choiceBoxX, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
                         Rectangle r = new Rectangle(choiceBoxX, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth, 40);
                         String info = "Sold out";
-                        if(tmp.get(i) != -1) info = items[tmp.get(i)] + " || cost " + cost[tmp.get(i)];
                         if(i == 0) info = "* Leave *";
+                        else if (tmp.get(i) != -1) info = items[tmp.get(i)] + " || cost " + cost[tmp.get(i)];
+
                         g2.drawString("Key " + (i + 1) + ": " + info, choiceBoxX + 10, choiceBoxY - i * choiceBoxHeight + 20);
 
                         // Lấy sprite của item và vẽ nó

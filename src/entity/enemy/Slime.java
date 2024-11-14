@@ -28,7 +28,7 @@ public class Slime extends Entity {
         objName = "Slime";
         collision = true;
         direction = "down";
-        HP = 8;
+        HP = 1;
         speed = 3;
         isTrigger = false;
         this.gp = gp;
@@ -39,7 +39,6 @@ public class Slime extends Entity {
         map.put("Bigbullet", 3);
         isEnemy = true;
     }
-    boolean awake = false;
     public void getImage() {
 
         // CHUYỂN ĐỘNG IDLE CỦA SLIME.
@@ -142,7 +141,7 @@ public class Slime extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 1 * gp.tileSize && !isJumping && gp.player.alpha >= 1f) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 1 * gp.tileSize && !isJumping && gp.player.alpha >= 1f && awake) {
                 objName = "Slime";
                 switch (direction) {
                     case "up":

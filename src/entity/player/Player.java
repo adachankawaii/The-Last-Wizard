@@ -131,14 +131,15 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
+            System.out.println(this.worldX/gp.tileSize + " " +this.worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
                 alpha = 1;
                 invisibleTimer = 150;
                 timer = 20;
-                HP--;
-                if(HP >= 0) isHurt = true;
+                //HP--;
+                if(HP > 0) isHurt = true;
                 else{
 
                     isDead = true;
@@ -333,7 +334,7 @@ public class Player extends Entity{
                     case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion" -> {
                         if (items.size() < 8) {
                             boolean flag = false;
-                            for (int j = 0; j < items.size(); j++) {
+                            for (int j = 0; j < itemsCount.size(); j++) {
                                 if (items.get(j).objName.equals(gp.obj.get(i).objName)) {
                                     flag = true;
                                     // Sửa từ add thành set để cập nhật đúng số lượng item
@@ -361,7 +362,7 @@ public class Player extends Entity{
     }
     public boolean isDarken = false;
     public void draw(Graphics2D g2) {
-        if(combat) {
+        if(true) {
 
             detectMoveAndDraw(g2);  // Nhận diện chuyển động và vẽ nhân vật
             rectDraw(g2);  // Vẽ ô collision

@@ -12,6 +12,8 @@ import main.KeyHandler;
 
 public class Entity{
     public boolean isItem = false;
+    public boolean awake = false;
+    public boolean on = false;
     // BIẾN LƯU
     public int worldX, worldY;
     public int screenX, screenY;

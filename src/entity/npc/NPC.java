@@ -21,7 +21,7 @@ public class NPC extends Entity {
         layer = 0;
         objName = "Te Quiero";
         collision = true;
-        this.isTrigger = true;
+        this.isTrigger = false;
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();

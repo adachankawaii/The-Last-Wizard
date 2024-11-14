@@ -39,7 +39,6 @@ public class Soldier extends Entity {
         map.put("Bigbullet", 3);
         isEnemy = true;
     }
-    boolean awake = false;
     public void getImage() {
         importAndSlice("/enemy/Soldier/Archer-idle-spritesheet.png", 3, 0,0);
         importAndSlice("/enemy/Soldier/run1.png", 3, 0,0);

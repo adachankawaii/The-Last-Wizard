@@ -30,7 +30,7 @@ public class Knight extends Entity {
         direction = "down";
         HP = 8;
         speed = 4;
-        isTrigger = false;
+        isTrigger = true;
         this.gp = gp;
         rectGet(0, 0, 32, 48);
         getImage();
@@ -39,7 +39,6 @@ public class Knight extends Entity {
         map.put("Bigbullet", 3);
         isEnemy = true;
     }
-    boolean awake = false;
     public void getImage() {
         importAndSlice("/enemy/Soldier/Swordsman_Idle.png", 3, 0,0);
         importAndSlice("/enemy/Soldier/Swordsman_Walk.png", 4, 0,0);
@@ -131,7 +130,7 @@ public class Knight extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 12 * gp.tileSize && distanceToTarget >= 1.5 * gp.tileSize && gp.player.alpha >= 1f) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 12 * gp.tileSize && distanceToTarget >= 1.5 * gp.tileSize && gp.player.alpha >= 1f && awake) {
                 if (aniCount != 1) {
                     spriteNum = 0;
                     spriteCounter = 0;

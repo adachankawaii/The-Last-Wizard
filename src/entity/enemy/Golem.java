@@ -12,6 +12,7 @@ import entity.bullet.Bullet;
 import entity.bullet.NormalBullet;
 import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
+import entity.npc.CombatWall;
 import entity.player.Quest;
 import main.GamePanel;
 
@@ -30,6 +31,8 @@ public class Golem extends Entity {
     private int targetX, targetY;
     int moveSet = 0;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
+    CombatWall c; // Width = 1, Height = 8
+
     public Golem(GamePanel gp) {
         layer = 2;
         objName = "Golem";
@@ -37,7 +40,7 @@ public class Golem extends Entity {
         direction = "down";
         HP = 25;
         speed = 4;
-        isTrigger = false;
+        isTrigger = true;
         this.gp = gp;
         rectGet(70*2, 70*2, 48*2, 52*2);
         getImage();
@@ -46,12 +49,14 @@ public class Golem extends Entity {
         map.put("Bigbullet", 3);
         isEnemy = true;
         addWords(new String[]{"Must","Protect","Her","end"});
+        c = new CombatWall(gp, 1, 10);
+        c.worldX = 45 * gp.tileSize;
+        c.worldY = 20 * gp.tileSize;
     }
     public void addWords(String[] inputWords) {
         words.add(new Vector<>());
         words.get(words.size() - 1).addAll(List.of(inputWords));
     }
-    boolean awake = false;
     public void getImage() {
         importAndSlice("/boss/Idle.png", 4, 0,0);
         importAndSlice("/boss/Attack1.png", 8, 0,0);
@@ -120,6 +125,9 @@ public class Golem extends Entity {
             targetX = gp.player.worldX;
             targetY = gp.player.worldY;
             if (distanceToTarget <= 10 * gp.tileSize && !done) {
+
+                c.on = true;
+                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
                 startTalk = true;
                 done = true;
             }
@@ -149,6 +157,7 @@ public class Golem extends Entity {
         }
         else {
             aniCount = 3;
+            c.on = false;
         }
     }
 

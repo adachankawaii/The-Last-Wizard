@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Vector;
 import javax.swing.*;
 import UI.Bar;
 import collision.CollisionCheck;
@@ -14,10 +15,7 @@ import entity.Items.ObjectMap1;
 import entity.Items.ThrowingBottle;
 import entity.enemy.Slime;
 import entity.enemy.Soldier;
-import entity.npc.GuildMaster;
-import entity.npc.NPC;
-import entity.npc.Portal;
-import entity.npc.ShopKeeper;
+import entity.npc.*;
 import entity.player.Player;
 import tile.TileManager;
 import entity.effect.Effect;
@@ -215,6 +213,7 @@ public class GamePanel extends JPanel implements Runnable{
     private Rectangle menuButton;
 
     // Khởi tạo vị trí và kích thước nút
+
     public void update() {
         if (gameOver) {
             if(keyH.RPressed){
@@ -254,6 +253,46 @@ public class GamePanel extends JPanel implements Runnable{
         reloadTime--;
         HPbar.update(player.HP);
         EnergyBar.update(player.Energy);
+        if(map == 1){
+            Rectangle[] zone = new Rectangle[]{new Rectangle(41 * tileSize, 70 * tileSize, 30 * tileSize, 10 * tileSize), new Rectangle(10*tileSize, 10*tileSize, 28*tileSize, 40*tileSize)};
+// Kiểm tra nếu player đang trong vùng
+            boolean flag = false;
+
+            for(int i = 0;i<zone.length;i++){
+
+                if (zone[i].contains(new Point(player.worldX, player.worldY))) {
+                    for (Entity entity : obj){
+                        if(entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY)) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    // Player đã vào vùng, bật trạng thái `on` cho các CombatWall
+                    if (flag) {
+                        for (Entity object : obj) {
+                            // Lọc các CombatWall
+                            if (Objects.equals(object.objName, "CombatWall")) {
+                                object.on = true;
+                            }
+                            // Lọc các enemy trong vùng zone
+                        }
+                        for (Entity entity : obj) {
+                            if (entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY)) entity.awake = true;
+                        }
+                    }
+                    if (!flag) {
+                        for (Entity object : obj) {
+                            // Lọc các CombatWall
+                            if (Objects.equals(object.objName, "CombatWall")) {
+                                System.out.println(1);
+                                object.on = false;
+                            }
+                            // Lọc các enemy trong vùng zone
+                        }
+                    }
+                }
+            }
+        }
         // Kiểm tra điều kiện game over (ví dụ: HP <= 0)
         if (player.dead) {
             // Dừng nhạc nền khi người chơi chết
@@ -356,7 +395,10 @@ public class GamePanel extends JPanel implements Runnable{
             // Thiết lập trạng thái game từ saveData
             player.HP = (saveData.HP);
             map = saveData.map;
-
+            player.items.clear();
+            player.itemsCount.clear();
+            player.quests.clear();
+            player.alpha = 1;
             for(String item : saveData.items){
                 player.items.add(createObject(item));
             }
@@ -443,6 +485,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     // Kiểm tra xem đối tượng có nằm trong phạm vi màn hình không
     private boolean isObjectInScreen(Entity entity){
+        if(Objects.equals(entity.objName, "CombatWall")) return true;
         if(Math.abs(entity.worldX - player.worldX) <= 15*tileSize && Math.abs(entity.worldY - player.worldY) <= 12*tileSize){
             return true;
         }

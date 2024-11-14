@@ -8,6 +8,7 @@ import java.util.Random;
 
 import entity.Entity;
 import entity.Items.Coin;
+import entity.Items.CommonItem;
 import entity.bullet.Bullet;
 import entity.bullet.NormalBullet;
 import entity.bullet.ThrowingObj;
@@ -33,7 +34,7 @@ public class Mage extends Entity {
         direction = "down";
         HP = 8;
         speed = 4;
-        isTrigger = false;
+        isTrigger = true;
         this.gp = gp;
         rectGet(-8, -8, 48, 48);
         getImage();
@@ -42,7 +43,6 @@ public class Mage extends Entity {
         map.put("Bigbullet", 3);
         isEnemy = true;
     }
-    boolean awake = false;
     public void getImage() {
 
         // CHUYỂN ĐỘNG IDLE CỦA SLIME.
@@ -140,7 +140,7 @@ public class Mage extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 4 * gp.tileSize&& gp.player.alpha >= 1f) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 4 * gp.tileSize&& gp.player.alpha >= 1f && awake) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -290,11 +290,10 @@ public class Mage extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                int tmp = new Random().nextInt(3);
-                for(int i = 0;i< tmp;i++){
-                    Coin coin = new Coin(this.worldX + new Random().nextInt(gp.tileSize), this.worldY + new Random().nextInt(gp.tileSize), gp);
-                    gp.obj.add(coin);
-                }
+                CommonItem key = new CommonItem("Key",gp);
+                key.worldX = this.worldX;
+                key.worldY = this.worldY;
+                gp.obj.add(key);
 
                 Effect a = new Effect("/effect/effect1.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 2, 2, 0, 0);
                 gp.obj.add(a);

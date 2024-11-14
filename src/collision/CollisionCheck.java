@@ -63,7 +63,7 @@ public class CollisionCheck {
     
                 if (entity.solidArea.intersects(gp.obj.get(i).solidArea)) {
                     if (gp.obj.get(i).collision) {
-                        if(!entity.isTrigger && !gp.obj.get(i).isTrigger) entity.collisionOn = true;
+                        if(!gp.obj.get(i).isTrigger && !gp.obj.get(i).isEnemy) entity.collisionOn = true;
                         else {
                             if(entity.isTrigger) entity.isTriggerOn = true;
                         }
