@@ -41,7 +41,7 @@ public class TileManager {
                     tile[i] = new Tile();
                     tile[i].image = ImageIO.read(new File("res/tiles/map3/" + i + ".png"));
                 }
-            } else if (gp.map == 4) {
+            }else if (gp.map == 4) {
                 for (int i = 1; i <= 34; i++) {
                     tile[i] = new Tile();
                     tile[i].image = ImageIO.read(new File("res/tiles/map4/" + i + ".png"));
@@ -95,14 +95,12 @@ public class TileManager {
                 int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
                 // Chỉ render phần trong khung camera
-                if (worldX + 1*gp.tileSize > gp.player.worldX - gp.player.screenX
-                        && worldX - 1*gp.tileSize < gp.player.worldX + gp.player.screenX
-                        && worldY + 1*gp.tileSize > gp.player.worldY - gp.player.screenY
-                        && worldY - 1*gp.tileSize < gp.player.worldY + gp.player.screenY) {
+                if (worldX + 10*gp.tileSize > gp.player.worldX - gp.player.screenX
+                        && worldX - 10*gp.tileSize < gp.player.worldX + gp.player.screenX
+                        && worldY + 10*gp.tileSize > gp.player.worldY - gp.player.screenY
+                        && worldY - 10*gp.tileSize < gp.player.worldY + gp.player.screenY) {
                     if (worldCol < 0 || worldRow < 0 || worldCol >= gp.maxWorldCol || worldRow >= gp.maxWorldRow) {
-                        int i = 1;
-                        if(gp.map == 4) i = 2; else i = 1;
-                        gd.drawImage(tile[i].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                        gd.drawImage(tile[1].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
                     } else {
                         int num = mapTile[worldCol][worldRow];
                         gd.drawImage(tile[num].image, screenX, screenY, gp.tileSize, gp.tileSize, null);

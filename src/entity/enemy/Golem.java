@@ -14,6 +14,7 @@ import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
 import entity.npc.CombatWall;
 import entity.player.Quest;
+import main.FontLoader;
 import main.GamePanel;
 
 
@@ -32,6 +33,7 @@ public class Golem extends Entity {
     int moveSet = 0;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
     CombatWall c; // Width = 1, Height = 8
+    Font font =  FontLoader.loadFont("/UI/SVN-Determination Sans.otf",20);
 
     public Golem(GamePanel gp) {
         layer = 2;
@@ -322,7 +324,6 @@ public class Golem extends Entity {
 
             int textX = dialogueBoxX + 20;
             int textY = dialogueBoxY + 40;
-            Font font = new Font("Arial", Font.PLAIN, 20);
             if (!gp.player.combat && !words.isEmpty() && startTalk) {
                 // Vẽ khung hội thoại
                 g2.setColor(new Color(0, 0, 0, 180));

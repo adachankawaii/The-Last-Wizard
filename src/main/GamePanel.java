@@ -1,10 +1,12 @@
 package main;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Vector;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import UI.Bar;
 import collision.CollisionCheck;
@@ -46,7 +48,6 @@ public class GamePanel extends JPanel implements Runnable{
     public boolean fadingIn = false; // Kiểm tra nếu đang chuyển cảnh từ trắng sang game
     public double loadingTime = 0;
 
-
     // Cài đặt FPS
     public final int FPS = 60;
     public int map = 1;
@@ -60,9 +61,9 @@ public class GamePanel extends JPanel implements Runnable{
         this.addMouseMotionListener(mouseH);
         this.setFocusable(true); // Tập trung vào nhận diện và xử lí key input
         soundManager = new Sound();
-        soundManager.setVolumeAll(-20.0f);
+        /*soundManager.setVolumeAll(-20.0f);
         soundManager.setVolume("background", -30.0f);
-        soundManager.loop("background");
+        soundManager.loop("background");*/
     }
 
     // TẠO SOUNDMNG
@@ -317,23 +318,51 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
     int selectedChoice = -1;
+    private boolean newGameSlideShow = false;
+    private int slideIndex = 0;
+    private long slideTimer = 0; // Thời gian hiện tại của slide
+    private final long SLIDE_DURATION = 3000; // Thời gian mỗi slide (ms)
+    private ArrayList<BufferedImage> slideImages = new ArrayList<>();
+    Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf",50);
+    Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf",30);
 
+    private void loadSlideImages() {
+        try {
+            for (int i = 1; i <= 5; i++) { // Giả sử bạn có 5 cặp ảnh
+                slideImages.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/UI/Cutscene/ND" + i + "_notext.png"))));
+                slideImages.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/UI/Cutscene/ND" + i + "_text.png"))));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    boolean clickSlide = false;
     public void onClick(int mouseInfo){
         if (startMenu) { // Kiểm tra nếu đang ở trạng thái Start Menu
             if (mouseInfo == 1 && selectedChoice != -1) { // Nếu nhấn chuột trái
                 if(selectedChoice % 3 == 0){
                     clearGameData();
+                    newGameSlideShow = true;
+                    loadSlideImages();
+                    slideIndex = 0;
+                    slideTimer = System.currentTimeMillis();
+                    soundManager.play("opening");
+                    soundManager.loop("opening");
                 }
                 else if(selectedChoice % 3 == 1){
                     loadGame();
+                    loadingTime = 100;
                 }
                 else if(selectedChoice % 3 == 2){
                     System.exit(0);
                 }
                 startMenu = false; // Tắt Start Menu
-                loadingTime = 100; // Bắt đầu hiệu ứng chuyển cảnh
+                // Bắt đầu hiệu ứng chuyển cảnh
 
             }
+        }
+        else if(newGameSlideShow){
+            clickSlide = true;
         }
         else if(pauseMenu){
             int screenMouseX = mouseX - (player.worldX - player.screenX);
@@ -526,7 +555,7 @@ public class GamePanel extends JPanel implements Runnable{
 
         // Vẽ tên game
         g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Arial", Font.BOLD, 50));
+        g2.setFont(bigFont);
         g2.drawString("The Last Wizard", screenWidth / 2 - 200, screenHeight / 2 - 150);
 
         // Cấu hình các lựa chọn menu
@@ -535,7 +564,7 @@ public class GamePanel extends JPanel implements Runnable{
         int choiceBoxY = screenHeight / 2 - 20; // Vị trí Y ban đầu của hộp lựa chọn
         int choiceBoxWidth = 400; // Chiều rộng hộp lựa chọn
         int choiceBoxHeight = 50; // Chiều cao mỗi hộp lựa chọn
-        g2.setFont(new Font("Arial", Font.PLAIN, 24));
+        g2.setFont(smallFont);
 
         // Vẽ các lựa chọn và kiểm tra vị trí chuột
           // Đặt mặc định là không chọn lựa chọn nào
@@ -563,15 +592,17 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
     }
-    private void drawLoadingScreen(Graphics g) {
-        // Thiết lập nền màn hình loading
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, getWidth(), getHeight());
 
-        // Thêm text hoặc biểu tượng loading
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("Loading...", getWidth() / 2 - 70, getHeight() / 2);
+    private void drawLoadingScreen(Graphics g) {
+        BufferedImage img = null;
+        // Thiết lập nền màn hình loading
+        try(InputStream is = getClass().getResourceAsStream("/UI/LoadingScene/MAP_" + map + ".png")){
+            img = ImageIO.read(is);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        g.drawImage(img,0,0,getWidth(),getHeight(),null);
     }
 
     // VẼ OBJ Ở ĐÂY
@@ -586,7 +617,7 @@ public class GamePanel extends JPanel implements Runnable{
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, screenWidth, screenHeight);
 
-        g2.setFont(new Font("Arial", Font.BOLD, 30));
+        g2.setFont(smallFont);
         g2.setColor(new Color(0, 0, 0, introAlpha));
 
         if (showMadeBy) {
@@ -634,6 +665,7 @@ public class GamePanel extends JPanel implements Runnable{
         }
         g.fillRect(restartButton.x, restartButton.y, restartButton.width, restartButton.height);
         g.setColor(Color.BLACK);
+        g.setFont(FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20));
         g.drawString("Restart", restartButton.x + 20, restartButton.y + 30);
 
         // Vẽ nút Menu
@@ -645,6 +677,52 @@ public class GamePanel extends JPanel implements Runnable{
         g.setColor(Color.BLACK);
         g.drawString("Menu", menuButton.x + 25, menuButton.y + 30);
     }
+    private float slideAlpha = 0f; // Độ trong suốt
+
+    // Thêm biến frameCounter
+    private int frameCounter = 0;
+
+    private void drawSlideShow(Graphics2D g2) {
+        if (slideIndex < slideImages.size()) {
+            BufferedImage currentSlide = slideImages.get(slideIndex);
+            BufferedImage nextSlide = (slideIndex + 1 < slideImages.size()) ? slideImages.get(slideIndex + 1) : null;
+
+            // Tăng độ trong suốt dần cho slide hiện tại
+            slideAlpha = Math.min(slideAlpha + 0.02f, 1.0f);
+
+            // Vẽ slide hiện tại
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+            g2.drawImage(currentSlide, 0, 0, screenWidth, screenHeight, null);
+
+            // Vẽ slide tiếp theo (nếu có)
+            if (nextSlide != null) {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, slideAlpha));
+                g2.drawImage(nextSlide, 0, 0, screenWidth, screenHeight, null);
+            }
+
+            // Chuyển sang slide tiếp theo nếu người dùng click hoặc alpha đạt mức tối đa
+            if (clickSlide && slideAlpha >= 1.0f) {
+                slideIndex++;
+                slideAlpha = 0f; // Reset độ trong suốt chỉ khi chuyển hoàn toàn
+                clickSlide = false;
+            }
+        } else {
+            // Xử lý khi đến slide cuối cùng
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+            g2.drawImage(slideImages.get(slideIndex - 1), 0, 0, screenWidth, screenHeight, null);
+
+            // Đếm số frame sau slide cuối
+            frameCounter++;
+            if (frameCounter >= 50) { // Kết thúc slideshow sau 50 frame (~50ms x số FPS)
+                newGameSlideShow = false;
+                startMenu = false;
+                loadingTime = 100;
+                soundManager.stop("opening");
+            }
+        }
+    }
+
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -654,8 +732,9 @@ public class GamePanel extends JPanel implements Runnable{
             drawIntro(g2); // Vẽ phần giới thiệu
         } else if (startMenu) {
             drawStartMenu(g2); // Vẽ màn hình Start Menu
-        }
-        else {
+        } else if (newGameSlideShow) {
+            drawSlideShow(g2); // Hàm vẽ slideshow
+        } else {
             // Các phần còn lại của game
             if(loadingTime >= 0){
                 player.combat = false;
@@ -680,9 +759,9 @@ public class GamePanel extends JPanel implements Runnable{
                 // Hiển thị màn hình Game Over
                 soundManager.muteAll();
                 g2.setColor(Color.RED);
-                g2.setFont(new Font("Arial", Font.BOLD, 50));
+                g2.setFont(bigFont);
                 g2.drawString("GAME OVER", screenWidth / 2 - 150, screenHeight / 2);
-                g2.setFont(new Font("Arial", Font.PLAIN, 30));
+                g2.setFont(smallFont);
                 g2.drawString("Press R to Restart", screenWidth / 2 - 130, screenHeight / 2 + 50);
             } else if (pauseMenu) {
                 draw(g2); // Vẽ nội dung game phía sau khung pause

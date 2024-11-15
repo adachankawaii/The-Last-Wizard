@@ -140,7 +140,7 @@ public class Mage extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 4 * gp.tileSize&& gp.player.alpha >= 1f && awake) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 9 * gp.tileSize&& gp.player.alpha >= 1f && awake) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -173,7 +173,7 @@ public class Mage extends Entity {
                 }
                 aniCount = 1;
                 timer = 0;
-            }if (distanceToTarget <= 4 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
+            }if (distanceToTarget <= 9 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
                 // Tạo hiệu ứng tại vị trí hiện tại của enemy
                 ThrowingObj b = new ThrowingObj(null,"enemyBullet", 20*gp.tileSize, 20*gp.tileSize,1,1, worldX, worldY,50,gp ,0, 7, 4, 4, targetX, targetY);
                 gp.obj.add(b);

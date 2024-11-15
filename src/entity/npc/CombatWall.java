@@ -22,7 +22,12 @@ public class CombatWall extends Entity {
     }
     @Override
     public void update(){
-        isTrigger = !on;
+        if(on){
+            isTrigger = false;
+        }
+        else {
+            isTrigger = true;
+        }
     }
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {

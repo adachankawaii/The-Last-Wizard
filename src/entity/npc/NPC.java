@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import entity.Entity;
+import main.FontLoader;
 import main.GamePanel;
 
 public class NPC extends Entity {
@@ -16,6 +17,8 @@ public class NPC extends Entity {
     String[] choices = {"Choice 1", "Choice 2"}; // Các lựa chọn
 
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
+    Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 15);
+    Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20);
 
     public NPC(GamePanel gp) {
         layer = 0;
@@ -76,8 +79,8 @@ public class NPC extends Entity {
 
         // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
         if (distance <= 1.5 * gp.tileSize) {
-            g2.setFont(new Font("Arial", Font.PLAIN, 15));
-            int textWidth = g2.getFontMetrics(new Font("Arial", Font.PLAIN, 15)).stringWidth(objName);
+            g2.setFont(smallFont);
+            int textWidth = g2.getFontMetrics(smallFont).stringWidth(objName);
             screenX = worldX - gp.player.worldX + gp.player.screenX + this.solidArea.width / 2 - textWidth / 2;
             screenY = worldY - gp.player.worldY + gp.player.screenY - 5;
             g2.setColor(new Color(100,100,100,120));
@@ -86,7 +89,7 @@ public class NPC extends Entity {
             g2.drawString(objName, screenX, screenY);
         }
 
-        Font font = new Font("Arial", Font.PLAIN, 20);
+        Font font = bigFont;
 
 
         // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở

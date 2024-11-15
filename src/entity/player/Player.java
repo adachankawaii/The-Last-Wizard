@@ -1,5 +1,6 @@
 package entity.player;
 
+import main.FontLoader;
 import main.KeyHandler;
 
 import java.awt.*;
@@ -33,6 +34,8 @@ public class Player extends Entity{
     // --------------------------Hết tham số cho nhiệm vụ-----------------------------------------
     BufferedImage coin;
     public int locX = 0, locY = 0;
+    Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 15);
+    Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20);
     public Player(GamePanel gp, KeyHandler keyH) {
         if(gp.map == 1){
             locX = 18;
@@ -95,8 +98,8 @@ public class Player extends Entity{
         g2.drawImage(coin, itemX, itemY, itemSize- 10, itemSize- 5, null);
 
         // Vẽ số lượng item
-        g2.setFont(new Font("Arial", Font.BOLD, 15));
-        int textWidth1 = g2.getFontMetrics(new Font("Arial", Font.PLAIN, 15)).stringWidth("x" + money);
+        g2.setFont(smallFont);
+        int textWidth1 = g2.getFontMetrics(smallFont).stringWidth("x" + money);
         g2.setColor(new Color(255,255,255,120));
         g2.fillRect(itemX + itemSize,itemY + itemSize/2 - 12,textWidth1,15);
         g2.setColor(Color.black);
@@ -116,7 +119,7 @@ public class Player extends Entity{
             g2.drawImage(item.animations.get(0).get(0), itemX, itemY, itemSize, itemSize, null);
 
             // Vẽ số lượng item
-            g2.setFont(new Font("Arial", Font.BOLD, 20));
+            g2.setFont(bigFont);
             g2.setColor(new Color(255,255,255,120));
             //g2.fillRect();
             g2.setColor(Color.black);
@@ -309,7 +312,7 @@ public class Player extends Entity{
     boolean close = false;
     void closeItem(Graphics2D g2){
         String itemName = "Press E to loot";
-        g2.setFont(new Font("Arial", Font.PLAIN, 20));
+        g2.setFont(bigFont);
         g2.setColor(Color.WHITE);
 
         // Hiển thị tên item
@@ -388,7 +391,7 @@ public class Player extends Entity{
             // Hiển thị tên của item đang được chọn
             if (!items.isEmpty() && pointer < items.size() && itemTimer >= 0) {
                 String itemName = items.get(pointer).objName;
-                g2.setFont(new Font("Arial", Font.PLAIN, 20));
+                g2.setFont(bigFont);
                 g2.setColor(Color.WHITE);
 
                 // Hiển thị tên item
@@ -456,7 +459,7 @@ public class Player extends Entity{
         int boxHeight = 30 * quests.size(); // Chiều cao của khung phụ thuộc vào số lượng nhiệm vụ
 
         // Set font và màu sắc
-        g2.setFont(new Font("Arial", Font.PLAIN, 15));
+        g2.setFont(smallFont);
 
         // Vẽ khung nền cho danh sách Quest
         g2.setColor(new Color(0, 0, 0, 150)); // Nền đen với độ trong suốt

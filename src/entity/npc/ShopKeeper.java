@@ -10,6 +10,7 @@ import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
 import entity.enemy.Slime;
+import main.FontLoader;
 import main.GamePanel;
 
 public class ShopKeeper extends Entity {
@@ -23,6 +24,8 @@ public class ShopKeeper extends Entity {
     Vector<Integer> tmp = new Vector<>(choices.length);
     String[] items = {"HPBottle","ThrowingBottle","InvisiblePotion"};
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
+    Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 15);
+    Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20);
 
     public ShopKeeper(GamePanel gp) {
         objName = "ShopKeeper";
@@ -98,8 +101,8 @@ public class ShopKeeper extends Entity {
 
         // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
         if (distance <= 1.5 * gp.tileSize) {
-            g2.setFont(new Font("Arial", Font.PLAIN, 15));
-            int textWidth = g2.getFontMetrics(new Font("Arial", Font.PLAIN, 15)).stringWidth(objName);
+            g2.setFont(smallFont);
+            int textWidth = g2.getFontMetrics(smallFont).stringWidth(objName);
             screenX = worldX - gp.player.worldX + gp.player.screenX + this.solidArea.width / 2 - textWidth / 2;
             screenY = worldY - gp.player.worldY + gp.player.screenY - 5;
             g2.setColor(new Color(100,100,100,120));
@@ -107,7 +110,7 @@ public class ShopKeeper extends Entity {
             g2.setColor(Color.WHITE);
             g2.drawString(objName, screenX, screenY);
         }
-        Font font = new Font("Arial", Font.PLAIN, 20);
+        Font font = smallFont;
 
         // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
         if (distance <= 1.5 * gp.tileSize) {
@@ -239,7 +242,7 @@ public class ShopKeeper extends Entity {
             }
             else if (gp.player.combat && timer <= 0) {
                 String prompt = "Press Space to interact";
-                int promptWidth = g2.getFontMetrics(new Font("Arial", Font.BOLD, 20)).stringWidth(prompt);
+                int promptWidth = g2.getFontMetrics(smallFont).stringWidth(prompt);
                 int promptX = (gp.screenWidth - promptWidth) / 2;
                 int promptY = gp.screenHeight - gp.tileSize - 40;
 
@@ -252,7 +255,7 @@ public class ShopKeeper extends Entity {
                 g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
                 g2.setColor(Color.WHITE);
                 g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
-                g2.setFont(new Font("Arial", Font.BOLD, 20));
+                g2.setFont(smallFont);
                 g2.setColor(Color.WHITE);
                 g2.drawString(prompt, promptX, promptY);
 

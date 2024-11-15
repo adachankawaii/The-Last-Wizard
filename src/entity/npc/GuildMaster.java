@@ -2,6 +2,7 @@ package entity.npc;
 
 import entity.Entity;
 import entity.player.Quest;
+import main.FontLoader;
 import main.GamePanel;
 
 import java.awt.*;
@@ -16,6 +17,8 @@ public class GuildMaster extends Entity {
     int timer = 0;
     GamePanel gp;
     Vector<Quest> questsLine = new Vector<>();
+    Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 15);
+    Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20);
     public GuildMaster(GamePanel gp) {
         layer = 0;
         objName = "GuildMaster";
@@ -88,8 +91,8 @@ public class GuildMaster extends Entity {
 
         // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
         if (distance <= 1.5 * gp.tileSize) {
-            g2.setFont(new Font("Arial", Font.PLAIN, 15));
-            int textWidth = g2.getFontMetrics(new Font("Arial", Font.PLAIN, 15)).stringWidth(objName);
+            g2.setFont(smallFont);
+            int textWidth = g2.getFontMetrics(smallFont).stringWidth(objName);
             screenX = worldX - gp.player.worldX + gp.player.screenX + this.solidArea.width / 2 - textWidth / 2;
             screenY = worldY - gp.player.worldY + gp.player.screenY - 5;
             g2.setColor(new Color(100,100,100,120));
@@ -97,7 +100,7 @@ public class GuildMaster extends Entity {
             g2.setColor(Color.WHITE);
             g2.drawString(objName, screenX, screenY);
         }
-        Font font = new Font("Arial", Font.PLAIN, 20);
+        Font font = bigFont;
         // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
         if (distance <= 1.5 * gp.tileSize) {
             int dialogueBoxHeight = gp.tileSize * 2;
@@ -174,7 +177,7 @@ public class GuildMaster extends Entity {
             }
             else if (gp.player.combat && timer <= 0) {
                 String prompt = "Press Space to interact";
-                int promptWidth = g2.getFontMetrics(new Font("Arial", Font.BOLD, 20)).stringWidth(prompt);
+                int promptWidth = g2.getFontMetrics(bigFont).stringWidth(prompt);
                 int promptX = (gp.screenWidth - promptWidth) / 2;
                 int promptY = gp.screenHeight - gp.tileSize - 40;
 
@@ -187,7 +190,7 @@ public class GuildMaster extends Entity {
                 g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
                 g2.setColor(Color.WHITE);
                 g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
-                g2.setFont(new Font("Arial", Font.BOLD, 20));
+                g2.setFont(bigFont);
                 g2.setColor(Color.WHITE);
                 g2.drawString(prompt, promptX, promptY);
 
