@@ -42,6 +42,14 @@ public class Player extends Entity{
             locX = 51;
             locY = 48;
         }
+        else if(gp.map == 3){
+            locX = 17;
+            locY = 67;
+        }
+        else if(gp.map == 4){
+            locX = 30;
+            locY = 44;
+        }
         this.gp = gp;
         this.keyH = keyH;
         layer = 1;
@@ -131,14 +139,14 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
-            System.out.println(this.worldX/gp.tileSize + " " +this.worldY/gp.tileSize);
+            // System.out.println(this.worldX/gp.tileSize + " " +this.worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
                 alpha = 1;
                 invisibleTimer = 150;
                 timer = 20;
-                //HP--;
+                HP--;
                 if(HP > 0) isHurt = true;
                 else{
 

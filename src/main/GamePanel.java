@@ -156,6 +156,10 @@ public class GamePanel extends JPanel implements Runnable{
             player.locX = 17;
             player.locY = 67;
         }
+        else if(map == 4){
+            player.locX = 30;
+            player.locY = 44;
+        }
         // Đặt lại tất cả các thành phần của trò chơi về trạng thái ban đầu
         player.setDefaultValue(
             tileSize * player.locX,
@@ -192,6 +196,10 @@ public class GamePanel extends JPanel implements Runnable{
         else if(map == 3){
             player.locX = 17;
             player.locY = 67;
+        }
+        else if(map == 4){
+            player.locX = 30;
+            player.locY = 44;
         }
         fadingIn = true;
         player.setDefaultValue(
@@ -292,7 +300,7 @@ public class GamePanel extends JPanel implements Runnable{
                         for (Entity object : obj) {
                             // Lọc các CombatWall
                             if (Objects.equals(object.objName, "CombatWall")) {
-                                System.out.println(1);
+                                // System.out.println(1);
                                 object.on = false;
                             }
                             // Lọc các enemy trong vùng zone
@@ -402,6 +410,10 @@ public class GamePanel extends JPanel implements Runnable{
             else if(map == 3){
                 player.locX = 17;
                 player.locY = 67;
+            }
+            else if(map == 4){
+                player.locX = 30;
+                player.locY = 44;
             }
             player.setDefaultValue(tileSize*player.locX, tileSize*player.locY, 5, "down");
             // Thiết lập trạng thái game từ saveData

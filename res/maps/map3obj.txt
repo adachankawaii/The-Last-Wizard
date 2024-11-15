@@ -13,13 +13,13 @@ Layer10 1
 Layer11 1
 89,32
 Layer12 1
-69,34
+69,35
 Layer15 1
 19,42
 Layer18 1
 57,52
 Layer23 1
-19,76
+19,77
 Layer30 1
 69,67
 Layer34 1
@@ -28,8 +28,8 @@ Layer35 1
 69,90
 Stair 1
 8,66
-Sewer 3
-33,83 62,48 21,83
+Sewer 2
+33,83 22,83
 Layer1 1
 9,8
 Layer2 1
@@ -66,9 +66,13 @@ Hole1 1
 62,53
 Hole2 1
 41,34
+Layer33 1
+79,73
 ***
+Gate 1
+28,76
 Layer4 1
-10,30
+9,30
 Layer5 1
 17,22
 Layer13 1
@@ -93,8 +97,6 @@ Layer31 1
 70,68
 Layer32 1
 76,68
-Layer33 1
-79,73
 Chest 1
 83,88
 Chest1A 1
