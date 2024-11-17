@@ -95,10 +95,10 @@ public class TileManager {
                 int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
                 // Chỉ render phần trong khung camera
-                if (worldX + 10*gp.tileSize > gp.player.worldX - gp.player.screenX
-                        && worldX - 10*gp.tileSize < gp.player.worldX + gp.player.screenX
-                        && worldY + 10*gp.tileSize > gp.player.worldY - gp.player.screenY
-                        && worldY - 10*gp.tileSize < gp.player.worldY + gp.player.screenY) {
+                if (worldX + 1*gp.tileSize > gp.player.worldX - gp.player.screenX
+                        && worldX - 1*gp.tileSize < gp.player.worldX + gp.player.screenX
+                        && worldY + 1*gp.tileSize > gp.player.worldY - gp.player.screenY
+                        && worldY - 1*gp.tileSize < gp.player.worldY + gp.player.screenY) {
                     if (worldCol < 0 || worldRow < 0 || worldCol >= gp.maxWorldCol || worldRow >= gp.maxWorldRow) {
                         gd.drawImage(tile[1].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
                     } else {

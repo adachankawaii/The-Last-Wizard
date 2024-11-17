@@ -103,6 +103,8 @@ public class AssetSetter {
                 return new Mage(gp);
             case "Golem":
                 return new Golem(gp);
+            case "Executioner":
+                return new Executioner(gp);
             case "GuildMaster":
                 return new GuildMaster(gp);
             default:

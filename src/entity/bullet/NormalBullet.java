@@ -21,24 +21,12 @@ public class NormalBullet extends Bullet{
     public void specialMethod() {
         timer++;
 
-        // Tạo hiệu ứng nổ khi đạn chạm mục tiêu
-        createExplosionEffect();
-
         // Tạo hiệu ứng laser nhấp nháy từ vị trí hiện tại đến mục tiêu
 
         // Tạo hiệu ứng ánh sáng cho đường đi của viên đạn
         if (timer >= 3) {
             createGlowEffect();
             timer = 0;
-        }
-    }
-
-    private void createExplosionEffect() {
-        for (int i = 0; i < 8; i++) {
-            int offsetX = random.nextInt(10) - 5;
-            int offsetY = random.nextInt(10) - 5;
-            Effect explosionFragment = new Effect(null, 8, 8, this.worldX + offsetX, this.worldY + offsetY, 8, gp, 4, 1.2, 1.2, targetX, targetY);
-            gp.obj.add(explosionFragment);
         }
     }
 
