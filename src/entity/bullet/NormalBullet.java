@@ -3,6 +3,7 @@ package entity.bullet;
 import main.GamePanel;
 import entity.effect.Effect;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class NormalBullet extends Bullet{
@@ -20,7 +21,13 @@ public class NormalBullet extends Bullet{
     @Override
     public void specialMethod() {
         timer++;
-
+        if (Objects.equals(this.objName, "enenmyBullet")) {
+            Effect glowEffect = new Effect(null, 16, 16,
+                    this.worldX,
+                    this.worldY,
+                    12, gp, 2, 1.5, 1.5, targetX, targetY);
+            gp.obj.add(glowEffect);
+        }
         // Tạo hiệu ứng laser nhấp nháy từ vị trí hiện tại đến mục tiêu
 
         // Tạo hiệu ứng ánh sáng cho đường đi của viên đạn

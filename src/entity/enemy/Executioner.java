@@ -32,7 +32,7 @@ public class Executioner extends Entity {
     private int targetX, targetY;
     int moveSet = 0;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
-    CombatWall c; // Width = 1, Height = 8
+    Vector<CombatWall> c = new Vector<>(); // Width = 1, Height = 8
     Font font =  FontLoader.loadFont("/UI/SVN-Determination Sans.otf",20);
 
     public Executioner(GamePanel gp) {
@@ -51,9 +51,13 @@ public class Executioner extends Entity {
         map.put("Bigbullet", 3);
         isEnemy = true;
         addWords(new String[]{"No one leave hera","Especially a wizard like","you","end"});
-        c = new CombatWall(gp, 1, 10);
-        c.worldX = 45 * gp.tileSize;
-        c.worldY = 20 * gp.tileSize;
+
+        c.add(new CombatWall(gp, 1, 10));
+        c.get(0).worldX = 17 * gp.tileSize;
+        c.get(0).worldY = 18 * gp.tileSize;
+        c.add(new CombatWall(gp, 10, 1));
+        c.get(1).worldX = 27 * gp.tileSize;
+        c.get(1).worldY = 42 * gp.tileSize;
     }
     public void addWords(String[] inputWords) {
         words.add(new Vector<>());
@@ -134,9 +138,10 @@ public class Executioner extends Entity {
             targetX = gp.player.worldX;
             targetY = gp.player.worldY;
             if (distanceToTarget <= 10 * gp.tileSize && !done) {
-
-                c.on = true;
-                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
+                for(int i = 0;i<c.size();i++) {
+                    c.get(i).on = true;
+                    gp.obj.add(c.get(i)); // Thêm tường vào danh sách đối tượng
+                }
                 startTalk = true;
                 done = true;
             }
@@ -165,8 +170,11 @@ public class Executioner extends Entity {
             delayMove--;
         }
         else {
-            aniCount = 3;
-            c.on = false;
+            aniCount = 1;
+            for(int i = 0;i<c.size();i++) {
+                c.get(i).on = false;
+            }
+            collision = false;
         }
     }
     private void selectNextMoveSet(int bound) {
@@ -210,7 +218,10 @@ public class Executioner extends Entity {
         if (spriteNum >= animations.get(aniCount).size() - 1) {
             shootCounter++;
             spriteNum = animations.get(aniCount).size() - 1;
-
+            if(shootCounter % 2 == 0) {
+                ThrowingObj b = new ThrowingObj(null, "enemyBullet", -100 * gp.tileSize, -100 * gp.tileSize, 1, 1, npcCenterX, npcCenterY, 50, gp, 0, 7, 2, 2, targetX + (new Random().nextInt(16 * gp.tileSize) - 8 * gp.tileSize), targetY + (new Random().nextInt(16 * gp.tileSize) - 8 * gp.tileSize));
+                gp.obj.add(b);
+            }
             if (shootCounter >= 15) {
                 aniCount = 0; // Chuyển về trạng thái mặc định
                 spriteNum = 0;
@@ -228,9 +239,38 @@ public class Executioner extends Entity {
             pauseCounter--; // Tạm dừng tại sprite đầu tiên
             return;
         }
+        if (spriteNum == 2) {
+            double baseAngle = Math.atan2(playerCenterY - npcCenterY, playerCenterX - npcCenterX);
 
+            // Số lượng đạn và khoảng cách góc giữa các đạn
+            int bulletCount = 10;
+            double angleStep = Math.toRadians(120.0 / (bulletCount - 1)); // Bước góc (-60 đến 60 độ)
+
+            // Bắn từng luồng đạn
+            for (int i = 0; i < bulletCount; i++) {
+                // Góc hiện tại của từng viên đạn
+                double angle = baseAngle - Math.toRadians(60) + i * angleStep;
+
+                // Tính toán tọa độ mục tiêu cho từng viên đạn
+                int targetBulletX = (int) (npcCenterX + Math.cos(angle) * 12*gp.tileSize);
+                int targetBulletY = (int) (npcCenterY + Math.sin(angle) * 12*gp.tileSize);
+
+                // Tạo đối tượng đạn
+                Bullet b = new Bullet("/effect/effect1.png", "enemyBullet",
+                        0, 0, 8 * 6, 8 * 6,
+                        (int)(npcCenterX + Math.cos(angle) * 5*gp.tileSize), (int)(npcCenterY + Math.sin(angle) * 5*gp.tileSize), 8, gp,
+                        0, 3, 1, 1,
+                        targetBulletX, targetBulletY);
+                b.root = this.objName;
+                b.death = false;
+
+                // Thêm đạn vào danh sách đối tượng
+                gp.obj.add(b);
+            }
+        }
         if (spriteNum >= animations.get(aniCount).size() - 1) {
             count++;
+
             if(count >= 2) {
                 count = 0;
                 aniCount = 0;
@@ -249,7 +289,33 @@ public class Executioner extends Entity {
             pauseCounter--; // Tạm dừng tại sprite đầu tiên
             return;
         }
+        if (spriteNum >= animations.get(aniCount).size() - 2) {
+            // Số lượng đạn và khoảng cách góc giữa các đạn
+            int bulletCount = 10; // Ví dụ: 5 viên đạn
+            double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
 
+            // Bắn từng luồng đạn
+            for (int i = 0; i < bulletCount; i++) {
+                // Góc hiện tại của từng viên đạn
+                double angle = Math.toRadians(180) + i * angleStep;
+
+                // Tính toán tọa độ mục tiêu cho từng viên đạn
+                int targetBulletX = (int) (npcCenterX + Math.cos(angle) * 12*gp.tileSize); // Khoảng cách từ tâm là 25
+                int targetBulletY = (int) (npcCenterY + Math.sin(angle) * 12*gp.tileSize);
+
+                // Tạo đối tượng đạn
+                Bullet b = new Bullet("/bullet/Slash.png", "enemyBullet",
+                        0, 0, 8 * 6, 8 * 6,
+                        (int)(npcCenterX + Math.cos(angle) * 3*gp.tileSize), (int)(npcCenterY + Math.sin(angle) * 3*gp.tileSize), 18, gp,
+                        0, 8, 1, 1,
+                        targetBulletX, targetBulletY);
+                b.isSlash = true;
+                b.root = this.objName;
+
+                // Thêm đạn vào danh sách đối tượng
+                gp.obj.add(b);
+            }
+        }
         if (spriteNum >= animations.get(aniCount).size() - 1) {
             count++;
             if(count >= 2) {
@@ -271,6 +337,31 @@ public class Executioner extends Entity {
             return;
         }
 
+        if (spriteNum >= 6 && spriteNum <= 8) {
+            // Sinh số đạn ngẫu nhiên mỗi frame (ít nhất 1 đạn)
+            int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+
+            for (int i = 0; i < bulletCount; i++) {
+                // Góc ngẫu nhiên từ 0 đến 360 độ
+                double angle = Math.toRadians(Math.random() * 360);
+
+                // Tính toán tọa độ mục tiêu cho từng viên đạn
+                int targetBulletX = (int) (npcCenterX + Math.cos(angle) * gp.tileSize);
+                int targetBulletY = (int) (npcCenterY + Math.sin(angle) * gp.tileSize);
+
+                // Tạo đối tượng đạn
+                Bullet b = new Bullet("/bullet/enemyBullet.png", "enemyBullet",
+                        0, 0, 8 * 6, 8 * 6,
+                        npcCenterX, npcCenterY, 15, gp,
+                        0, 13, 1, 1,
+                        targetBulletX, targetBulletY);
+                b.root = this.objName;
+                b.death = false;
+
+                // Thêm đạn vào danh sách đối tượng
+                gp.obj.add(b);
+            }
+        }
         if (spriteNum >= animations.get(aniCount).size() - 1) {
             count++;
             if(count >= 3) {
@@ -308,45 +399,52 @@ public class Executioner extends Entity {
             executeMoveSet(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
             collision = true;
         }
-
+        move(direction);
     }
 
 
     private void startResting() {
         aniCount = 0;
         isResting = true;
-        restCounter = 60; // Thời gian nghỉ, ví dụ 60 frame
+        restCounter = 30; // Thời gian nghỉ, ví dụ 60 frame
     }
     private void move(String direction) {
-        switch (direction) {
-            case "up":
-                worldY -= speed;
-                break;
-            case "down":
-                worldY += speed;
-                break;
-            case "left":
-                worldX -= speed;
-                break;
-            case "right":
-                worldX += speed;
-                break;
-            case "up-right":
-                worldX += (int) (speed / Math.sqrt(2));
-                worldY -= (int) (speed / Math.sqrt(2));
-                break;
-            case "up-left":
-                worldX -= (int) (speed / Math.sqrt(2));
-                worldY -= (int) (speed / Math.sqrt(2));
-                break;
-            case "down-right":
-                worldX += (int) (speed / Math.sqrt(2));
-                worldY += (int) (speed / Math.sqrt(2));
-                break;
-            case "down-left":
-                worldX -= (int) (speed / Math.sqrt(2));
-                worldY += (int) (speed / Math.sqrt(2));
-                break;
+        int npcCenterX = worldX + solidArea.x + solidArea.width / 2;
+        int npcCenterY = worldY + solidArea.y + solidArea.height / 2;
+        int playerCenterX = targetX + gp.player.solidArea.x + gp.player.solidArea.width / 2;
+        int playerCenterY = targetY + gp.player.solidArea.y + gp.player.solidArea.height / 2;
+        double distanceToTarget = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
+        if(distanceToTarget >= 3*gp.tileSize) {
+            switch (direction) {
+                case "up":
+                    worldY -= speed;
+                    break;
+                case "down":
+                    worldY += speed;
+                    break;
+                case "left":
+                    worldX -= speed;
+                    break;
+                case "right":
+                    worldX += speed;
+                    break;
+                case "up-right":
+                    worldX += (int) (speed / Math.sqrt(2));
+                    worldY -= (int) (speed / Math.sqrt(2));
+                    break;
+                case "up-left":
+                    worldX -= (int) (speed / Math.sqrt(2));
+                    worldY -= (int) (speed / Math.sqrt(2));
+                    break;
+                case "down-right":
+                    worldX += (int) (speed / Math.sqrt(2));
+                    worldY += (int) (speed / Math.sqrt(2));
+                    break;
+                case "down-left":
+                    worldX -= (int) (speed / Math.sqrt(2));
+                    worldY += (int) (speed / Math.sqrt(2));
+                    break;
+            }
         }
     }
 
@@ -362,7 +460,7 @@ public class Executioner extends Entity {
         screenX = worldX - gp.player.worldX + gp.player.screenX;
 
         // Tạo hình ảnh
-        BufferedImage image = animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size()-1);
+        BufferedImage image = makeSpriteRed( animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size()-1));
 
         // Lưu lại trạng thái ban đầu của Graphics2D
         AffineTransform old = g2.getTransform();

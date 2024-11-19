@@ -142,7 +142,7 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
-            // System.out.println(this.worldX/gp.tileSize + " " +this.worldY/gp.tileSize);
+            System.out.println(this.worldX/gp.tileSize + " " +this.worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {

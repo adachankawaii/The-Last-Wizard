@@ -14,5 +14,5 @@ Portal 1
 88,74
 NPC 1
 18,78
-Executioner 1
+Golem 1
 70,19
