@@ -20,6 +20,7 @@ public class Sound {
         addSound("slime_die", "/sound/slime_die.wav");
         addSound("pew","/sound/pew-laser-fx_C_minor.wav");
         addSound("opening","/sound/OpeningBG.wav");
+        setVolume("opening", 10.0f);
     }
 
     // Phương thức để thêm âm thanh vào danh sách quản lý
