@@ -3,7 +3,6 @@ package main;
 import javax.swing.JFrame;
 
 public class Main {
-
     public static void main(String[] args) {
 
         // TẠO CỬA SỔ GAME
@@ -24,5 +23,5 @@ public class Main {
         // ĐẶT ĐỒ LÊN MAP
         // CHẠY THREAD
         gp.startGameThread();
-    }   
+    }
 }

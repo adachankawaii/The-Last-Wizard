@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import UI.Bar;
@@ -285,28 +286,31 @@ public class GamePanel extends JPanel implements Runnable{
                         }
                     }
                     // Player đã vào vùng, bật trạng thái `on` cho các CombatWall
+
                     if (flag) {
-                        for (Entity object : obj) {
-                            // Lọc các CombatWall
-                            if (Objects.equals(object.objName, "CombatWall")) {
+                        // Sử dụng CopyOnWriteArrayList để tránh ConcurrentModificationException
+                        CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
+
+                        for (Entity object : objList) {
+                            if (object != null && Objects.equals(object.objName, "CombatWall")) {
                                 object.on = true;
                             }
-                            // Lọc các enemy trong vùng zone
                         }
-                        for (Entity entity : obj) {
-                            if (entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY)) entity.awake = true;
+                        for (Entity entity : objList) {
+                            if (entity != null && entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY)) {
+                                entity.awake = true;
+                            }
                         }
-                    }
-                    if (!flag) {
-                        for (Entity object : obj) {
-                            // Lọc các CombatWall
-                            if (Objects.equals(object.objName, "CombatWall")) {
-                                // System.out.println(1);
+                    } else {
+                        CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
+
+                        for (Entity object : objList) {
+                            if (object != null && Objects.equals(object.objName, "CombatWall")) {
                                 object.on = false;
                             }
-                            // Lọc các enemy trong vùng zone
                         }
                     }
+
                 }
             }
         }
@@ -538,7 +542,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     // Kiểm tra xem đối tượng có nằm trong phạm vi màn hình không
     private boolean isObjectInScreen(Entity entity){
-        if(Objects.equals(entity.objName, "CombatWall")) return true;
+        if(Objects.equals(entity.objName, "CombatWall") || entity.isBoss) return true;
         if(Math.abs(entity.worldX - player.worldX) <= 15*tileSize && Math.abs(entity.worldY - player.worldY) <= 12*tileSize){
             return true;
         }

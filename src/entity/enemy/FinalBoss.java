@@ -8,9 +8,7 @@ import java.util.List;
 
 import entity.Entity;
 import entity.Items.Coin;
-import entity.bullet.Bullet;
-import entity.bullet.NormalBullet;
-import entity.bullet.ThrowingObj;
+import entity.bullet.*;
 import entity.effect.Effect;
 import entity.npc.CombatWall;
 import entity.player.Quest;
@@ -18,7 +16,7 @@ import main.FontLoader;
 import main.GamePanel;
 
 
-public class Executioner extends Entity {
+public class FinalBoss extends Entity {
     Vector<Vector<String>> words = new Vector<>();
     int index = 0;
     int dialogueIndex = 0;
@@ -31,78 +29,68 @@ public class Executioner extends Entity {
     boolean back = false;
     private int targetX, targetY;
     int moveSet = 0;
+    boolean phase2 = false;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
-    Vector<CombatWall> c = new Vector<>(); // Width = 1, Height = 8
+    CombatWall c; // Width = 1, Height = 8
     Font font =  FontLoader.loadFont("/UI/SVN-Determination Sans.otf",20);
 
-    public Executioner(GamePanel gp) {
+    public FinalBoss(GamePanel gp) {
         layer = 2;
-        objName = "Golem";
+        objName = "Fami";
         collision = true;
         direction = "down";
-        HP = 75;
+        HP = 5;
         speed = 4;
         isTrigger = true;
         this.gp = gp;
-        rectGet(70*2, 70*2, 48*2, 52*2);
+        rectGet(250, 250, 48*2, 52*2);
         getImage();
         aniCount = 1;
         map.put("bullet", 1);
         map.put("Bigbullet", 3);
         isEnemy = true;
-        addWords(new String[]{"No one leave hera","Especially a wizard like","you","end"});
-        isBoss =true;
-        c.add(new CombatWall(gp, 1, 10));
-        c.get(0).worldX = 17 * gp.tileSize;
-        c.get(0).worldY = 18 * gp.tileSize;
-        c.add(new CombatWall(gp, 10, 1));
-        c.get(1).worldX = 27 * gp.tileSize;
-        c.get(1).worldY = 42 * gp.tileSize;
+        addWords(new String[]{"Must","Protect","Her","end"});
+        c = new CombatWall(gp, 1, 10);
+        c.worldX = 45 * gp.tileSize;
+        c.worldY = 20 * gp.tileSize;
+        isBoss = true;
     }
     public void addWords(String[] inputWords) {
         words.add(new Vector<>());
         words.get(words.size() - 1).addAll(List.of(inputWords));
     }
     public void getImage() {
-        importAndSlice("/boss/boss2/idle.png", 4, 0, 0);
-        importAndSlice("/boss/boss2/death.png", 20, 0 ,0 );
-        importAndSlice("/boss/boss2/attacking.png", 6, 0,0 );
-        importAndSlice("/boss/boss2/attacking2.png", 6, 0, 0);
-        importAndSlice("/boss/boss2/skill.png", 12, 0 ,0);
-        importAndSlice("/boss/boss2/summon.png", 4, 0,0);
+        importAndSlice("/boss/FinalBoss/Idle.png", 8, 0,0);
+        importAndSlice("/boss/FinalBoss/Attack.png", 8, 0,0);
+        importAndSlice("/boss/FinalBoss/Death.png", 5, 0, 0);
     }
     int shootCounter = 0;
     boolean isResting = false;
     int restCounter = 160;
     boolean startTalk = false;
     boolean done = false;
-    boolean isReverse = false;
-
+    @Override
     public void update() {
         int npcCenterX = worldX + solidArea.x + solidArea.width / 2;
         int npcCenterY = worldY + solidArea.y + solidArea.height / 2;
         spriteCounter++;
         if (spriteCounter > animationDelay) {
-
-            if(!isReverse) {
-                spriteNum++;
-                if (spriteNum >= animations.get(aniCount).size()) {
-                    if (!dead && aniCount != 5) spriteNum = 0;
-                    else spriteNum = animations.get(aniCount).size() - 1;
-                }
-            }
-            else{
-                spriteNum--;
+            spriteNum++;
+            if (spriteNum >= animations.get(aniCount).size()) {
+                if(!dead && !phase2) spriteNum = 0;
+                else spriteNum = animations.get(aniCount).size() - 1;
             }
             spriteCounter = 0;
         }
 
         timer--;
-        if(!dead){
+        if(!dead && !phase2){
             if (rootY == -1) {
                 rootY = this.worldY;
                 rootX = this.worldX;
             }
+
+
             int playerCenterX = targetX + gp.player.solidArea.x + gp.player.solidArea.width / 2;
             int playerCenterY = targetY + gp.player.solidArea.y + gp.player.solidArea.height / 2;
             angle = Math.atan2(
@@ -138,10 +126,9 @@ public class Executioner extends Entity {
             targetX = gp.player.worldX;
             targetY = gp.player.worldY;
             if (distanceToTarget <= 10 * gp.tileSize && !done) {
-                for(int i = 0;i<c.size();i++) {
-                    c.get(i).on = true;
-                    gp.obj.add(c.get(i)); // Thêm tường vào danh sách đối tượng
-                }
+
+                c.on = true;
+                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
                 startTalk = true;
                 done = true;
             }
@@ -152,33 +139,72 @@ public class Executioner extends Entity {
                     if (distanceToTarget >= 5 * gp.tileSize) move(direction); // Di chuyển trong thời gian nghỉ
                     if (restCounter <= 0) {
                         isResting = false;
-                        selectNextMoveSet(5);
+                        selectNextMoveSet();
                     }
-                    animationDelay = 5;
+                    animationDelay = 7;
                 } else {
                     animationDelay = 3;
-                    if (distanceToTarget >= 5 * gp.tileSize) move(direction);// Giai đoạn thực hiện hành động
+                    // Giai đoạn thực hiện hành động
                     executeMoveSet(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
                 }
             } else {
                 aniCount = 0;
-                animationDelay = 5;
+                animationDelay = 7;
             }
 
             collisionOn = false;
             delayTime--;
             delayMove--;
         }
-        else {
-            aniCount = 1;
-            for(int i = 0;i<c.size();i++) {
-                c.get(i).on = false;
+        else{
+            if(aniCount != 2) spriteNum = 0;
+            aniCount = 2;
+            if(dead && !phase2) c.on = false;
+            if (phase2){
+                phaseCount++;
+                if(phaseCount%40 == 0){
+                    ThrowingObj b = new ThrowingObj(null,"enemyBullet", -100*gp.tileSize, -100*gp.tileSize,1,1, npcCenterX, npcCenterY,50,gp ,0, 7, 2, 2, targetX + (new Random().nextInt(4* gp.tileSize) - 2*gp.tileSize), targetY + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize));
+                    gp.obj.add(b);
+                }
+                if(phaseCount >= 400){
+                    HP++;
+                    if(HP >= 5){
+                        int bulletCount = 6; // Ví dụ: 5 viên đạn
+                        double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
+
+                        // Bắn từng luồng đạn
+                        for (int i = 0; i < bulletCount; i++) {
+                            // Góc hiện tại của từng viên đạn
+                            double angle = Math.toRadians(180) + i * angleStep;
+
+                            // Tính toán tọa độ mục tiêu cho từng viên đạn
+                            int targetBulletX = (int) (npcCenterX + Math.cos(angle) * 12 * gp.tileSize); // Khoảng cách từ tâm là 25
+                            int targetBulletY = (int) (npcCenterY + Math.sin(angle) * 12 * gp.tileSize);
+
+                            // Tạo đối tượng đạn
+                            FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet",
+                                    0, 0, 8 * 6, 8 * 6,
+                                    (int) (npcCenterX), (int) (npcCenterY), 30, gp,
+                                    0, 8, 1, 1,
+                                    targetBulletX, targetBulletY, null);
+                            b.root = this.objName;
+
+                            // Thêm đạn vào danh sách đối tượng
+                            gp.obj.add(b);
+                        }
+                        FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12, 12, 8, 8, npcCenterX + (flip ? -12 - 32 : 12 + 41), npcCenterY - 45, 65, gp, 0, 10, 1, 1, targetX, targetY, null);
+                        gp.obj.add(b);
+                        phase2 = false;
+                        isResting = false;
+                        moveSetOne(npcCenterX, npcCenterY, gp.player.worldX, gp.player.worldY);
+                    }
+                }
             }
-            collision = false;
         }
     }
-    private void selectNextMoveSet(int bound) {
-        moveSet = bound == 4 ? new Random().nextInt(4) : 4; // Random từ 0 đến 2 (3 moveSet)
+    int phaseCount = 0;
+    private void selectNextMoveSet() {
+        moveSet = new Random().nextInt(4); // Random từ 0 đến 2 (3 moveSet)
         shootCounter = 0; // Reset shootCounter cho moveSet mới
         aniCount = 0; // Reset animation state nếu cần
     }
@@ -195,108 +221,41 @@ public class Executioner extends Entity {
                 moveSetTwo(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
                 break;
             case 3:
-                moveSetThree(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
-                break;
-            case 4:
                 moveSetFour(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
                 break;
         }
     }
-
     int delayMove = 0;
-    int pauseCounter = 0; // Biến kiểm soát thời gian tạm dừng
-    int count = 0;
-    private void moveSetThree(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
-        if (aniCount != 5) spriteNum = 0; // Đặt animation về trạng thái bắt đầu nếu cần
-        aniCount = 5;
-
-        if (pauseCounter > 0) {
-            pauseCounter--; // Tạm dừng tại sprite đầu tiên
-            return;
-        }
-
-        if (spriteNum >= animations.get(aniCount).size() - 1) {
-            shootCounter++;
-            spriteNum = animations.get(aniCount).size() - 1;
-            if(shootCounter % 2 == 0) {
-                ThrowingObj b = new ThrowingObj(null, "enemyBullet", -100 * gp.tileSize, -100 * gp.tileSize, 1, 1, npcCenterX, npcCenterY, 50, gp, 0, 7, 2, 2, targetX + (new Random().nextInt(16 * gp.tileSize) - 8 * gp.tileSize), targetY + (new Random().nextInt(16 * gp.tileSize) - 8 * gp.tileSize));
-                gp.obj.add(b);
-            }
-            if (shootCounter >= 15) {
-                aniCount = 0; // Chuyển về trạng thái mặc định
-                spriteNum = 0;
-                pauseCounter = 20; // Tạm dừng 10 frame
-                startResting();
-            }
-        }
-    }
-    boolean red = true;
     private void moveSetZero(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
-        if (aniCount != 2) spriteNum = 0;
-        aniCount = 2;
-
-        if (pauseCounter > 0) {
-            pauseCounter--; // Tạm dừng tại sprite đầu tiên
-            return;
+        if(delayMove <= 0){
+            ThrowingObj b = new ThrowingObj(null,"enemyBullet", -100*gp.tileSize, -100*gp.tileSize,1,1, npcCenterX, npcCenterY,50,gp ,0, 7, 2, 2, targetX + (new Random().nextInt(20* gp.tileSize) - 10*gp.tileSize), targetY + (new Random().nextInt(20 * gp.tileSize) - 10*gp.tileSize));
+            gp.obj.add(b);
+            shootCounter++;
         }
-        if (spriteNum == 2) {
-            double baseAngle = Math.atan2(playerCenterY - npcCenterY, playerCenterX - npcCenterX);
 
-            // Số lượng đạn và khoảng cách góc giữa các đạn
-            int bulletCount = 10;
-            double angleStep = Math.toRadians(120.0 / (bulletCount - 1)); // Bước góc (-60 đến 60 độ)
-
-            // Bắn từng luồng đạn
-            for (int i = 0; i < bulletCount; i++) {
-                // Góc hiện tại của từng viên đạn
-                double angle = baseAngle - Math.toRadians(60) + i * angleStep;
-
-                // Tính toán tọa độ mục tiêu cho từng viên đạn
-                int targetBulletX = (int) (npcCenterX + Math.cos(angle) * 12*gp.tileSize);
-                int targetBulletY = (int) (npcCenterY + Math.sin(angle) * 12*gp.tileSize);
-
-                // Tạo đối tượng đạn
-                Bullet b = new Bullet("/effect/effect1.png", "enemyBullet",
-                        0, 0, 8 * 6, 8 * 6,
-                        (int)(npcCenterX + Math.cos(angle) * 5*gp.tileSize), (int)(npcCenterY + Math.sin(angle) * 5*gp.tileSize), 8, gp,
-                        0, 3, 1, 1,
-                        targetBulletX, targetBulletY);
-                b.root = this.objName;
-                b.death = false;
-
-                // Thêm đạn vào danh sách đối tượng
-                gp.obj.add(b);
-            }
-        }
-        if (spriteNum >= animations.get(aniCount).size() - 1) {
-            count++;
-
-            if(count >= 2) {
-                count = 0;
-                aniCount = 0;
-                spriteNum = 0;
-                pauseCounter = 20; // Tạm dừng 10 frame
-                startResting();
-            }
+        if (shootCounter >= 8) {
+            delayMove = 0;
+            startResting();
         }
     }
-
+    Random random = new Random();
     private void moveSetOne(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
-        if (aniCount != 3) spriteNum = 0;
-        aniCount = 3;
-
-        if (pauseCounter > 0) {
-            pauseCounter--; // Tạm dừng tại sprite đầu tiên
-            return;
+        if(delayMove <= 0){
+            double angle = random.nextDouble(Math.toRadians(360));
+            Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX + (int)(4*gp.tileSize* Math.cos(angle)), npcCenterY + (int)(4*gp.tileSize* Math.cos(angle)), 15, gp, 0, 2, 2, 0, 0);
+            gp.obj.add(a);
+            Ghost g = new Ghost(gp);
+            g.worldX = npcCenterX + (int)(4*gp.tileSize* Math.cos(angle));
+            g.worldY = npcCenterY + (int)(4*gp.tileSize* Math.cos(angle));
+            gp.obj.add(g);
+            shootCounter++;
+            // Đặt lại thời gian chờ
+            delayMove = 10;
         }
-        if (spriteNum >= animations.get(aniCount).size() - 1) {
-            // Số lượng đạn và khoảng cách góc giữa các đạn
 
-        }
-        if (spriteNum >= animations.get(aniCount).size() - 1) {
-            count++;
-            if(count >= 2) {
-                int bulletCount = 10; // Ví dụ: 5 viên đạn
+        if (shootCounter >= 1) {
+            if(phase == 2) {
+                int bulletCount = 6; // Ví dụ: 5 viên đạn
                 double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
 
                 // Bắn từng luồng đạn
@@ -305,153 +264,130 @@ public class Executioner extends Entity {
                     double angle = Math.toRadians(180) + i * angleStep;
 
                     // Tính toán tọa độ mục tiêu cho từng viên đạn
-                    int targetBulletX = (int) (npcCenterX + Math.cos(angle) * 12*gp.tileSize); // Khoảng cách từ tâm là 25
-                    int targetBulletY = (int) (npcCenterY + Math.sin(angle) * 12*gp.tileSize);
+                    int targetBulletX = (int) (npcCenterX + Math.cos(angle) * 12 * gp.tileSize); // Khoảng cách từ tâm là 25
+                    int targetBulletY = (int) (npcCenterY + Math.sin(angle) * 12 * gp.tileSize);
 
                     // Tạo đối tượng đạn
-                    Bullet b = new Bullet("/bullet/Slash.png", "enemyBullet",
+                    FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet",
                             0, 0, 8 * 6, 8 * 6,
-                            (int)(npcCenterX + Math.cos(angle) * 3*gp.tileSize), (int)(npcCenterY + Math.sin(angle) * 3*gp.tileSize), 18, gp,
+                            (int) (npcCenterX), (int) (npcCenterY), 30, gp,
                             0, 8, 1, 1,
-                            targetBulletX, targetBulletY);
-                    b.isSlash = true;
+                            targetBulletX, targetBulletY, null);
                     b.root = this.objName;
 
                     // Thêm đạn vào danh sách đối tượng
                     gp.obj.add(b);
                 }
-                count = 0;
-                aniCount = 0;
-                spriteNum = 0;
-                pauseCounter = 20; // Tạm dừng 10 frame
-                startResting();
+
             }
+            delayMove = 0;
+            startResting();
         }
     }
 
     private void moveSetTwo(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
-        if (aniCount != 4) spriteNum = 0;
-        aniCount = 4;
-
-        if (pauseCounter > 0) {
-            pauseCounter--; // Tạm dừng tại sprite đầu tiên
-            return;
-        }
-
-        if (spriteNum >= 6 && spriteNum <= 8) {
-            // Sinh số đạn ngẫu nhiên mỗi frame (ít nhất 1 đạn)
-            int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
-
-            for (int i = 0; i < bulletCount; i++) {
-                // Góc ngẫu nhiên từ 0 đến 360 độ
-                double angle = Math.toRadians(Math.random() * 360);
-
-                // Tính toán tọa độ mục tiêu cho từng viên đạn
-                int targetBulletX = (int) (npcCenterX + Math.cos(angle) * gp.tileSize);
-                int targetBulletY = (int) (npcCenterY + Math.sin(angle) * gp.tileSize);
-
-                // Tạo đối tượng đạn
-                Bullet b = new Bullet("/bullet/enemyBullet.png", "enemyBullet",
-                        0, 0, 8 * 6, 8 * 6,
-                        npcCenterX, npcCenterY, 15, gp,
-                        0, 13, 1, 1,
-                        targetBulletX, targetBulletY);
-                b.root = this.objName;
-                b.death = false;
-
-                // Thêm đạn vào danh sách đối tượng
-                gp.obj.add(b);
-            }
-        }
-        if (spriteNum >= animations.get(aniCount).size() - 1) {
-            count++;
-            if(count >= 3) {
-                count = 0;
-                aniCount = 0;
-                spriteNum = 0;
-                pauseCounter = 20; // Tạm dừng 10 frame
-                startResting();
-            }
-        }
-    }
-    private void moveSetFour(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
-        if (aniCount != 1) spriteNum = 0;
-        aniCount = 1;
-
-        if (pauseCounter > 0) {
-            pauseCounter--; // Tạm dừng tại sprite đầu tiên
-            return;
-        }
-        red = false;
-        collision = false;
-        if (spriteNum >= animations.get(aniCount).size() - 1) {
-            isReverse = true;
+        if(aniCount != 1 && phase == 2){
+            Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX, npcCenterY, 50, gp, 0, 2, 2, 0, 0);
+            gp.obj.add(a);
             int angle = new Random().nextInt(2);
             if (angle == 1) {
                 flip = true;
             } else {
                 flip = false;
             }
-            worldX = gp.player.worldX + (angle == 0 ? -8 * gp.tileSize : -2 * gp.tileSize);
-            worldY = gp.player.worldY - 5 * gp.tileSize;
+            worldX = gp.player.worldX + (angle == 0 ? 10 * gp.tileSize : -10* gp.tileSize) - (solidArea.x + solidArea.width / 2);
+            worldY = gp.player.worldY - 10 * gp.tileSize;
+            Effect b = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX, npcCenterY, 50, gp, 0, 2, 2, 0, 0);
+            gp.obj.add(b);
         }
-        if(isReverse && spriteNum <= 0){
-            isReverse = false;
-            selectNextMoveSet(4);
-            executeMoveSet(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
-            red = true;
-            collision = true;
+        aniCount = 1;
+        if(delayMove <= 0){
+            Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX +  (flip ? -12-32 : 12+41), npcCenterY - 45, 20, gp, 0, 2, 2, 0, 0);
+            gp.obj.add(a);
+            Bullet b = new Bullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12,12, 8, 8, npcCenterX +  (flip ? -12-32 : 12+41), npcCenterY - 45, 65, gp, 0, 7, 1, 1, targetX + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize), targetY + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize));
+            b.off = false;
+            gp.obj.add(b);
+            shootCounter++;
+            // Đặt lại thời gian chờ
+            delayMove = 5;
         }
-        move(direction);
+
+        if (shootCounter >= 20) {
+            delayMove = 0;
+            startResting();
+        }
+    }
+    private void moveSetFour(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY){
+        if(delayMove <= 0){
+            Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX + (flip ? -12 - 32 : 12 + 41), npcCenterY - 45, 20, gp, 0, 2, 2, 0, 0);
+            gp.obj.add(a);
+            if(shootCounter == 0){
+                ClusterBomb b = new ClusterBomb("/effect/Fire.png", "enemyBullet", -100 * gp.tileSize, -100 * gp.tileSize, 1, 1, npcCenterX, npcCenterY, 50, gp, 0, 7, 2, 2, targetX, targetY);
+                gp.obj.add(b);
+                if(phase == 2){
+                    ClusterBomb clusterBomb = new ClusterBomb("/effect/Fire.png", "enemyBullet", -100 * gp.tileSize, -100 * gp.tileSize, 1, 1, npcCenterX, npcCenterY, 50, gp, 0, 7, 2, 2, targetX + gp.tileSize, targetY);
+                    gp.obj.add(clusterBomb);
+                }
+                delayMove = 20;
+                shootCounter++;
+            }
+            else if(shootCounter == 1){
+                FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12,12, 8, 8, npcCenterX +  (flip ? -12-32 : 12+41), npcCenterY - 45, 65, gp, 0, 10, 1, 1, targetX, targetY, null);
+                gp.obj.add(b);
+                if(phase == 2){
+                    FireBullet c = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12,12, 8, 8, npcCenterX +  (flip ? -12-32 : 12+41), npcCenterY - 45, 65, gp, 0, -10, 1, 1, targetX, targetY, null);
+                    gp.obj.add(c);
+                }
+                delayMove = 20;
+                shootCounter++;
+            }
+        }
+        if(shootCounter >= 2){
+            delayMove = 0;
+            startResting();
+        }
     }
 
-
     private void startResting() {
+        shootCounter = 0;
         aniCount = 0;
         isResting = true;
         restCounter = 30; // Thời gian nghỉ, ví dụ 60 frame
     }
+
+
     private void move(String direction) {
-        int npcCenterX = worldX + solidArea.x + solidArea.width / 2;
-        int npcCenterY = worldY + solidArea.y + solidArea.height / 2;
-        int playerCenterX = targetX + gp.player.solidArea.x + gp.player.solidArea.width / 2;
-        int playerCenterY = targetY + gp.player.solidArea.y + gp.player.solidArea.height / 2;
-        double distanceToTarget = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
-        if(distanceToTarget >= 3*gp.tileSize) {
-            switch (direction) {
-                case "up":
-                    worldY -= speed;
-                    break;
-                case "down":
-                    worldY += speed;
-                    break;
-                case "left":
-                    worldX -= speed;
-                    break;
-                case "right":
-                    worldX += speed;
-                    break;
-                case "up-right":
-                    worldX += (int) (speed / Math.sqrt(2));
-                    worldY -= (int) (speed / Math.sqrt(2));
-                    break;
-                case "up-left":
-                    worldX -= (int) (speed / Math.sqrt(2));
-                    worldY -= (int) (speed / Math.sqrt(2));
-                    break;
-                case "down-right":
-                    worldX += (int) (speed / Math.sqrt(2));
-                    worldY += (int) (speed / Math.sqrt(2));
-                    break;
-                case "down-left":
-                    worldX -= (int) (speed / Math.sqrt(2));
-                    worldY += (int) (speed / Math.sqrt(2));
-                    break;
-            }
+        switch (direction) {
+            case "up":
+                worldY -= speed;
+                break;
+            case "down":
+                worldY += speed;
+                break;
+            case "left":
+                worldX -= speed;
+                break;
+            case "right":
+                worldX += speed;
+                break;
+            case "up-right":
+                worldX += (int) (speed / Math.sqrt(2));
+                worldY -= (int) (speed / Math.sqrt(2));
+                break;
+            case "up-left":
+                worldX -= (int) (speed / Math.sqrt(2));
+                worldY -= (int) (speed / Math.sqrt(2));
+                break;
+            case "down-right":
+                worldX += (int) (speed / Math.sqrt(2));
+                worldY += (int) (speed / Math.sqrt(2));
+                break;
+            case "down-left":
+                worldX -= (int) (speed / Math.sqrt(2));
+                worldY += (int) (speed / Math.sqrt(2));
+                break;
         }
     }
-
-
 
 
     boolean flip = false;
@@ -461,11 +397,10 @@ public class Executioner extends Entity {
         // Lưu trạng thái gốc của Graphics2D
         screenY = worldY - gp.player.worldY + gp.player.screenY;
         screenX = worldX - gp.player.worldX + gp.player.screenX;
-        BufferedImage image = animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size() - 1);
+
         // Tạo hình ảnh
-        if(red) {
-            image = makeSpriteRed(animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size() - 1));
-        }
+        BufferedImage image = animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size()-1);
+
         // Lưu lại trạng thái ban đầu của Graphics2D
         AffineTransform old = g2.getTransform();
 
@@ -563,6 +498,7 @@ public class Executioner extends Entity {
         }
     }
     boolean dead = false;
+    int phase = 1;
     @Override
     public void onTriggerEnter(Entity entity){
         if(map.containsKey(entity.objName) && delayTime <= 0){
@@ -571,7 +507,11 @@ public class Executioner extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                dead = true;
+                if(phase == 2 && !phase2) dead = true;
+                else {
+                    phase = 2;
+                    phase2 = true;
+                }
             }
         }
     }

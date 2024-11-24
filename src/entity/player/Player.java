@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Vector;
 
 import entity.Entity;
 import main.GamePanel;
@@ -90,41 +91,46 @@ public class Player extends Entity{
         importAndSliceVertical("/player/move/B_witch_death.png",12, 0,0);
 
     }
+    private BufferedImage loadBorder(){
+        BufferedImage bufferedImage = null;
+        try (InputStream is = getClass().getResourceAsStream("/UI/Border.png")) {
+            bufferedImage = ImageIO.read(is);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bufferedImage;
+    }
     public void drawItems(Graphics2D g2) {
 
         int itemX = 10; // Xác định vị trí X (cạnh trái màn hình)
         int itemY = 50; // Xác định vị trí Y ban đầu
         int itemSize = 32; // Kích thước của mỗi item (hoặc bạn có thể lấy kích thước thực của hình ảnh)
+        g2.drawImage(loadBorder(),itemX - 5, itemY - 5, itemSize, itemSize+10, null);
         g2.drawImage(coin, itemX, itemY, itemSize- 10, itemSize- 5, null);
 
         // Vẽ số lượng item
         g2.setFont(smallFont);
-        int textWidth1 = g2.getFontMetrics(smallFont).stringWidth("x" + money);
-        g2.setColor(new Color(255,255,255,120));
-        g2.fillRect(itemX + itemSize,itemY + itemSize/2 - 12,textWidth1,15);
-        g2.setColor(Color.black);
-        g2.drawString("x" + money, itemX + itemSize, itemY + itemSize/2);
+        g2.setColor(Color.WHITE);
+        g2.drawString(money + "", itemX, itemY + itemSize);
         itemY += 10 + itemSize;
         // Lặp qua các item trong danh sách
         for (int i = 0; i < itemsCount.size(); i++) {
             Entity item = items.get(i); // Lấy item hiện tại
 
             // Nếu item này là item mà pointer đang chỉ đến, vẽ khung đỏ
-            if(i == pointer) {
-                g2.setColor(Color.RED);
-                g2.drawRect(itemX - 2, itemY - 2, itemSize + 4, itemSize + 4); // Vẽ khung viền màu đỏ lớn hơn hình item một chút
-            }
 
+            g2.drawImage(loadBorder(),itemX - 5, itemY - 5, itemSize+10, itemSize+10, null);
             // Vẽ hình ảnh của item (giả sử item có phương thức drawItem để vẽ hình ảnh của nó)
             g2.drawImage(item.animations.get(0).get(0), itemX, itemY, itemSize, itemSize, null);
 
             // Vẽ số lượng item
-            g2.setFont(bigFont);
-            g2.setColor(new Color(255,255,255,120));
-            //g2.fillRect();
-            g2.setColor(Color.black);
-            g2.drawString("x" + itemsCount.get(i), itemX + itemSize + 5, itemY + itemSize / 2);
-
+            g2.setFont(smallFont);
+            g2.setColor(Color.WHITE);
+            g2.drawString(itemsCount.get(i).toString(), itemX, itemY + itemSize);
+            if(i == pointer) {
+                g2.setColor(Color.RED);
+                g2.drawRect(itemX - 2, itemY - 2, itemSize + 4, itemSize + 4); // Vẽ khung viền màu đỏ lớn hơn hình item một chút
+            }
             // Di chuyển Y xuống cho item tiếp theo
             itemY += itemSize + 10; // Thêm khoảng cách giữa các item
         }
@@ -142,7 +148,7 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
-            System.out.println(this.worldX/gp.tileSize + " " +this.worldY/gp.tileSize);
+            System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
@@ -152,7 +158,6 @@ public class Player extends Entity{
                 HP--;
                 if(HP > 0) isHurt = true;
                 else{
-
                     isDead = true;
                 }
             }
@@ -278,6 +283,14 @@ public class Player extends Entity{
                     isDead = false;
                 }
                 spriteNum++;
+                spriteCounter = 0;
+            }
+        }
+        else {
+            spriteCounter++;
+            if (spriteCounter > delay) {
+                spriteNum++;
+                if (spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
                 spriteCounter = 0;
             }
         }

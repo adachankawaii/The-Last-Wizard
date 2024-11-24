@@ -26,7 +26,7 @@ public class Effect extends Entity {
             int b = 255; // Giá trị ngẫu nhiên cho Blue
             Color randomColor = new Color(0, 250, b); // Tạo màu ngẫu nhiên từ RGB
             if (Objects.equals(this.objName, "enemyBullet")) {
-                randomColor = new Color(0, 0, 0); // Tạo màu ngẫu nhiên từ RGB
+                randomColor = new Color(255, 0, 0); // Tạo màu ngẫu nhiên từ RGB
             }
 
             g2d.setColor(randomColor);

@@ -46,11 +46,15 @@ public class ThrowingObj extends Bullet {
 
             // Kiểm tra nếu vượt quá thời gian sống hoặc va chạm
             if (timer >= lifeTime) {
-                Bullet a = new Bullet("/effect/effect1.png",objName,-10*5,-10*5,(int)(6*5),(int)(6*5),this.worldX,this.worldY,8, gp, 0, 0,4.5, 4.5, this.targetX, this.targetY);
+                Bullet a = new Bullet(Objects.equals(objName, "enemyBullet") ? "/effect/enemyEffect .png" : "/effect/effect1.png",objName,-10*5,-10*5,(int)(6*5),(int)(6*5),this.worldX,this.worldY,8, gp, 0, 0,4.5, 4.5, this.targetX, this.targetY);
                 a.death = false;
                 gp.obj.add(a);
                 gp.obj.remove(this); // Xóa vật thể nếu đã hết thời gian hoặc va chạm
+                Boom();
             }
+        }
+        public void Boom(){
+
         }
         public void specialMethod(){
             Effect a = new Effect(null, 16,16,this.worldX ,this.worldY,10, gp, 0, 2,2, targetX, targetY);
@@ -63,7 +67,7 @@ public class ThrowingObj extends Bullet {
             int redBoxY = targetY - gp.player.worldY + gp.player.screenY - 30*9/ 4;
 
             // Vẽ hình vuông màu đỏ với kích thước bằng kích thước của vật thể
-            g2.setColor(new Color(255, 0, 0, 40)); // Màu đỏ trong suốt
+            g2.setColor(new Color(255, 0, 0, 80)); // Màu đỏ trong suốt
             g2.fillRect(redBoxX, redBoxY, 30*9/2, 30*9/2);
         }
     }

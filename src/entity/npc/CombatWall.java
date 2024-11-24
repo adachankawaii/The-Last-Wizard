@@ -1,11 +1,13 @@
 package entity.npc;
 
 import entity.Entity;
+import entity.effect.Effect;
 import main.GamePanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Vector;
 
 public class CombatWall extends Entity {
@@ -26,7 +28,7 @@ public class CombatWall extends Entity {
 
         int b = 255; // Giá trị ngẫu nhiên cho Blue
 
-        Color randomColor = new Color(0, 250, b, 1); // Tạo màu ngẫu nhiên từ RGB
+        Color randomColor = new Color(0, 250, b, 0); // Tạo màu ngẫu nhiên từ RGB
         g2d.setColor(randomColor);
         g2d.fillRect(0, 0, 4, 4); // Vẽ hình chữ nhật đỏ kích thước 100x100
 
@@ -45,11 +47,20 @@ public class CombatWall extends Entity {
             isTrigger = true;
         }
     }
+    Random random = new Random();
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
         if(on) {
-            g2.setColor(new Color(0, 150, 255, 100));
-            g2.fillRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+            Effect glowEffect = new Effect(null, 16, 16,
+                     worldX + random.nextInt(gp.tileSize*(solidArea.width/gp.tileSize)) - gp.tileSize*(solidArea.width/gp.tileSize)/2,
+                    this.worldY + random.nextInt(gp.tileSize*(solidArea.height/gp.tileSize)) - gp.tileSize*(solidArea.height/gp.tileSize)/2,
+                    50, gp, 7, 1.5, 1.5, this.worldX + gp.tileSize*(solidArea.width/gp.tileSize - 1), worldY+ gp.tileSize*(solidArea.height/gp.tileSize - 1));
+            gp.obj.add(glowEffect);
+            Effect glowEffect2 = new Effect(null, 16, 16,
+                     worldX + gp.tileSize*(solidArea.width/gp.tileSize-1) + random.nextInt(gp.tileSize*(solidArea.width/gp.tileSize)) - gp.tileSize*(solidArea.width/gp.tileSize)/2,
+                    this.worldY + gp.tileSize*(solidArea.height/gp.tileSize - 1)+ random.nextInt(gp.tileSize*(solidArea.height/gp.tileSize)) - gp.tileSize*(solidArea.height/gp.tileSize)/2,
+                    50, gp, 7, 1.5, 1.5, this.worldX, worldY);
+            gp.obj.add(glowEffect2);
             drawObjImage(g2, gp);
             rectDraw(g2);
         }

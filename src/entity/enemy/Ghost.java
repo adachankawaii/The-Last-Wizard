@@ -1,35 +1,35 @@
 package entity.enemy;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Random;
-
 import entity.Entity;
 import entity.Items.Coin;
 import entity.bullet.Bullet;
 import entity.effect.Effect;
 import main.GamePanel;
 
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Random;
 
-public class Slime extends Entity {
+public class Ghost extends Entity{
     int timer = 0;
     int delayTime = 0;
     int HP;
     double angle = 0;
-    int animationDelay = 3;
+    int animationDelay = 5;
     private int rootX = -1, rootY = -1;
     boolean back = false;
     private int targetX, targetY;
+    public boolean fire = false;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
-    public Slime(GamePanel gp) {
+    public Ghost(GamePanel gp) {
         layer = 2;
         objName = "Slime";
         collision = true;
         direction = "down";
         HP = 1;
-        speed = 3;
+        speed = 5;
         isTrigger = false;
         this.gp = gp;
         rectGet(-8, -8, 48, 48);
@@ -38,16 +38,12 @@ public class Slime extends Entity {
         map.put("bullet", 1);
         map.put("Bigbullet", 3);
         isEnemy = true;
+        awake = true;
     }
     public void getImage() {
 
         // CHUYỂN ĐỘNG IDLE CỦA SLIME.
-        // [1] - IDLE
-        importEachImage(new String[]{"/enemy/Slime/slime_0.png",
-                "/enemy/Slime/slime_1.png","/enemy/Slime/slime_2.png",
-                "/enemy/Slime/slime_3.png", "/enemy/Slime/slime_4.png",
-                "/enemy/Slime/slime_5.png", "/enemy/Slime/slime_6.png"}, true);
-
+        importAndSlice(  "/enemy/Ghost.png", 4, 0,0);
         // [2] - BỊ TẤN CÔNG
 
         // [3] - TẤN CÔNG
@@ -55,6 +51,7 @@ public class Slime extends Entity {
         // [4] - DIE
     }
     boolean isJumping = false;
+    private float opacity = 1f;
     @Override
     public void update() {
         aniCount = 0;
@@ -72,15 +69,7 @@ public class Slime extends Entity {
             rootX = this.worldX;
         }
         // Kiểm tra khoảng cách giữa root và enemy
-        double distanceToRoot = Math.sqrt(Math.pow(rootX - worldX, 2) + Math.pow(rootY - worldY, 2));
-        if (!back && distanceToRoot > 25 * gp.tileSize) {
-            back = true;
-            HP = 8;
-            awake = false;
-        }
-        if(back && distanceToRoot <= 0.5*gp.tileSize){
-            back  =false;
-        }
+
         if (!back) {
             targetX = gp.player.worldX;
             targetY = gp.player.worldY;
@@ -124,8 +113,6 @@ public class Slime extends Entity {
         int playerCenterY = targetY + gp.tileSize / 2;
 
         double distanceToTarget = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
-        gp.cCheck.checkMapObject(this);
-
         // Xử lý va chạm với tường và di chuyển sang hai bên nếu có va chạm
         /*if (collisionOn) {
             Random rand = new Random();
@@ -141,7 +128,7 @@ public class Slime extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 1 * gp.tileSize && !isJumping && gp.player.alpha >= 1f && awake) {
+            if (delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 2 * gp.tileSize && !isJumping && gp.player.alpha >= 1f && awake) {
                 objName = "Slime";
                 switch (direction) {
                     case "up":
@@ -175,16 +162,15 @@ public class Slime extends Entity {
                 }
 
                 timer = 0;
-            } else if (distanceToTarget <= 1 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
-                isJumping = true;
-                delayTime = 30;
-            }
-            if (isJumping) {
-                Bullet a = new Bullet("/effect/effect1.png","Slime_attack",-10,-10,(int)(gp.tileSize-10),(int)(gp.tileSize-10),this.worldX,this.worldY,8, gp, 0, 0,2, 2, this.targetX, this.targetY);
+            } else if (distanceToTarget <= 2 * gp.tileSize) {
+                // Hành động khi đạt khoảng cách
+                Bullet a = new Bullet("/effect/enemyEffect .png","enemyBullet",-10*5,-10*5,(int)(6*5),(int)(6*5),this.worldX,this.worldY,8, gp, 0, 0,4.5, 4.5, this.targetX, this.targetY);
                 a.death = false;
                 gp.obj.add(a);
-                isJumping = false;
+                gp.obj.remove(this);
             }
+
+
         }
         else{
             switch (direction) {
@@ -227,60 +213,66 @@ public class Slime extends Entity {
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
         // Tọa độ để vẽ thanh máu trên đầu của Slime
-        int barX = this.screenX;
-        int barY = this.screenY - 10; // Thanh máu cách đầu Slime 10 pixel
+        if(opacity > 0) {
+            int barX = this.screenX;
+            int barY = this.screenY - 10; // Thanh máu cách đầu Slime 10 pixel
 
-        // Kích thước của thanh máu
-        int barWidth = this.solidArea.width; // Chiều rộng của thanh máu bằng với kích thước của Slime
-        int barHeight = 4; // Chiều cao của thanh máu
+            // Kích thước của thanh máu
+            int barWidth = this.solidArea.width; // Chiều rộng của thanh máu bằng với kích thước của Slime
+            int barHeight = 4; // Chiều cao của thanh máu
 
-        // Tính toán phần trăm HP
-        double healthPercent = (double) HP / 8.0; // HP hiện tại chia cho HP tối đa
+            // Tính toán phần trăm HP
+            double healthPercent = (double) HP / 8.0; // HP hiện tại chia cho HP tối đa
 
-        // Lưu trạng thái gốc của Graphics2D
-        screenY = worldY - gp.player.worldY + gp.player.screenY;
-        screenX = worldX - gp.player.worldX + gp.player.screenX;
+            // Lưu trạng thái gốc của Graphics2D
+            screenY = worldY - gp.player.worldY + gp.player.screenY;
+            screenX = worldX - gp.player.worldX + gp.player.screenX;
 
-        // Tạo hình ảnh
-        BufferedImage image = animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size()-1);
+            // Tạo hình ảnh
+            BufferedImage image = makeSpriteRed(animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size() - 1));
+            Composite originalComposite = g2.getComposite();
 
-        // Lưu lại trạng thái ban đầu của Graphics2D
-        AffineTransform old = g2.getTransform();
+            // Thiết lập độ mờ
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+            // Lưu lại trạng thái ban đầu của Graphics2D
+            AffineTransform old = g2.getTransform();
 
-        // Kích thước của hình ảnh
-        int imageWidth = (int)(gp.tileSize*3/2);
-        int imageHeight = (int)(gp.tileSize*3/2);
+            // Kích thước của hình ảnh
+            int imageWidth = (int) (gp.tileSize * 5);
+            int imageHeight = (int) (gp.tileSize * 5);
 
-        // Tính toán chính xác tâm của hình ảnh
-        int centerX = screenX + gp.tileSize / 2 ;
-        int centerY = screenY + gp.tileSize / 2;
+            // Tính toán chính xác tâm của hình ảnh
+            int centerX = screenX + gp.tileSize / 2;
+            int centerY = screenY;
 
-        // Dịch hệ tọa độ đến tâm của vật thể (tâm của hình ảnh)
-        g2.translate(centerX, centerY);
+            // Dịch hệ tọa độ đến tâm của vật thể (tâm của hình ảnh)
+            g2.translate(centerX, centerY);
 
-        // Xoay hệ tọa độ quanh tâm của hình ảnh
+            // Xoay hệ tọa độ quanh tâm của hình ảnh
 
-        // Lật hình ảnh theo trục Ox (nếu cần)
-        if(flip) g2.scale(-1, 1);
+            // Lật hình ảnh theo trục Ox (nếu cần)
+            if (flip) g2.scale(-1, 1);
 
-        // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
-        g2.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int)(imageWidth) , (int)(imageHeight), null);
+            // Vẽ hình ảnh đã xoay và lật, với tọa độ được điều chỉnh để đúng vị trí
+            g2.drawImage(image, -imageWidth / 2, -imageHeight / 2, (int) (imageWidth), (int) (imageHeight), null);
 
-        // Khôi phục lại trạng thái ban đầu của Graphics2D
-        g2.setTransform(old);
+            // Khôi phục lại trạng thái ban đầu của Graphics2D
+            g2.setTransform(old);
+            g2.setComposite(originalComposite);
 
-        // Vẽ khung hình chữ nhật (nếu cần)
-        rectDraw(g2);
+            // Vẽ khung hình chữ nhật (nếu cần)
+            rectDraw(g2);
 
-        // Vẽ thanh máu
-        if (awake) {
-            // Vẽ nền thanh máu (màu xám)
-            g2.setColor(new Color(100, 100, 100));
-            g2.fillRect(barX, barY, barWidth, barHeight);
+            // Vẽ thanh máu
+            if (awake) {
+                // Vẽ nền thanh máu (màu xám)
+                g2.setColor(new Color(100, 100, 100));
+                g2.fillRect(barX, barY, barWidth, barHeight);
 
-            // Vẽ thanh máu (màu đỏ) với độ dài tùy thuộc vào lượng HP
-            g2.setColor(Color.RED);
-            g2.fillRect(barX, barY, (int)(barWidth * healthPercent), barHeight);
+                // Vẽ thanh máu (màu đỏ) với độ dài tùy thuộc vào lượng HP
+                g2.setColor(Color.RED);
+                g2.fillRect(barX, barY, (int) (barWidth * healthPercent), barHeight);
+            }
         }
     }
 
@@ -292,7 +284,7 @@ public class Slime extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                int tmp = 4;
+                int tmp = new Random().nextInt(3);
                 for(int i = 0;i< tmp;i++){
                     Coin coin = new Coin(this.worldX + new Random().nextInt(gp.tileSize), this.worldY + new Random().nextInt(gp.tileSize), gp);
                     gp.obj.add(coin);
@@ -306,4 +298,5 @@ public class Slime extends Entity {
             }
         }
     }
+
 }

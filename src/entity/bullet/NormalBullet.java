@@ -21,7 +21,7 @@ public class NormalBullet extends Bullet{
     @Override
     public void specialMethod() {
         timer++;
-        if (Objects.equals(this.objName, "enenmyBullet")) {
+        if (Objects.equals(this.objName, "enemyBullet")) {
             Effect glowEffect = new Effect(null, 16, 16,
                     this.worldX,
                     this.worldY,
