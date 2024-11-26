@@ -37,7 +37,7 @@ public class GuildMaster extends Entity {
         String[] tmp = new String[questsLine.size()+2];
         for (int i = 0; i < tmp.length;i++){
             if(i == 0){
-                tmp[i] = "I got something for you";
+                tmp[i] = "Complete these, and you can encounter the boss";
             }
             else if(i == tmp.length -1){
                 tmp[i] = "end";
@@ -53,7 +53,6 @@ public class GuildMaster extends Entity {
     public void getNPCImage() {
         importAndSlice("/npc/wizard idle.png", 4, 0 ,0 );
     }
-
     @Override
     public void update() {
         spriteCounter++; // Đếm số lần cập nhật
@@ -63,6 +62,12 @@ public class GuildMaster extends Entity {
             spriteCounter = 0;
         }
         timer--;
+        if(questsLine.isEmpty() && gp.player.quests.isEmpty()){
+            gp.player.completed = true;
+        }
+        else {
+            gp.player.completed = false;
+        }
     }
 
     public void addWords(String[] inputWords) {

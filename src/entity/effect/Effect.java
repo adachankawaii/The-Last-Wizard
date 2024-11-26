@@ -15,6 +15,7 @@ public class Effect extends Entity {
     int targetX, targetY;
     public Effect(String path,int rectX, int rectY, int worldX, int worldY,
     int lifeTime, GamePanel gp, int speed, double scaleX, double scaleY,int targetX, int targetY){
+        isBullet = true;
         this.solidArea = new Rectangle();
         layer = 2;
         if(path != null) importAndSlice(path, 4, 0,0);

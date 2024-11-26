@@ -29,7 +29,7 @@ public class Soldier extends Entity {
         collision = true;
         direction = "down";
         HP = 8;
-        speed = 3;
+        speed = 5;
         isTrigger = false;
         this.gp = gp;
         rectGet(0, 0, 32, 48);
@@ -130,7 +130,7 @@ public class Soldier extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 9 * gp.tileSize && awake && gp.player.alpha >= 1f) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 20 * gp.tileSize && distanceToTarget >= 9 * gp.tileSize && awake && gp.player.alpha >= 1f) {
                 if (aniCount != 1) {
                     spriteNum = 0;
                     spriteCounter = 0;

@@ -55,6 +55,7 @@ public class Golem extends Entity {
         c = new CombatWall(gp, 1, 10);
         c.worldX = 45 * gp.tileSize;
         c.worldY = 20 * gp.tileSize;
+        gp.obj.add(c);
     }
     public void addWords(String[] inputWords) {
         words.add(new Vector<>());
@@ -84,7 +85,10 @@ public class Golem extends Entity {
             }
             spriteCounter = 0;
         }
-
+        if(!done){
+            if(gp.player.completed) c.on  = false;
+            else c.on = true;
+        }
         timer--;
         if(!dead){
             if (rootY == -1) {
@@ -128,9 +132,8 @@ public class Golem extends Entity {
             targetX = gp.player.worldX;
             targetY = gp.player.worldY;
             if (distanceToTarget <= 10 * gp.tileSize && !done) {
-
                 c.on = true;
-                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
+                 // Thêm tường vào danh sách đối tượng
                 startTalk = true;
                 done = true;
             }

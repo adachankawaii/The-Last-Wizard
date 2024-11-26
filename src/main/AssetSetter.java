@@ -55,6 +55,11 @@ public class AssetSetter {
             e.printStackTrace();
         }
         if (gp.map == 1) {
+            Board b = new Board(gp, "Wanted", "/UI/Stuffs/wanted.png", "/UI/Stuffs/wanted.png");
+            b.worldX = gp.tileSize* 47;
+            b.worldY = gp.tileSize*49;
+            b.layer = 10;
+            gp.obj.add(b);
             // Tạo tường có kích thước width = 8, height = 1 ở vị trí (60,70) và (60,80)
             int[][] horizontalWalls = {{60, 70}, {60, 80}};
             for (int[] pos : horizontalWalls) {

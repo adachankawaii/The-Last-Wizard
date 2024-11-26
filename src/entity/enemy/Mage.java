@@ -10,6 +10,7 @@ import entity.Entity;
 import entity.Items.Coin;
 import entity.Items.CommonItem;
 import entity.bullet.Bullet;
+import entity.bullet.FireBullet;
 import entity.bullet.NormalBullet;
 import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
@@ -26,6 +27,8 @@ public class Mage extends Entity {
     private int rootX = -1, rootY = -1;
     boolean back = false;
     private int targetX, targetY;
+    int moveset = new Random().nextInt(3);
+    Random random = new Random();
     HashMap<String, Integer> map = new HashMap<String, Integer>();
     public Mage(GamePanel gp) {
         layer = 2;
@@ -175,10 +178,27 @@ public class Mage extends Entity {
                 timer = 0;
             }if (distanceToTarget <= 9 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
                 // Tạo hiệu ứng tại vị trí hiện tại của enemy
-                ThrowingObj b = new ThrowingObj(null,"enemyBullet", 20*gp.tileSize, 20*gp.tileSize,1,1, worldX, worldY,50,gp ,0, 7, 4, 4, targetX, targetY);
-                gp.obj.add(b);
-                // Đặt lại thời gian chờ
-                delayTime = 50;
+                if(moveset == 0){
+                    ThrowingObj b = new ThrowingObj(null, "enemyBullet", 20 * gp.tileSize, 20 * gp.tileSize, 1, 1, worldX, worldY, 20, gp, 0, 7, 4, 4, targetX, targetY);
+                    gp.obj.add(b);
+                    // Đặt lại thời gian chờ
+                    delayTime = 50;
+                }
+                else if(moveset == 1){
+                    FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12,12, 8, 8, npcCenterX +  (flip ? -12-32 : 12+41), npcCenterY - 45, 65, gp, 0, 10, 1, 1, targetX, targetY, null);
+                    gp.obj.add(b);
+                    delayTime = 50;
+                }
+                else{
+                    double angle = random.nextDouble(Math.toRadians(360));
+                    Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX + (int)(4*gp.tileSize* Math.cos(angle)), npcCenterY + (int)(4*gp.tileSize* Math.cos(angle)), 15, gp, 0, 2, 2, 0, 0);
+                    gp.obj.add(a);
+                    Ghost g = new Ghost(gp);
+                    g.worldX = npcCenterX + (int)(4*gp.tileSize* Math.cos(angle));
+                    g.worldY = npcCenterY + (int)(4*gp.tileSize* Math.cos(angle));
+                    gp.obj.add(g);
+                    delayTime = 50;
+                }
             }
 
             aniCount = 0;

@@ -54,10 +54,10 @@ public class ObjectMap1 extends Entity {
 
     // Phương thức để vẽ tất cả các rect đã khởi tạo
     public void mapRectDraw(Graphics2D g2) {
-        g2.setColor(Color.red);
+        /*g2.setColor(Color.red);
         for (Rectangle rect : rectList) {
             g2.drawRect(screenX + rect.x, screenY + rect.y, rect.width, rect.height);
-        }
+        }*/
     }
 
         // Phương thức đọc từ file và thêm vào danh sách rect

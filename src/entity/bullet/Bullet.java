@@ -24,6 +24,7 @@ public class Bullet extends Entity {
     public boolean isSlash = false;
     public Bullet(String path, String name,int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY){
         this.solidArea = new Rectangle();
+        isBullet = true;
         animationDelay = 2;
         layer = 2;
         if(path != null) {

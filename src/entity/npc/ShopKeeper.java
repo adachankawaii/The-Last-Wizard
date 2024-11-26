@@ -31,7 +31,7 @@ public class ShopKeeper extends Entity {
         objName = "ShopKeeper";
         layer = 0;
         collision = true;
-        this.isTrigger = false;
+        this.isTrigger = true;
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();

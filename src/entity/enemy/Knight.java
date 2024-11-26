@@ -29,7 +29,7 @@ public class Knight extends Entity {
         collision = true;
         direction = "down";
         HP = 8;
-        speed = 4;
+        speed = 6;
         isTrigger = true;
         this.gp = gp;
         rectGet(0, 0, 32, 48);

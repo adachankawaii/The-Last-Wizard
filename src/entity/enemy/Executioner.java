@@ -32,7 +32,7 @@ public class Executioner extends Entity {
     private int targetX, targetY;
     int moveSet = 0;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
-    Vector<CombatWall> c = new Vector<>(); // Width = 1, Height = 8
+    public Vector<CombatWall> c = new Vector<>(); // Width = 1, Height = 8
     Font font =  FontLoader.loadFont("/UI/SVN-Determination Sans.otf",20);
 
     public Executioner(GamePanel gp) {
