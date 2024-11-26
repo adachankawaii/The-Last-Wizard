@@ -1,2 +1,2 @@
-Slime 1
-30,47
+FinalBoss 1
+20,11

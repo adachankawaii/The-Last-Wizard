@@ -42,6 +42,7 @@ public class Entity{
     protected int aniCount = 0;
     protected int spriteCounter = 0;
     protected int spriteNum = 0;
+    public boolean isBoss = false;
     BufferedImage source;
     protected BufferedImage img;
     public Vector<Vector<BufferedImage>> animations = new Vector<>();

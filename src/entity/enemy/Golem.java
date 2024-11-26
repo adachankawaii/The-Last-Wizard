@@ -40,7 +40,7 @@ public class Golem extends Entity {
         objName = "Golem";
         collision = true;
         direction = "down";
-        HP = 25;
+        HP = 75;
         speed = 4;
         isTrigger = true;
         this.gp = gp;
@@ -50,6 +50,7 @@ public class Golem extends Entity {
         map.put("bullet", 1);
         map.put("Bigbullet", 3);
         isEnemy = true;
+        isBoss = true;
         addWords(new String[]{"Must","Protect","Her","end"});
         c = new CombatWall(gp, 1, 10);
         c.worldX = 45 * gp.tileSize;
@@ -221,6 +222,7 @@ public class Golem extends Entity {
             Effect a = new Effect("/effect/effect1.png", 0, 0, npcCenterX + (flip ? -2 : 2), npcCenterY - 72, 20, gp, 0, 2, 2, 0, 0);
             gp.obj.add(a);
             Bullet b = new Bullet("/bullet/bullet.png", "enemyBullet", 12,12, 8, 8, npcCenterX +  (flip ? -2 : 2), npcCenterY - 72, 50, gp, 0, 7, 1, 1, targetX + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize), targetY + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize));
+            b.off = false;
             gp.obj.add(b);
             shootCounter++;
             // Đặt lại thời gian chờ
@@ -362,7 +364,7 @@ public class Golem extends Entity {
                 int healthBarX = dialogueBoxX;
                 int healthBarY = dialogueBoxY + dialogueBoxHeight - 40; // Vị trí ngay dưới khung chat
 
-                float healthPercentage = (float) HP / 25; // Tính phần trăm máu
+                float healthPercentage = (float) HP / 75; // Tính phần trăm máu
                 int filledWidth = (int) (healthBarWidth * healthPercentage);
 
                 // Vẽ khung thanh máu

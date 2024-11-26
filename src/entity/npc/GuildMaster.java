@@ -6,6 +6,7 @@ import main.FontLoader;
 import main.GamePanel;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -50,13 +51,13 @@ public class GuildMaster extends Entity {
     }
 
     public void getNPCImage() {
-        importAnImage("/npc/merchant.png", true);
+        importAndSlice("/npc/wizard idle.png", 4, 0 ,0 );
     }
 
     @Override
     public void update() {
         spriteCounter++; // Đếm số lần cập nhật
-        if(spriteCounter > 5) {
+        if(spriteCounter > 8) {
             spriteNum++;
             if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
             spriteCounter = 0;
@@ -75,8 +76,16 @@ public class GuildMaster extends Entity {
 
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
+        screenX = worldX - gp.player.worldX + gp.player.screenX;
+        screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-        drawObjImage(g2, gp);
+        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
+                && worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
+                && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
+                && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+            BufferedImage image = animations.get(aniCount).get(spriteNum);
+            g2.drawImage(image, screenX-16  , screenY-16, 48*2, 48*2, null);
+        }
         rectDraw(g2);
     }
     @Override

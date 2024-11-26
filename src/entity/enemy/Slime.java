@@ -292,7 +292,7 @@ public class Slime extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                int tmp = new Random().nextInt(3);
+                int tmp = 4;
                 for(int i = 0;i< tmp;i++){
                     Coin coin = new Coin(this.worldX + new Random().nextInt(gp.tileSize), this.worldY + new Random().nextInt(gp.tileSize), gp);
                     gp.obj.add(coin);

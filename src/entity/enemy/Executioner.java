@@ -40,7 +40,7 @@ public class Executioner extends Entity {
         objName = "Golem";
         collision = true;
         direction = "down";
-        HP = 25;
+        HP = 75;
         speed = 4;
         isTrigger = true;
         this.gp = gp;
@@ -51,7 +51,7 @@ public class Executioner extends Entity {
         map.put("Bigbullet", 3);
         isEnemy = true;
         addWords(new String[]{"No one leave hera","Especially a wizard like","you","end"});
-
+        isBoss =true;
         c.add(new CombatWall(gp, 1, 10));
         c.get(0).worldX = 17 * gp.tileSize;
         c.get(0).worldY = 18 * gp.tileSize;
@@ -157,7 +157,7 @@ public class Executioner extends Entity {
                     animationDelay = 5;
                 } else {
                     animationDelay = 3;
-                    // Giai đoạn thực hiện hành động
+                    if (distanceToTarget >= 5 * gp.tileSize) move(direction);// Giai đoạn thực hiện hành động
                     executeMoveSet(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
                 }
             } else {
@@ -230,7 +230,7 @@ public class Executioner extends Entity {
             }
         }
     }
-
+    boolean red = true;
     private void moveSetZero(int npcCenterX, int npcCenterY, int playerCenterX, int playerCenterY) {
         if (aniCount != 2) spriteNum = 0;
         aniCount = 2;
@@ -289,36 +289,37 @@ public class Executioner extends Entity {
             pauseCounter--; // Tạm dừng tại sprite đầu tiên
             return;
         }
-        if (spriteNum >= animations.get(aniCount).size() - 2) {
+        if (spriteNum >= animations.get(aniCount).size() - 1) {
             // Số lượng đạn và khoảng cách góc giữa các đạn
-            int bulletCount = 10; // Ví dụ: 5 viên đạn
-            double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
 
-            // Bắn từng luồng đạn
-            for (int i = 0; i < bulletCount; i++) {
-                // Góc hiện tại của từng viên đạn
-                double angle = Math.toRadians(180) + i * angleStep;
-
-                // Tính toán tọa độ mục tiêu cho từng viên đạn
-                int targetBulletX = (int) (npcCenterX + Math.cos(angle) * 12*gp.tileSize); // Khoảng cách từ tâm là 25
-                int targetBulletY = (int) (npcCenterY + Math.sin(angle) * 12*gp.tileSize);
-
-                // Tạo đối tượng đạn
-                Bullet b = new Bullet("/bullet/Slash.png", "enemyBullet",
-                        0, 0, 8 * 6, 8 * 6,
-                        (int)(npcCenterX + Math.cos(angle) * 3*gp.tileSize), (int)(npcCenterY + Math.sin(angle) * 3*gp.tileSize), 18, gp,
-                        0, 8, 1, 1,
-                        targetBulletX, targetBulletY);
-                b.isSlash = true;
-                b.root = this.objName;
-
-                // Thêm đạn vào danh sách đối tượng
-                gp.obj.add(b);
-            }
         }
         if (spriteNum >= animations.get(aniCount).size() - 1) {
             count++;
             if(count >= 2) {
+                int bulletCount = 10; // Ví dụ: 5 viên đạn
+                double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
+
+                // Bắn từng luồng đạn
+                for (int i = 0; i < bulletCount; i++) {
+                    // Góc hiện tại của từng viên đạn
+                    double angle = Math.toRadians(180) + i * angleStep;
+
+                    // Tính toán tọa độ mục tiêu cho từng viên đạn
+                    int targetBulletX = (int) (npcCenterX + Math.cos(angle) * 12*gp.tileSize); // Khoảng cách từ tâm là 25
+                    int targetBulletY = (int) (npcCenterY + Math.sin(angle) * 12*gp.tileSize);
+
+                    // Tạo đối tượng đạn
+                    Bullet b = new Bullet("/bullet/Slash.png", "enemyBullet",
+                            0, 0, 8 * 6, 8 * 6,
+                            (int)(npcCenterX + Math.cos(angle) * 3*gp.tileSize), (int)(npcCenterY + Math.sin(angle) * 3*gp.tileSize), 18, gp,
+                            0, 8, 1, 1,
+                            targetBulletX, targetBulletY);
+                    b.isSlash = true;
+                    b.root = this.objName;
+
+                    // Thêm đạn vào danh sách đối tượng
+                    gp.obj.add(b);
+                }
                 count = 0;
                 aniCount = 0;
                 spriteNum = 0;
@@ -381,6 +382,7 @@ public class Executioner extends Entity {
             pauseCounter--; // Tạm dừng tại sprite đầu tiên
             return;
         }
+        red = false;
         collision = false;
         if (spriteNum >= animations.get(aniCount).size() - 1) {
             isReverse = true;
@@ -397,6 +399,7 @@ public class Executioner extends Entity {
             isReverse = false;
             selectNextMoveSet(4);
             executeMoveSet(npcCenterX, npcCenterY, playerCenterX, playerCenterY);
+            red = true;
             collision = true;
         }
         move(direction);
@@ -458,10 +461,11 @@ public class Executioner extends Entity {
         // Lưu trạng thái gốc của Graphics2D
         screenY = worldY - gp.player.worldY + gp.player.screenY;
         screenX = worldX - gp.player.worldX + gp.player.screenX;
-
+        BufferedImage image = animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size() - 1);
         // Tạo hình ảnh
-        BufferedImage image = makeSpriteRed( animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size()-1));
-
+        if(red) {
+            image = makeSpriteRed(animations.get(aniCount).get(spriteNum < animations.get(aniCount).size() ? spriteNum : animations.get(aniCount).size() - 1));
+        }
         // Lưu lại trạng thái ban đầu của Graphics2D
         AffineTransform old = g2.getTransform();
 
@@ -539,7 +543,7 @@ public class Executioner extends Entity {
                 int healthBarX = dialogueBoxX;
                 int healthBarY = dialogueBoxY + dialogueBoxHeight - 40; // Vị trí ngay dưới khung chat
 
-                float healthPercentage = (float) HP / 25; // Tính phần trăm máu
+                float healthPercentage = (float) HP / 75; // Tính phần trăm máu
                 int filledWidth = (int) (healthBarWidth * healthPercentage);
 
                 // Vẽ khung thanh máu

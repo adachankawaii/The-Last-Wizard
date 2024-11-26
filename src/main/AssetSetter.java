@@ -105,8 +105,14 @@ public class AssetSetter {
                 return new Golem(gp);
             case "Executioner":
                 return new Executioner(gp);
+            case "Tower":
+                return new Tower(gp);
+            case "Ghost":
+                return new Ghost(gp);
             case "GuildMaster":
                 return new GuildMaster(gp);
+            case "FinalBoss":
+                return new FinalBoss(gp);
             default:
                 System.out.println("Unknown object type: " + objectType);
                 return null;

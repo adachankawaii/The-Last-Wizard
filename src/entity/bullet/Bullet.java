@@ -20,6 +20,7 @@ public class Bullet extends Entity {
     public String root = null;
     double scaleX, scaleY;
     int targetX, targetY;
+    public boolean off = true;
     public boolean isSlash = false;
     public Bullet(String path, String name,int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY){
         this.solidArea = new Rectangle();
@@ -34,7 +35,7 @@ public class Bullet extends Entity {
             Graphics2D g2d = image.createGraphics();
 
             int b = 0; // Giá trị ngẫu nhiên cho Blue
-            Color randomColor = new Color(0, 0, 0, 0); // Tạo màu ngẫu nhiên từ RGB
+            Color randomColor = new Color(255, 0, 0); // Tạo màu ngẫu nhiên từ RGB
 
             if(Objects.equals(this.objName, "enemyBullet")){
                 randomColor = new Color(255, 0, 0); // Tạo màu ngẫu nhiên từ RGB
@@ -124,7 +125,7 @@ public class Bullet extends Entity {
 
     @Override
     public void update() {
-        if(animations.get(aniCount).size() > 1) {
+        if(animations.get(aniCount).size() > 1 && off) {
             spriteCounter++;
             if (spriteCounter > animationDelay) {
                 spriteNum++;
@@ -145,7 +146,7 @@ public class Bullet extends Entity {
         if(Math.toDegrees(angle) > -135 && Math.toDegrees(angle) <= -45) direction = "up";
         Vector<Integer> interact = gp.cCheck.checkObjectForObj(this);
         gp.cCheck.checkMapObject(this);
-        if (timer <= 60) {
+        if (true) {
             this.worldX += (int)(speed*Math.cos(angle));
             this.worldY += (int)(speed*Math.sin(angle));
         }
@@ -181,7 +182,7 @@ public class Bullet extends Entity {
 
     @Override
     public void onTriggerEnter(Entity entity){
-        Effect a = new Effect("/effect/effect2.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 1, 1, targetX, targetY);
+        Effect a = new Effect(Objects.equals(objName, "enemyBullet") ? "/effect/enemyEffect .png" : "/effect/effect2.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 1, 1, targetX, targetY);
         gp.obj.add(a);
         gp.obj.remove(this);
     }
