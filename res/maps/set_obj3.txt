@@ -2,3 +2,5 @@ Portal 1
 22,63
 Slime 1
 25,66
+Executioner 1
+27,17

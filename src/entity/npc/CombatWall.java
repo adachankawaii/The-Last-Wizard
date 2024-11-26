@@ -4,7 +4,9 @@ import entity.Entity;
 import main.GamePanel;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Objects;
+import java.util.Vector;
 
 public class CombatWall extends Entity {
     public CombatWall(GamePanel gp, int width, int height) {
@@ -18,7 +20,21 @@ public class CombatWall extends Entity {
         getNPCImage();
     }
     public void getNPCImage() {
-        importAnImage("/npc/merchant.png", true);
+        BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = image.createGraphics();
+
+
+        int b = 255; // Giá trị ngẫu nhiên cho Blue
+
+        Color randomColor = new Color(0, 250, b, 1); // Tạo màu ngẫu nhiên từ RGB
+        g2d.setColor(randomColor);
+        g2d.fillRect(0, 0, 4, 4); // Vẽ hình chữ nhật đỏ kích thước 100x100
+
+        // Giải phóng đối tượng Graphics2D sau khi vẽ
+        g2d.dispose();
+        Vector<BufferedImage> tmp = new Vector<>();
+        tmp.add(image);
+        animations.add(tmp);
     }
     @Override
     public void update(){

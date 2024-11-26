@@ -34,8 +34,11 @@ public class Bullet extends Entity {
             Graphics2D g2d = image.createGraphics();
 
             int b = 0; // Giá trị ngẫu nhiên cho Blue
-
             Color randomColor = new Color(0, 0, 0, 0); // Tạo màu ngẫu nhiên từ RGB
+
+            if(Objects.equals(this.objName, "enemyBullet")){
+                randomColor = new Color(255, 0, 0); // Tạo màu ngẫu nhiên từ RGB
+            }
             g2d.setColor(randomColor);
             g2d.fillRect(0, 0, rectX, rectY); // Vẽ hình chữ nhật đỏ kích thước 100x100
 
@@ -69,60 +72,7 @@ public class Bullet extends Entity {
     protected void getSprite(){
 
     }
-    public BufferedImage makeSpriteRed(BufferedImage original) {
-        int width = original.getWidth();
-        int height = original.getHeight();
 
-        // Tạo một hình ảnh mới để lưu sprite đã chuyển đổi
-        BufferedImage redOutlineSprite = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                int rgba = original.getRGB(x, y);
-                int alpha = (rgba >> 24) & 0xff;  // Lấy độ trong suốt của pixel
-
-                // Giữ nguyên pixel ban đầu
-                redOutlineSprite.setRGB(x, y, rgba);
-
-                // Chỉ xử lý pixel không trong suốt
-                if (alpha != 0) {
-                    // Kiểm tra nếu pixel này nằm cạnh pixel trong suốt
-                    boolean isEdge = false;
-
-                    // Các tọa độ lân cận (trên, dưới, trái, phải)
-                    int[][] neighbors = {
-                            {x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}
-                    };
-
-                    for (int[] neighbor : neighbors) {
-                        int nx = neighbor[0];
-                        int ny = neighbor[1];
-
-                        // Bỏ qua nếu ngoài phạm vi ảnh
-                        if (nx < 0 || ny < 0 || nx >= width || ny >= height) {
-                            continue;
-                        }
-
-                        int neighborRgba = original.getRGB(nx, ny);
-                        int neighborAlpha = (neighborRgba >> 24) & 0xff;
-
-                        // Nếu pixel lân cận trong suốt, đây là pixel viền
-                        if (neighborAlpha == 0) {
-                            isEdge = true;
-                            break;
-                        }
-                    }
-
-                    // Nếu pixel này là viền, đổi màu thành đỏ (giữ độ trong suốt)
-                    if (isEdge) {
-                        redOutlineSprite.setRGB(x, y, (alpha << 24) | 0x00FF0000);
-                    }
-                }
-            }
-        }
-
-        return redOutlineSprite;
-    }
 
 
     @Override

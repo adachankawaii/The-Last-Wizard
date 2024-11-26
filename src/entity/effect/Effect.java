@@ -6,6 +6,7 @@ import entity.Entity;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 import java.util.Vector;
 
 public class Effect extends Entity {
@@ -23,8 +24,11 @@ public class Effect extends Entity {
 
 
             int b = 255; // Giá trị ngẫu nhiên cho Blue
-
             Color randomColor = new Color(0, 250, b); // Tạo màu ngẫu nhiên từ RGB
+            if (Objects.equals(this.objName, "enemyBullet")) {
+                randomColor = new Color(0, 0, 0); // Tạo màu ngẫu nhiên từ RGB
+            }
+
             g2d.setColor(randomColor);
             g2d.fillRect(0, 0, rectX/8, rectY/8); // Vẽ hình chữ nhật đỏ kích thước 100x100
 
