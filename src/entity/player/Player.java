@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Vector;
+// import java.util.Vector;
 
 import entity.Entity;
 import main.GamePanel;
@@ -28,10 +28,11 @@ public class Player extends Entity{
     public ArrayList<Integer> itemsCount = new ArrayList<>(8);
     public int pointer = 0;
     public boolean dead = false;
-    public boolean combat = true;
+    public boolean combat = false;
     // --------------------------Tham số cho nhiệm vụ--------------------------------------------
     public int kills = 0;
     public String interact = null;
+    public boolean completed = false;
     // --------------------------Hết tham số cho nhiệm vụ-----------------------------------------
     BufferedImage coin;
     public int locX = 0, locY = 0;

@@ -7,11 +7,11 @@ import java.util.*;
 import java.util.List;
 
 import entity.Entity;
-import entity.Items.Coin;
+// import entity.Items.Coin;
+// import entity.npc.CombatWall;
+// import entity.player.Quest;
 import entity.bullet.*;
 import entity.effect.Effect;
-import entity.npc.CombatWall;
-import entity.player.Quest;
 import main.FontLoader;
 import main.GamePanel;
 
@@ -25,13 +25,13 @@ public class FinalBoss extends Entity {
     int HP;
     double angle = 0;
     int animationDelay = 3;
-    private int rootX = -1, rootY = -1;
+    public int rootY = -1;
+    public int rootX = -1;  
     boolean back = false;
     private int targetX, targetY;
     int moveSet = 0;
     boolean phase2 = false;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
-    CombatWall c; // Width = 1, Height = 8
     Font font =  FontLoader.loadFont("/UI/SVN-Determination Sans.otf",20);
 
     public FinalBoss(GamePanel gp) {
@@ -39,7 +39,7 @@ public class FinalBoss extends Entity {
         objName = "Fami";
         collision = true;
         direction = "down";
-        HP = 5;
+        HP = 75;
         speed = 4;
         isTrigger = true;
         this.gp = gp;
@@ -50,9 +50,6 @@ public class FinalBoss extends Entity {
         map.put("Bigbullet", 3);
         isEnemy = true;
         addWords(new String[]{"Must","Protect","Her","end"});
-        c = new CombatWall(gp, 1, 10);
-        c.worldX = 45 * gp.tileSize;
-        c.worldY = 20 * gp.tileSize;
         isBoss = true;
     }
     public void addWords(String[] inputWords) {
@@ -126,9 +123,6 @@ public class FinalBoss extends Entity {
             targetX = gp.player.worldX;
             targetY = gp.player.worldY;
             if (distanceToTarget <= 10 * gp.tileSize && !done) {
-
-                c.on = true;
-                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
                 startTalk = true;
                 done = true;
             }
@@ -159,17 +153,28 @@ public class FinalBoss extends Entity {
         else{
             if(aniCount != 2) spriteNum = 0;
             aniCount = 2;
-            if(dead && !phase2) c.on = false;
             if (phase2){
                 phaseCount++;
-                if(phaseCount%40 == 0){
-                    ThrowingObj b = new ThrowingObj(null,"enemyBullet", -100*gp.tileSize, -100*gp.tileSize,1,1, npcCenterX, npcCenterY,50,gp ,0, 7, 2, 2, targetX + (new Random().nextInt(4* gp.tileSize) - 2*gp.tileSize), targetY + (new Random().nextInt(4 * gp.tileSize) - 2*gp.tileSize));
-                    gp.obj.add(b);
+                if(phaseCount%10 == 0){
+                    int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+
+                    for (int i = 0; i < bulletCount; i++) {
+                        // Góc ngẫu nhiên từ 0 đến 360 độ
+                        double angle = Math.toRadians(Math.random() * 360);
+
+                        // Tính toán tọa độ mục tiêu cho từng viên đạn
+                        int targetBulletX = (int) (npcCenterX + 8*Math.cos(angle) * gp.tileSize);
+                        int targetBulletY = (int) (npcCenterY + 8*Math.sin(angle) * gp.tileSize);
+
+                        Effect a = new Effect(null, 16,16,targetBulletX ,targetBulletY,40, gp, 8, 2,2, npcCenterX, npcCenterY);
+                        gp.obj.add(a);
+                    }
                 }
                 if(phaseCount >= 400){
                     HP++;
-                    if(HP >= 5){
-                        int bulletCount = 6; // Ví dụ: 5 viên đạn
+                    if(HP >= 75){
+                        HP = 75;
+                        int bulletCount = 18; // Ví dụ: 5 viên đạn
                         double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
 
                         // Bắn từng luồng đạn
@@ -184,7 +189,7 @@ public class FinalBoss extends Entity {
                             // Tạo đối tượng đạn
                             FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet",
                                     0, 0, 8 * 6, 8 * 6,
-                                    (int) (npcCenterX), (int) (npcCenterY), 30, gp,
+                                    (int) (npcCenterX), (int) (npcCenterY), 10, gp,
                                     0, 8, 1, 1,
                                     targetBulletX, targetBulletY, null);
                             b.root = this.objName;
@@ -192,11 +197,24 @@ public class FinalBoss extends Entity {
                             // Thêm đạn vào danh sách đối tượng
                             gp.obj.add(b);
                         }
-                        FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12, 12, 8, 8, npcCenterX + (flip ? -12 - 32 : 12 + 41), npcCenterY - 45, 65, gp, 0, 10, 1, 1, targetX, targetY, null);
+                        FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12, 12, 8, 8, 14*gp.tileSize, 14*gp.tileSize, 165, gp, 0, 10, 1, 1, 14*gp.tileSize, 15*gp.tileSize, null);
+                        b.die = false;
+                        b.isSlash = true;
                         gp.obj.add(b);
+                        FireBullet c = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12, 12, 8, 8, 47*gp.tileSize, 14*gp.tileSize, 165, gp, 0, 10, 1, 1, 47* gp.tileSize,15*gp.tileSize, null);
+                        c.die = false;
+                        c.isSlash = true;
+                        gp.obj.add(c);
+                        double angle = random.nextDouble(Math.toRadians(360));
+                        Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX + (int)(4*gp.tileSize* Math.cos(angle)), npcCenterY + (int)(4*gp.tileSize* Math.cos(angle)), 15, gp, 0, 2, 2, 0, 0);
+                        gp.obj.add(a);
+                        Ghost g = new Ghost(gp);
+                        g.worldX = npcCenterX + (int)(4*gp.tileSize* Math.cos(angle));
+                        g.worldY = npcCenterY + (int)(4*gp.tileSize* Math.cos(angle));
+                        gp.obj.add(g);
                         phase2 = false;
                         isResting = false;
-                        moveSetOne(npcCenterX, npcCenterY, gp.player.worldX, gp.player.worldY);
+
                     }
                 }
             }
@@ -255,7 +273,7 @@ public class FinalBoss extends Entity {
 
         if (shootCounter >= 1) {
             if(phase == 2) {
-                int bulletCount = 6; // Ví dụ: 5 viên đạn
+                int bulletCount = 12; // Ví dụ: 5 viên đạn
                 double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
 
                 // Bắn từng luồng đạn
@@ -270,7 +288,7 @@ public class FinalBoss extends Entity {
                     // Tạo đối tượng đạn
                     FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet",
                             0, 0, 8 * 6, 8 * 6,
-                            (int) (npcCenterX), (int) (npcCenterY), 30, gp,
+                            (int) (targetBulletX - 10*gp.tileSize), (int) (targetBulletY - 10*gp.tileSize), 10, gp,
                             0, 8, 1, 1,
                             targetBulletX, targetBulletY, null);
                     b.root = this.objName;
@@ -352,7 +370,7 @@ public class FinalBoss extends Entity {
         shootCounter = 0;
         aniCount = 0;
         isResting = true;
-        restCounter = 30; // Thời gian nghỉ, ví dụ 60 frame
+        restCounter = 60; // Thời gian nghỉ, ví dụ 60 frame
     }
 
 

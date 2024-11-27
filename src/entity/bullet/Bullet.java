@@ -24,6 +24,7 @@ public class Bullet extends Entity {
     public boolean isSlash = false;
     public Bullet(String path, String name,int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY,int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY){
         this.solidArea = new Rectangle();
+        isBullet = true;
         animationDelay = 2;
         layer = 2;
         if(path != null) {
@@ -34,7 +35,7 @@ public class Bullet extends Entity {
             BufferedImage image = new BufferedImage(rectX, rectY, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = image.createGraphics();
 
-            int b = 0; // Giá trị ngẫu nhiên cho Blue
+            // int b = 0; // Giá trị ngẫu nhiên cho Blue
             Color randomColor = new Color(255, 0, 0); // Tạo màu ngẫu nhiên từ RGB
 
             if(Objects.equals(this.objName, "enemyBullet")){

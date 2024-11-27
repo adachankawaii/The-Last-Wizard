@@ -5,7 +5,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Vector;
+import java.util.Random;
+// import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -16,6 +17,8 @@ import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ObjectMap1;
 import entity.Items.ThrowingBottle;
+import entity.enemy.Knight;
+import entity.enemy.Mage;
 import entity.enemy.Slime;
 import entity.enemy.Soldier;
 import entity.npc.*;
@@ -225,6 +228,7 @@ public class GamePanel extends JPanel implements Runnable{
         repaint();
         saveGame();
     }
+    Random random = new Random();
     // NƠI CHỨA UPDATE NÈ
     public boolean pauseMenu = false;
     private Rectangle restartButton;
@@ -263,22 +267,23 @@ public class GamePanel extends JPanel implements Runnable{
 
         player.update();
         for (int i = 0; i < obj.size(); i++) {
-            if (obj.get(i) != null) {
+            if (obj.get(i) != null && (isObjectInScreen(obj.get(i)) || obj.get(i).isBullet)) {
                 obj.get(i).update();
             }
         }
+        timer--;
         loadingTime--;
         reloadTime--;
         HPbar.update(player.HP);
         EnergyBar.update(player.Energy);
         if(map == 1){
-            Rectangle[] zone = new Rectangle[]{new Rectangle(41 * tileSize, 70 * tileSize, 30 * tileSize, 10 * tileSize), new Rectangle(10*tileSize, 10*tileSize, 28*tileSize, 40*tileSize)};
+            Rectangle[] zone = new Rectangle[]{new Rectangle(41 * tileSize, 70 * tileSize, 30 * tileSize, 10 * tileSize), new Rectangle(10*tileSize, 20*tileSize, 28*tileSize, 30*tileSize), new Rectangle(10*tileSize, 40*tileSize, 28*tileSize, 10*tileSize)};
 // Kiểm tra nếu player đang trong vùng
             boolean flag = false;
 
             for(int i = 0;i<zone.length;i++){
 
-                if (zone[i].contains(new Point(player.worldX, player.worldY))) {
+                if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f) {
                     for (Entity entity : obj){
                         if(entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY)) {
                             flag = true;
@@ -286,7 +291,36 @@ public class GamePanel extends JPanel implements Runnable{
                         }
                     }
                     // Player đã vào vùng, bật trạng thái `on` cho các CombatWall
+                    if (i == 1 && !isSpawn) {
 
+                        // Danh sách tạm để thêm lính mới
+                        ArrayList<Entity> tempKnights = new ArrayList<>();
+
+                        for (int j = 0; j < 5; j++) { // Spawn 5 con lính
+                            // Tạo tọa độ ngẫu nhiên trong vùng spawnZone
+                            int spawnX = 24*tileSize;
+                            int spawnY = 29*tileSize;
+
+                            // Khởi tạo Knight tại vị trí ngẫu nhiên
+                            Knight k = new Knight(this);
+                            k.worldX = spawnX;
+                            k.worldY = spawnY;
+                            Soldier s = new Soldier(this);
+                            s.worldX = spawnX;
+                            s.worldY = spawnY;
+                            Mage m = new Mage(this);
+                            m.worldX = spawnX;
+                            m.worldY = spawnY;
+                            // Thêm lính vào danh sách tạm
+                            tempKnights.add(k);
+                            tempKnights.add(s);
+                            tempKnights.add(m);
+                        }
+
+                        // Thêm tất cả lính mới vào danh sách chính sau khi hoàn thành vòng lặp
+                        obj.addAll(tempKnights);
+                        isSpawn = true; // Đảm bảo chỉ spawn một lần
+                    }
                     if (flag) {
                         // Sử dụng CopyOnWriteArrayList để tránh ConcurrentModificationException
                         CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
@@ -321,11 +355,12 @@ public class GamePanel extends JPanel implements Runnable{
             gameOver = true;
         }
     }
+    boolean isSpawn = false;
     int selectedChoice = -1;
     private boolean newGameSlideShow = false;
     private int slideIndex = 0;
-    private long slideTimer = 0; // Thời gian hiện tại của slide
-    private final long SLIDE_DURATION = 3000; // Thời gian mỗi slide (ms)
+    public long slideTimer = 0; // Thời gian hiện tại của slide
+    // private final long SLIDE_DURATION = 3000; // Thời gian mỗi slide (ms)
     private ArrayList<BufferedImage> slideImages = new ArrayList<>();
     Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf",50);
     Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf",30);
@@ -341,10 +376,11 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
     boolean clickSlide = false;
+    boolean guild = false;
     public void onClick(int mouseInfo){
         if (startMenu) { // Kiểm tra nếu đang ở trạng thái Start Menu
             if (mouseInfo == 1 && selectedChoice != -1) { // Nếu nhấn chuột trái
-                if(selectedChoice % 3 == 0){
+                if(selectedChoice % 4 == 0){
                     clearGameData();
                     newGameSlideShow = true;
                     loadSlideImages();
@@ -353,11 +389,16 @@ public class GamePanel extends JPanel implements Runnable{
                     soundManager.play("opening");
                     soundManager.loop("opening");
                 }
-                else if(selectedChoice % 3 == 1){
+                else if(selectedChoice % 4 == 1){
                     loadGame();
                     loadingTime = 100;
                 }
-                else if(selectedChoice % 3 == 2){
+                else if(selectedChoice % 4 == 2){
+                    guild = true;
+                    timer = 20;
+                    player.combat = false;
+                }
+                else if(selectedChoice % 4 == 3){
                     System.exit(0);
                 }
                 startMenu = false; // Tắt Start Menu
@@ -559,13 +600,20 @@ public class GamePanel extends JPanel implements Runnable{
 
         // Vẽ tên game
         g2.setColor(Color.BLACK);
-        g2.setFont(bigFont);
-        g2.drawString("The Last Wizard", screenWidth / 2 - 200, screenHeight / 2 - 150);
+        BufferedImage img = null;
+        // Thiết lập nền màn hình loading
+        try(InputStream is = getClass().getResourceAsStream("/UI/Game Poster.png")){
+            img = ImageIO.read(is);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        g2.drawImage(img,0,0,getWidth(),getHeight(),null);
 
         // Cấu hình các lựa chọn menu
-        String[] choices = {"New Game", "Load Game", "Quit"};
+        String[] choices = {"New Game", "Load Game","Control", "Quit"};
         int choiceBoxX = screenWidth / 2 - 200; // Vị trí X của hộp lựa chọn
-        int choiceBoxY = screenHeight / 2 - 20; // Vị trí Y ban đầu của hộp lựa chọn
+        int choiceBoxY = screenHeight / 2 + 100; // Vị trí Y ban đầu của hộp lựa chọn
         int choiceBoxWidth = 400; // Chiều rộng hộp lựa chọn
         int choiceBoxHeight = 50; // Chiều cao mỗi hộp lựa chọn
         g2.setFont(smallFont);
@@ -726,7 +774,7 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
 
-
+    int timer = 0;
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -738,6 +786,22 @@ public class GamePanel extends JPanel implements Runnable{
             drawStartMenu(g2); // Vẽ màn hình Start Menu
         } else if (newGameSlideShow) {
             drawSlideShow(g2); // Hàm vẽ slideshow
+        } else if (guild) {
+            BufferedImage img = null;
+            try (InputStream is = getClass().getResourceAsStream("/UI/HD.png")) {
+                img = ImageIO.read(is);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            g2.fillRect(0, 0, screenWidth, screenHeight); // Làm mờ toàn bộ màn hình
+            if (img != null) {
+
+                g2.drawImage(img, 0, 0,getWidth(),getHeight(), null);
+            }
+            if (mouseH.isClicked && timer <= 0) {
+                guild = false;
+                startMenu = true;
+            }
         } else {
             // Các phần còn lại của game
             if(loadingTime >= 0){

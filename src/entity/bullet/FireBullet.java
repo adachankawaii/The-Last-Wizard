@@ -7,17 +7,20 @@ import main.GamePanel;
 public class FireBullet extends Bullet{
     String effect = null;
     int timer = 0;
+    public boolean die = true;
     public FireBullet(String path, String name, int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY, int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int targetX, int targetY, String effect) {
         super(path, name, solidAreaX, solidAreaY, rectX, rectY, worldX, worldY, lifeTime, gp, w, speed, scaleX, scaleY, targetX, targetY);
         this.effect = effect;
     }
     @Override
     public void specialMethod(){
-        timer++;
-        if(timer >= 7){
+        timer--;
+        if(timer <= 0){
             if(effect == null){
+                Effect a = new Effect("/effect/enemyEffect .png", 0, 0, worldX + (int)(4*gp.tileSize* Math.cos(angle)), worldY + (int)(4*gp.tileSize* Math.cos(angle)), 15, gp, 0, 2, 2, 0, 0);
+                gp.obj.add(a);
                 Pike p = new Pike(gp);
-                p.canDeath = true;
+                p.canDeath = die;
                 p.worldX = worldX;
                 p.worldY = worldY;
                 gp.obj.add(p);
@@ -26,6 +29,7 @@ public class FireBullet extends Bullet{
                 Effect a = new Effect(effect, 0, 0, worldX, worldY, 15, gp, 0, 2, 2, 0, 0);
                 gp.obj.add(a);
             }
+            timer = 1;
         }
     }
 }

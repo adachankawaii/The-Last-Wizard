@@ -24,7 +24,7 @@ public class NPC extends Entity {
         layer = 0;
         objName = "Te Quiero";
         collision = true;
-        this.isTrigger = false;
+        this.isTrigger = true;
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
@@ -35,7 +35,11 @@ public class NPC extends Entity {
     }
 
     public void getNPCImage() {
-        importAnImage("/npc/merchant.png", true);
+        String []s = new String[7];
+        for(int i = 0;i< 6;i++){
+            s[i] = "/npc/idle (" + (i+1) + ").png";
+        }
+        importEachImage(s, true);
     }
 
     @Override
