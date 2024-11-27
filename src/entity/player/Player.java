@@ -89,7 +89,7 @@ public class Player extends Entity{
         // Quy ước ở đây: [0]: lên - [1]: xuống - [2]: trái - [3]: phải
         importAndSliceVertical("/player/move/B_witch_idle.png",6, 0,0);
         importAndSliceVertical("/player/move/B_witch_run.png",8, 0,0);
-        importAndSliceVertical("/player/move/B_witch_death.png",12, 0,0);
+        importAndSliceVertical("/player/move/B_witch_death.png",9, 0,0);
 
     }
     private BufferedImage loadBorder(){
