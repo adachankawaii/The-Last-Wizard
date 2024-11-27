@@ -13,6 +13,7 @@ import entity.bullet.NormalBullet;
 import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
 import entity.npc.CombatWall;
+import entity.npc.Portal;
 import entity.player.Quest;
 import main.FontLoader;
 import main.GamePanel;
@@ -164,6 +165,7 @@ public class Golem extends Entity {
         else {
             aniCount = 3;
             c.on = false;
+
         }
     }
 
@@ -395,6 +397,12 @@ public class Golem extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
+                if(!dead) {
+                    Portal p = new Portal(gp);
+                    p.worldX = worldX + solidArea.x + solidArea.width / 2;
+                    p.worldY = worldY + solidArea.y + solidArea.height / 2 + 4*gp.tileSize;
+                    gp.obj.add(p);
+                }
                 dead = true;
             }
         }

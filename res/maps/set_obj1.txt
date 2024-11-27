@@ -1,5 +1,5 @@
 Slime 4
-49,71 49,76 46,74 52,74
+54,71 54,76 51,74 57,74
 Soldier 3
 26,29 22,29 17,28
 Knight 1
@@ -10,8 +10,6 @@ ShopKeeper 1
 56,54
 GuildMaster 1
 50,51
-Portal 1
-88,74
 NPC 1
 18,78
 Golem 1

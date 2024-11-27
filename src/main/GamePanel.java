@@ -17,10 +17,7 @@ import entity.Items.CommonItem;
 import entity.Items.HPBottle;
 import entity.Items.ObjectMap1;
 import entity.Items.ThrowingBottle;
-import entity.enemy.Knight;
-import entity.enemy.Mage;
-import entity.enemy.Slime;
-import entity.enemy.Soldier;
+import entity.enemy.*;
 import entity.npc.*;
 import entity.player.Player;
 import tile.TileManager;
@@ -225,6 +222,7 @@ public class GamePanel extends JPanel implements Runnable{
         soundManager.loop("background");
         tileMng = new TileManager(this);// Gọi lại setup ban đầu của game
         loadingTime = 100;
+        isSpawn = false;
         repaint();
         saveGame();
     }
@@ -277,15 +275,15 @@ public class GamePanel extends JPanel implements Runnable{
         HPbar.update(player.HP);
         EnergyBar.update(player.Energy);
         if(map == 1){
-            Rectangle[] zone = new Rectangle[]{new Rectangle(41 * tileSize, 70 * tileSize, 30 * tileSize, 10 * tileSize), new Rectangle(10*tileSize, 20*tileSize, 28*tileSize, 30*tileSize), new Rectangle(10*tileSize, 40*tileSize, 28*tileSize, 10*tileSize)};
-// Kiểm tra nếu player đang trong vùng
+            Rectangle[] zone = new Rectangle[]{new Rectangle(41 * tileSize, 70 * tileSize, 30 * tileSize, 10 * tileSize), new Rectangle(10*tileSize, 20*tileSize, 28*tileSize, 19*tileSize), new Rectangle(10*tileSize, 40*tileSize, 28*tileSize, 10*tileSize)};
             boolean flag = false;
 
             for(int i = 0;i<zone.length;i++){
 
                 if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f) {
-                    for (Entity entity : obj){
-                        if(entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY)) {
+                    CopyOnWriteArrayList<Entity> objList1 = new CopyOnWriteArrayList<>(obj);
+                    for (Entity entity : objList1){
+                        if(entity != null && (entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY))) {
                             flag = true;
                             break;
                         }
@@ -347,7 +345,95 @@ public class GamePanel extends JPanel implements Runnable{
 
                 }
             }
+        } else if (map == 2) {
+            Rectangle[] zone = new Rectangle[]{new Rectangle(10 * tileSize, 56 * tileSize, 32 * tileSize, 32 * tileSize), new Rectangle(55*tileSize, 56*tileSize, 32*tileSize, 32*tileSize), new Rectangle(58*tileSize, 18*tileSize, 32*tileSize, 32*tileSize), new Rectangle(10*tileSize, 11*tileSize, 32*tileSize, 32*tileSize)};
+            boolean flag = false;
+            for(int i = 0;i<zone.length;i++){
+                if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f){
+                    System.out.println(i);
+                    if(i == 0){
+                        player.isDarken = true;
+                    }
+                    else {
+                        player.isDarken = false;
+                    }
+                    if(i == 1){
+                        boolean complete = true;
+                        CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
+                        for(Entity object : objList){
+                            if(object != null && Objects.equals(object.objName, "Pole")){
+                                if(!object.done){
+                                    complete = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!complete){
+                            for (Entity object : objList) {
+                                if (object != null && Objects.equals(object.objName, "CombatWall")) {
+                                    object.on = true;
+                                }
+                            }
+                        }
+                        else {
+                            for (Entity object : objList) {
+                                if (object != null && Objects.equals(object.objName, "CombatWall")) {
+                                    object.on = false;
+                                }
+                                if(object != null && Objects.equals(object.objName, "Pole") && !isSpawn){
+                                    Effect a = new Effect("/effect/effect1.png", 0, 0, object.worldX, object.worldY, 10, this, 0, 2, 2, 0, 0);
+                                    obj.add(a);
+                                }
+                            }
+                            isSpawn = true;
+                        }
+                    }
+                    else if(i == 2){
+                        boolean complete = true;
+                        CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
+                        for(Entity object : objList){
+                            if(object != null && Objects.equals(object.objName, "Placer")){
+                                if(!object.done){
+                                    complete = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!complete){
+                            for (Entity object : objList) {
+                                if (object != null && Objects.equals(object.objName, "CombatWall")) {
+                                    object.on = true;
+                                }
+                            }
+                        }
+                        else {
+                            for (Entity object : objList) {
+                                if (object != null && Objects.equals(object.objName, "CombatWall")) {
+                                    object.on = false;
+                                }
+                            }
+                            if(!isSpawn){
+                                for(int j = 0;j<3;j++) {
+                                    Pike p = new Pike(this);
+                                    p.canDeath = false;
+                                    p.worldX = (71 + j) * tileSize;
+                                    p.worldY = 26 * tileSize;
+                                    obj.add(p);
+                                }
+                                isSpawn = true;
+                            }
+
+                        }
+                    }
+                    flag = true;
+                }
+            }
+            if(!flag){
+                player.isDarken = false;
+                isSpawn = false;
+            }
         }
+
         // Kiểm tra điều kiện game over (ví dụ: HP <= 0)
         if (player.dead) {
             // Dừng nhạc nền khi người chơi chết
@@ -541,7 +627,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ các đối tượng trong obj, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < obj.size(); i++) {
             Entity entity = obj.get(i);
-            if (entity != null && entity.layer < 1 && isObjectInScreen(entity)) {
+            if (entity != null && ((entity.layer < 1 && isObjectInScreen(entity)) || Objects.equals(Objects.requireNonNull(entity).objName, "Golem"))) {
                 entity.draw(g2, this);
             }
         }
@@ -560,7 +646,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ các đối tượng ở layer >= 1 trong obj, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < obj.size(); i++) {
             Entity entity = obj.get(i);
-            if ((entity != null && entity.layer >= 1 && isObjectInScreen(entity)) || Objects.equals(Objects.requireNonNull(entity).objName, "Golem")) {
+            if (entity != null && ((entity.layer >= 1 && isObjectInScreen(entity)) || Objects.equals(Objects.requireNonNull(entity).objName, "Golem"))) {
                 entity.draw(g2, this);
             }
         }
@@ -861,6 +947,8 @@ public class GamePanel extends JPanel implements Runnable{
                 return new CommonItem("Key", this);
             case "ShopKeeper":
                 return new ShopKeeper(this);
+            case "Box":
+                return new CommonItem("Box", this);
             case "Soldier":
                 return new Soldier(this);
             case "GuildMaster":

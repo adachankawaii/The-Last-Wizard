@@ -54,12 +54,12 @@ public class CombatWall extends Entity {
             Effect glowEffect = new Effect(null, 16, 16,
                      worldX + random.nextInt(gp.tileSize*(solidArea.width/gp.tileSize)) - gp.tileSize*(solidArea.width/gp.tileSize)/2,
                     this.worldY + random.nextInt(gp.tileSize*(solidArea.height/gp.tileSize)) - gp.tileSize*(solidArea.height/gp.tileSize)/2,
-                    50, gp, 7, 1.5, 1.5, this.worldX + gp.tileSize*(solidArea.width/gp.tileSize - 1), worldY+ gp.tileSize*(solidArea.height/gp.tileSize - 1));
+                    30, gp, 7, 1.5, 1.5, this.worldX + gp.tileSize*(solidArea.width/gp.tileSize - 1), worldY+ gp.tileSize*(solidArea.height/gp.tileSize - 1));
             gp.obj.add(glowEffect);
             Effect glowEffect2 = new Effect(null, 16, 16,
                      worldX + gp.tileSize*(solidArea.width/gp.tileSize-1) + random.nextInt(gp.tileSize*(solidArea.width/gp.tileSize)) - gp.tileSize*(solidArea.width/gp.tileSize)/2,
                     this.worldY + gp.tileSize*(solidArea.height/gp.tileSize - 1)+ random.nextInt(gp.tileSize*(solidArea.height/gp.tileSize)) - gp.tileSize*(solidArea.height/gp.tileSize)/2,
-                    50, gp, 7, 1.5, 1.5, this.worldX, worldY);
+                    30, gp, 7, 1.5, 1.5, this.worldX, worldY);
             gp.obj.add(glowEffect2);
             drawObjImage(g2, gp);
             rectDraw(g2);
