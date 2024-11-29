@@ -282,7 +282,7 @@ public class GamePanel extends JPanel implements Runnable{
 
                 if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f) {
                     if(i != current){
-                        player.voiceIndex++;
+                        if(player.voiceline.length > player.voiceIndex + 1) player.voiceIndex++;
                         current = i;
                     }
                     inCombat = true;
