@@ -1,8 +1,20 @@
 Portal 1
 22,63
-Tower 1
-53,39
 Executioner 1
 24,17
 Ghost 1
 23,64
+Soldier 4
+87,51 35,61 25,61 83,51
+MageSeeker 1
+30,61
+Knight 5
+87,62 35,71 25,71 30,71 83,62
+Tower 2
+56,43 61,63
+Soldier 2
+83,41 87,41
+Slime 2
+72,45 75,45
+Slime 2
+73,57 76,57

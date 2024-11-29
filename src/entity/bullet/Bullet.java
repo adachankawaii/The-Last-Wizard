@@ -35,7 +35,7 @@ public class Bullet extends Entity {
             BufferedImage image = new BufferedImage(rectX, rectY, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = image.createGraphics();
 
-            int b = 0; // Giá trị ngẫu nhiên cho Blue
+            // int b = 0; // Giá trị ngẫu nhiên cho Blue
             Color randomColor = new Color(255, 0, 0); // Tạo màu ngẫu nhiên từ RGB
 
             if(Objects.equals(this.objName, "enemyBullet")){

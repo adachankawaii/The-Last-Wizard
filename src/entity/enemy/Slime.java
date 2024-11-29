@@ -43,10 +43,17 @@ public class Slime extends Entity {
 
         // CHUYỂN ĐỘNG IDLE CỦA SLIME.
         // [1] - IDLE
-        importEachImage(new String[]{"/enemy/Slime/slime_0.png",
+        if(gp.map == 1 || gp.map == 2) {
+            importEachImage(new String[]{"/enemy/Slime/slime_0.png",
                 "/enemy/Slime/slime_1.png","/enemy/Slime/slime_2.png",
                 "/enemy/Slime/slime_3.png", "/enemy/Slime/slime_4.png",
                 "/enemy/Slime/slime_5.png", "/enemy/Slime/slime_6.png"}, true);
+        } else if(gp.map == 3 || gp.map == 4) {
+            importEachImage(new String[]{ "/enemy/Slime/slime3_1.png","/enemy/Slime/slime3_2.png",
+                "/enemy/Slime/slime3_3.png", "/enemy/Slime/slime3_4.png",
+                "/enemy/Slime/slime3_5.png", "/enemy/Slime/slime3_6.png",
+                "/enemy/Slime/slime3_7.png", "/enemy/Slime/slime3_8.png"}, true);           
+        }
 
         // [2] - BỊ TẤN CÔNG
 

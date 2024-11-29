@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
-import java.util.Vector;
+// import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -476,7 +476,50 @@ public class GamePanel extends JPanel implements Runnable{
                 isSpawn = false;
             }
         }
+        else if(map == 3) {
+            Rectangle[] zone = new Rectangle[]{new Rectangle(70 * tileSize, 33 * tileSize, 19 * tileSize, 33 * tileSize),
+            new Rectangle(20 * tileSize, 44 * tileSize, 18 * tileSize, 45 * tileSize),
+            new Rectangle(20 * tileSize, 12 * tileSize, 19 * tileSize, 26 * tileSize)};
+            boolean flag = false;
 
+            for(int i = 0; i < zone.length;i++){
+
+                if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f) {
+                    CopyOnWriteArrayList<Entity> objList1 = new CopyOnWriteArrayList<>(obj);
+                    for (Entity entity : objList1){
+                        if(entity != null && (entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY))) {
+                            flag = true;
+                            break;
+                        }
+                    }
+
+                    if (flag) {
+                        // Sử dụng CopyOnWriteArrayList để tránh ConcurrentModificationException
+                        CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
+
+                        for (Entity object : objList) {
+                            if (object != null && Objects.equals(object.objName, "CombatWall")) {
+                                object.on = true;
+                            }
+                        }
+                        for (Entity entity : objList) {
+                            if (entity != null && entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY)) {
+                                entity.awake = true;
+                            }
+                        }
+                    } else {
+                        CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
+
+                        for (Entity object : objList) {
+                            if (object != null && Objects.equals(object.objName, "CombatWall")) {
+                                object.on = false;
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
         // Kiểm tra điều kiện game over (ví dụ: HP <= 0)
         if (player.dead) {
             // Dừng nhạc nền khi người chơi chết
@@ -488,8 +531,8 @@ public class GamePanel extends JPanel implements Runnable{
     int selectedChoice = -1;
     private boolean newGameSlideShow = false;
     private int slideIndex = 0;
-    private long slideTimer = 0; // Thời gian hiện tại của slide
-    private final long SLIDE_DURATION = 3000; // Thời gian mỗi slide (ms)
+    public long slideTimer = 0; // Thời gian hiện tại của slide
+    // private final long SLIDE_DURATION = 3000; // Thời gian mỗi slide (ms)
     private ArrayList<BufferedImage> slideImages = new ArrayList<>();
     Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf",50);
     Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf",30);

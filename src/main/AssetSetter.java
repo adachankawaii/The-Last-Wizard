@@ -161,7 +161,32 @@ public class AssetSetter {
             gp.obj.add(e);
 
         }
+        else if(gp.map == 3) {
 
+            int[][] horizontalWalls = {{73, 69}};
+            for (int[] pos : horizontalWalls) {
+                CombatWall c = new CombatWall(gp, 4, 1); // Width = 4, Height = 1
+                c.worldX = pos[0] * gp.tileSize;
+                c.worldY = pos[1] * gp.tileSize;
+                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
+            }
+
+            int[][] verticalWalls = {{69,33}};
+            for (int[] pos : verticalWalls) {
+                CombatWall c = new CombatWall(gp, 1, 2); // Width = 1, Height = 2
+                c.worldX = pos[0] * gp.tileSize;
+                c.worldY = pos[1] * gp.tileSize;
+                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
+            }
+
+            int[][] verticalWalls_2 = {{39,50}};
+            for (int[] pos : verticalWalls_2) {
+                CombatWall c = new CombatWall(gp, 1, 18); // Width = 1, Height = 18
+                c.worldX = pos[0] * gp.tileSize;
+                c.worldY = pos[1] * gp.tileSize;
+                gp.obj.add(c); // Thêm tường vào danh sách đối tượng
+            }
+        }
     }
     
     // TẠO RA CÁC OBJ TƯƠNG ỨNG

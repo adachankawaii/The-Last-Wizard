@@ -2,7 +2,7 @@ package entity.bullet;
 
 import main.GamePanel;
 
-import java.util.Random;
+// import java.util.Random;
 
 public class ClusterBomb extends ThrowingObj{
     public ClusterBomb(String path, String name, int solidAreaX, int solidAreaY, int rectX, int rectY, int worldX, int worldY, int lifeTime, GamePanel gp, int w, int speed, double scaleX, double scaleY, int TtargetX, int TtargetY) {

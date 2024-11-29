@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Vector;
+// import java.util.Vector;
 
 import entity.Entity;
 import main.GamePanel;
@@ -100,7 +100,7 @@ public class Player extends Entity{
         // Quy ước ở đây: [0]: lên - [1]: xuống - [2]: trái - [3]: phải
         importAndSliceVertical("/player/move/B_witch_idle.png",6, 0,0);
         importAndSliceVertical("/player/move/B_witch_run.png",8, 0,0);
-        importAndSliceVertical("/player/move/B_witch_death.png",12, 0,0);
+        importAndSliceVertical("/player/move/B_witch_death.png",9, 0,0);
 
     }
     private BufferedImage loadBorder(){
@@ -160,7 +160,7 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
-            System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
+            // System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {

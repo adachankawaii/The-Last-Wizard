@@ -4,8 +4,8 @@ import entity.Entity;
 import main.GamePanel;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.Vector;
+// import java.awt.image.BufferedImage;
+// import java.util.Vector;
 
 public class Pike extends Entity{
     int timer = 0;

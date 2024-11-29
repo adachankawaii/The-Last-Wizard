@@ -3,8 +3,8 @@ package entity.npc;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Vector;
+// import java.util.Arrays;
+// import java.util.Vector;
 
 import entity.Entity;
 import main.FontLoader;

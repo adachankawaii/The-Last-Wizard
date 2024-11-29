@@ -100,7 +100,9 @@ public class TileManager {
                         && worldY + 1*gp.tileSize > gp.player.worldY - gp.player.screenY
                         && worldY - 1*gp.tileSize < gp.player.worldY + gp.player.screenY) {
                     if (worldCol < 0 || worldRow < 0 || worldCol >= gp.maxWorldCol || worldRow >= gp.maxWorldRow) {
-                        gd.drawImage(tile[1].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                        int i = 1;
+                        if(gp.map == 4) i = 2;
+                        gd.drawImage(tile[i].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
                     } else {
                         int num = mapTile[worldCol][worldRow];
                         gd.drawImage(tile[num].image, screenX, screenY, gp.tileSize, gp.tileSize, null);

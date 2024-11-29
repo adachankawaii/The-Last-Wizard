@@ -7,8 +7,8 @@ import main.GamePanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
-import java.util.Vector;
+// import java.util.Random;
+// import java.util.Vector;
 
 public class Tower extends Entity {
     public Tower(GamePanel gp) {

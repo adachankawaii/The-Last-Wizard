@@ -8,7 +8,7 @@ import java.util.Random;
 import entity.Entity;
 import entity.Items.Coin;
 import entity.bullet.Bullet;
-import entity.bullet.NormalBullet;
+// import entity.bullet.NormalBullet;
 import entity.effect.Effect;
 import main.GamePanel;
 

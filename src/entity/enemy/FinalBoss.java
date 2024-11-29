@@ -7,11 +7,11 @@ import java.util.*;
 import java.util.List;
 
 import entity.Entity;
-import entity.Items.Coin;
+// import entity.Items.Coin;
+// import entity.npc.CombatWall;
+// import entity.player.Quest;
 import entity.bullet.*;
 import entity.effect.Effect;
-import entity.npc.CombatWall;
-import entity.player.Quest;
 import main.FontLoader;
 import main.GamePanel;
 
@@ -25,7 +25,8 @@ public class FinalBoss extends Entity {
     int HP;
     double angle = 0;
     int animationDelay = 3;
-    private int rootX = -1, rootY = -1;
+    public int rootY = -1;
+    public int rootX = -1;  
     boolean back = false;
     private int targetX, targetY;
     int moveSet = 0;
