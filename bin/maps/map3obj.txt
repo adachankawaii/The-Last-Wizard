@@ -68,6 +68,8 @@ Hole2 1
 41,34
 Layer33 1
 79,73
+Treasure 1
+11,19
 ***
 Gate 1
 28,76

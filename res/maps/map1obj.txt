@@ -6,6 +6,10 @@ TreeSnowman 1
 11,83
 Log_Cabin 1
 11,70
+Fence1 4
+39,10 29,89 89,60 89,39
+Fence3 1
+99,40
 FenceH1 1
 10,10
 FenceV1 1
@@ -41,9 +45,9 @@ FenceV10 1
 FenceV11 1
 40,60
 FenceV12 1
-40,78
-FenceV13 1
 89,60
+FenceV13 1
+40,78
 FenceH7 1
 40,60
 FenceH8 1
