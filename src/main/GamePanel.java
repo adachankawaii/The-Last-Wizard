@@ -13,10 +13,7 @@ import javax.swing.*;
 import UI.Bar;
 import collision.CollisionCheck;
 import entity.Entity;
-import entity.Items.CommonItem;
-import entity.Items.HPBottle;
-import entity.Items.ObjectMap1;
-import entity.Items.ThrowingBottle;
+import entity.Items.*;
 import entity.enemy.*;
 import entity.npc.*;
 import entity.player.Player;
@@ -151,8 +148,8 @@ public class GamePanel extends JPanel implements Runnable{
             player.locY = 81;
         }
         else if(map == 2){
-            player.locX = 51;
-            player.locY = 48;
+            player.locX = 11;
+            player.locY = 57;
         }
         else if(map == 3){
             player.locX = 17;
@@ -172,6 +169,7 @@ public class GamePanel extends JPanel implements Runnable{
         objMap1.clear();
         gameOver = false;
         running = true;
+        player.call = false;
         reloadTime = 0;
         player.kills= 0;
         player.money = 5;
@@ -192,8 +190,8 @@ public class GamePanel extends JPanel implements Runnable{
             player.locY = 81;
         }
         else if(map == 2){
-            player.locX = 51;
-            player.locY = 48;
+            player.locX = 11;
+            player.locY = 57;
         }
         else if(map == 3){
             player.locX = 17;
@@ -215,6 +213,7 @@ public class GamePanel extends JPanel implements Runnable{
         running = true;
         player.Energy = 200;
         reloadTime = 0;
+        player.call = false;
         player.kills= 0;
         soundManager.setVolumeAll(-20.0f);
         soundManager.setVolume("background", -30.0f);
@@ -233,7 +232,8 @@ public class GamePanel extends JPanel implements Runnable{
     private Rectangle menuButton;
 
     // Khởi tạo vị trí và kích thước nút
-
+    int current = -1;
+    boolean inCombat = false;
     public void update() {
         if (gameOver) {
             if(keyH.RPressed){
@@ -281,6 +281,11 @@ public class GamePanel extends JPanel implements Runnable{
             for(int i = 0;i<zone.length;i++){
 
                 if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f) {
+                    if(i != current){
+                        player.voiceIndex++;
+                        current = i;
+                    }
+                    inCombat = true;
                     CopyOnWriteArrayList<Entity> objList1 = new CopyOnWriteArrayList<>(obj);
                     for (Entity entity : objList1){
                         if(entity != null && (entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY))) {
@@ -335,18 +340,19 @@ public class GamePanel extends JPanel implements Runnable{
                         }
                     } else {
                         CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
-
                         for (Entity object : objList) {
                             if (object != null && Objects.equals(object.objName, "CombatWall")) {
                                 object.on = false;
                             }
                         }
+
                     }
 
                 }
+
             }
         } else if (map == 2) {
-            Rectangle[] zone = new Rectangle[]{new Rectangle(10 * tileSize, 56 * tileSize, 32 * tileSize, 32 * tileSize), new Rectangle(55*tileSize, 56*tileSize, 32*tileSize, 32*tileSize), new Rectangle(58*tileSize, 18*tileSize, 32*tileSize, 32*tileSize), new Rectangle(10*tileSize, 11*tileSize, 32*tileSize, 32*tileSize)};
+            Rectangle[] zone = new Rectangle[]{new Rectangle(10 * tileSize, 56 * tileSize, 32 * tileSize, 32 * tileSize), new Rectangle(55*tileSize, 56*tileSize, 32*tileSize, 32*tileSize), new Rectangle(58*tileSize, 10*tileSize, 32*tileSize, 32*tileSize), new Rectangle(10*tileSize, 11*tileSize, 32*tileSize, 32*tileSize)};
             boolean flag = false;
             for(int i = 0;i<zone.length;i++){
                 if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f){
@@ -361,7 +367,7 @@ public class GamePanel extends JPanel implements Runnable{
                         boolean complete = true;
                         CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
                         for(Entity object : objList){
-                            if(object != null && Objects.equals(object.objName, "Pole")){
+                            if(object != null && Objects.equals(object.objName, "Pole") && zone[i].contains(new Point(object.worldX, object.worldY))){
                                 if(!object.done){
                                     complete = false;
                                     break;
@@ -392,7 +398,7 @@ public class GamePanel extends JPanel implements Runnable{
                         boolean complete = true;
                         CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
                         for(Entity object : objList){
-                            if(object != null && Objects.equals(object.objName, "Placer")){
+                            if(object != null && Objects.equals(object.objName, "Placer") && zone[i].contains(new Point(object.worldX, object.worldY))){
                                 if(!object.done){
                                     complete = false;
                                     break;
@@ -425,10 +431,47 @@ public class GamePanel extends JPanel implements Runnable{
 
                         }
                     }
+                    else if(i == 3){
+                        boolean complete = true;
+                        CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
+                        for(Entity object : objList){
+                            if(object != null && Objects.equals(object.objName, "Placer2") && zone[i].contains(new Point(object.worldX, object.worldY))){
+                                if(!object.done){
+                                    complete = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!complete){
+                            for (Entity object : objList) {
+                                if (object != null && Objects.equals(object.objName, "CombatWall")) {
+                                    object.on = true;
+                                }
+                            }
+                        }
+                        else {
+                            for (Entity object : objList) {
+                                if (object != null && Objects.equals(object.objName, "CombatWall")) {
+                                    object.on = false;
+                                }
+                            }
+                            if(!isSpawn){
+                                Bell bell = new Bell(this);
+                                bell.worldX = 27*tileSize;
+                                bell.worldY = 25*tileSize;
+                                Effect a = new Effect("/effect/effect1.png", 0, 0, bell.worldX, bell.worldY, 10, this, 0, 2, 2, 0, 0);
+                                obj.add(a);
+                                obj.add(bell);
+                                isSpawn = true;
+                            }
+
+                        }
+                    }
                     flag = true;
                 }
             }
             if(!flag){
+
                 player.isDarken = false;
                 isSpawn = false;
             }
@@ -511,6 +554,7 @@ public class GamePanel extends JPanel implements Runnable{
             if(reloadTime <= 0){
                 if(mouseInfo == 1 && player.Energy >= 10){
                     NormalBullet b = new NormalBullet("/bullet/bullet.png","bullet",12,12, 8, 8, player.worldX, player.worldY,20,this ,0, 12, 1, 1, mouseX, mouseY);
+                    b.off = false;
                     obj.add(b);
                     Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5, mouseX, mouseY);
                     obj.add(c);
@@ -564,8 +608,8 @@ public class GamePanel extends JPanel implements Runnable{
                 player.locY = 81;
             }
             else if(saveData.map == 2){
-                player.locX = 51;
-                player.locY = 48;
+                player.locX = 11;
+                player.locY = 57;
             }
             else if(map == 3){
                 player.locX = 17;
@@ -759,18 +803,26 @@ public class GamePanel extends JPanel implements Runnable{
         g2.setColor(new Color(0, 0, 0, introAlpha));
 
         if (showMadeBy) {
-            int textWidth = g2.getFontMetrics(new Font("Arial", Font.BOLD, 30)).stringWidth("from DM THA with luv <3");
-            g2.drawString("from DM THA with luv <3", screenWidth / 2 - textWidth/2, screenHeight / 2);
+            BufferedImage img = null;
+            // Thiết lập nền màn hình loading
+            try(InputStream is = getClass().getResourceAsStream("/mapobj/map4/final.png")){
+                img = ImageIO.read(is);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, introAlpha));
+            g2.drawImage(img, screenWidth/2 - img.getWidth()/2, screenHeight/2 - img.getHeight()/2, img.getWidth(), img.getHeight(), null);
         }
 
         if (introFadingIn) {
-            introAlpha += 0.05f; // Hiệu ứng mờ dần hiện lên
+            introAlpha += 0.02f; // Hiệu ứng mờ dần hiện lên
             if (introAlpha >= 1.0f) {
                 introAlpha = 1.0f;
                 introFadingIn = false; // Đổi sang mờ dần đi
             }
         } else {
-            introAlpha -= 0.02f; // Hiệu ứng mờ dần biến mất
+            introAlpha -= 0.01f; // Hiệu ứng mờ dần biến mất
             if (introAlpha <= 0) {
                 introAlpha = 0;
                 introFadingIn = true; // Đổi sang mờ dần hiện lên lần nữa
@@ -934,7 +986,9 @@ public class GamePanel extends JPanel implements Runnable{
             case "Slime":
                 return new Slime(this);
             case "NPC":
-                return new NPC(this);
+                return new NPC(this, "Te Quiero");
+            case "Amireux":
+                return new NPC(this, "Amireux");
             case "Portal":
                 return new Portal(this);
             case "ThrowingBottle":
@@ -947,12 +1001,32 @@ public class GamePanel extends JPanel implements Runnable{
                 return new CommonItem("Key", this);
             case "ShopKeeper":
                 return new ShopKeeper(this);
-            case "Box":
-                return new CommonItem("Box", this);
             case "Soldier":
                 return new Soldier(this);
+            case "Knight":
+                return new Knight(this);
+            case "MageSeeker":
+                return new Mage(this);
+            case "Golem":
+                return new Golem(this);
+            case "Executioner":
+                return new Executioner(this);
+            case "Tower":
+                return new Tower(this);
+            case "Ghost":
+                return new Ghost(this);
             case "GuildMaster":
                 return new GuildMaster(this);
+            case "Box":
+                return new CommonItem("Box", this);
+            case "Feather":
+                return new CommonItem("Feather", this);
+            case "Artichoke":
+                return new CommonItem("Artichoke", this);
+            case "FinalBoss":
+                return new FinalBoss(this);
+            case "Bell":
+                return new Bell(this);
             default:
                 System.out.println("Unknown object type: " + objectType);
                 return null;

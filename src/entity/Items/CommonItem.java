@@ -26,6 +26,13 @@ public class CommonItem extends Entity {
                 break;
             case "Box":
                 path = "/item/Micro Chests/micro chest 01 BRONZE1.png";
+                break;
+            case "Feather":
+                path = "/item/Feather.png";
+                break;
+            case "Artichoke":
+                path = "/item/artichoke.png";
+                break;
             default:
                 break;
         }

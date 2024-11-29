@@ -3,6 +3,6 @@ Portal 1
 Tower 1
 53,39
 Executioner 1
-27,17
+24,17
 Ghost 1
 23,64

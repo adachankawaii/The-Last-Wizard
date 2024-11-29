@@ -1,6 +1,7 @@
 package entity.player;
 
 import entity.Items.CommonItem;
+import entity.Items.Crow;
 import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
 import entity.enemy.*;
@@ -46,6 +47,9 @@ public class Player extends Entity{
     public int locX = 0, locY = 0;
     Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 15);
     Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20);
+    public boolean call = false;
+    public String[] voiceline = {"DM CUOC DOI","line 1", "line 2"};
+    public int voiceIndex = 0;
     public Player(GamePanel gp, KeyHandler keyH) {
         if(gp.map == 1){
             locX = 18;
@@ -87,7 +91,6 @@ public class Player extends Entity{
         catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
         // IMPORT NHIỀU ẢNH 1 LOẠI CHUYỂN ĐỘNG
@@ -174,7 +177,7 @@ public class Player extends Entity{
             // Giới hạn HP và Energy
             if (HP >= 10) HP = 10;
             if (Energy >= 200) Energy = 200;
-            else if (Energy < 200) Energy = 200;
+            //else if (Energy < 200) Energy = 200;
 
             // Kiểm tra các phím di chuyển
             if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed)) {
@@ -364,7 +367,7 @@ public class Player extends Entity{
                         hasKey++;
                         System.out.println(objName + " " + hasKey);
                     }
-                    case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion","Box" -> {
+                    case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion","Box","Artichoke","Feather","Bell" -> {
                             boolean flag = false;
                             for (int j = 0; j < itemsCount.size(); j++) {
                                 if (items.get(j).objName.equals(gp.obj.get(i).objName)) {
@@ -427,7 +430,30 @@ public class Player extends Entity{
     @Override
     public void drawUI(Graphics2D g2, GamePanel gp){
         if(combat && !isDead){
+            // Kích thước và vị trí của khung
+            int screenWidth = gp.screenWidth;
 
+            // Vẽ nền khung (màu đen, độ trong suốt 180)
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRoundRect((screenWidth - screenWidth/2) / 2 - 20, 20, screenWidth/2, 40, 15, 15);
+
+            // Vẽ viền khung (màu trắng)
+            g2.setColor(Color.WHITE);
+            g2.drawRoundRect((screenWidth - screenWidth/2) / 2 - 20, 20, screenWidth/2, 40, 15, 15);
+
+            // Vẽ chuỗi voiceline ở giữa khung
+            g2.setFont(smallFont);
+            g2.setColor(Color.WHITE);
+
+            // Tính toán vị trí của chuỗi text để căn giữa
+            FontMetrics fm = g2.getFontMetrics(smallFont);
+            int lineWidth = fm.stringWidth(voiceline[voiceIndex]);
+            int lineHeight = fm.getAscent(); // Chiều cao từ baseline đến đỉnh chữ
+            int lineX = (screenWidth - screenWidth/2) / 2 -20+ (screenWidth/2 - lineWidth) / 2; // Căn giữa theo chiều ngang
+            int lineY = 20 + (40 + lineHeight) / 2 - 5; // Căn giữa theo chiều dọc
+
+            // Vẽ chuỗi voiceline
+            g2.drawString(voiceline[voiceIndex], lineX, lineY);
             if(isDarken) drawTorchEffect(g2, gp.screenWidth/2, gp.screenHeight/2);
             if(!quests.isEmpty()) drawQuests(g2);
             drawItems(g2);  // Vẽ danh sách các item
@@ -567,7 +593,9 @@ public class Player extends Entity{
             case "Slime":
                 return new Slime(gp);
             case "NPC":
-                return new NPC(gp);
+                return new NPC(gp, "Te Quiero");
+            case "Amireux":
+                return new NPC(gp, "Amireux");
             case "Portal":
                 return new Portal(gp);
             case "ThrowingBottle":
@@ -592,12 +620,16 @@ public class Player extends Entity{
                 return new Executioner(gp);
             case "Tower":
                 return new Tower(gp);
-            case "Box":
-                return new CommonItem("Box", gp);
             case "Ghost":
                 return new Ghost(gp);
             case "GuildMaster":
                 return new GuildMaster(gp);
+            case "Box":
+                return new CommonItem("Box", gp);
+            case "Feather":
+                return new CommonItem("Feather", gp);
+            case "Artichoke":
+                return new CommonItem("Artichoke", gp);
             case "FinalBoss":
                 return new FinalBoss(gp);
             default:

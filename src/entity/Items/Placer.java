@@ -13,9 +13,10 @@ public class Placer extends Entity {
     Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20);
     int target = -1;
     boolean placed = false;
-    public Placer(GamePanel gp, String objname, int target, int worldX, int worldY) {
+    String item = null;
+    public Placer(GamePanel gp, String item, int target, int worldX, int worldY) {
         layer = -1;
-        objName = objname;
+        objName = "Placer";
         direction = "down";
         collision = true;
         this.isTrigger = true;
@@ -31,6 +32,7 @@ public class Placer extends Entity {
         else{
             done = false;
         }
+        this.item = item;
     }
     @Override
     public void update() {
@@ -44,7 +46,7 @@ public class Placer extends Entity {
         Vector<Integer> vector = gp.cCheck.checkObjectForObj(this);
         for(int i : vector){
             if(gp.obj.get(i) != null){
-                if(Objects.equals(gp.obj.get(i).objName, "Box")){
+                if(Objects.equals(gp.obj.get(i).objName, item)){
                     placed = true;
                     done = true;
                 }
@@ -61,18 +63,34 @@ public class Placer extends Entity {
     @Override
     public void drawUI(Graphics2D g2, GamePanel gp){
         if(placed) {
-            // Vẽ giá trị của target ở giữa ô
-            g2.setFont(bigFont); // Sử dụng font đã tải sẵn
-            g2.setColor(Color.PINK); // Màu chữ
-            String targetStr = String.valueOf(target); // Chuyển target thành chuỗi
-            FontMetrics metrics = g2.getFontMetrics(bigFont);
+            if(target <= 13) {
+                // Vẽ giá trị của target ở giữa ô
+                g2.setFont(bigFont); // Sử dụng font đã tải sẵn
+                g2.setColor(Color.PINK); // Màu chữ
+                String targetStr = String.valueOf(target); // Chuyển target thành chuỗi
+                FontMetrics metrics = g2.getFontMetrics(bigFont);
 
-            // Tính toán vị trí chính giữa ô
-            int textX = (worldX - gp.player.worldX + gp.player.screenX) + (gp.tileSize / 2) - (metrics.stringWidth(targetStr) / 2) + 10;
-            int textY = (worldY - gp.player.worldY + gp.player.screenY) + (gp.tileSize / 2) + (metrics.getAscent() / 2) - (metrics.getDescent() / 2) - 24;
+                // Tính toán vị trí chính giữa ô
+                int textX = (worldX - gp.player.worldX + gp.player.screenX) + (gp.tileSize / 2) - (metrics.stringWidth(targetStr) / 2) + 10;
+                int textY = (worldY - gp.player.worldY + gp.player.screenY) + (gp.tileSize / 2) + (metrics.getAscent() / 2) - (metrics.getDescent() / 2) - 24;
 
-            // Vẽ chuỗi
-            g2.drawString(targetStr, textX, textY);
+                // Vẽ chuỗi
+                g2.drawString(targetStr, textX, textY);
+            }
+            else {
+                // Vẽ giá trị của target ở giữa ô
+                g2.setFont(bigFont); // Sử dụng font đã tải sẵn
+                g2.setColor(Color.RED); // Màu chữ
+                String targetStr = "X"; // Chuyển target thành chuỗi
+                FontMetrics metrics = g2.getFontMetrics(bigFont);
+
+                // Tính toán vị trí chính giữa ô
+                int textX = (worldX - gp.player.worldX + gp.player.screenX) + (gp.tileSize / 2) - (metrics.stringWidth(targetStr) / 2) + 10;
+                int textY = (worldY - gp.player.worldY + gp.player.screenY) + (gp.tileSize / 2) + (metrics.getAscent() / 2) - (metrics.getDescent() / 2) - 24;
+
+                // Vẽ chuỗi
+                g2.drawString(targetStr, textX, textY);
+            }
         }
     }
 }

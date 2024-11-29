@@ -1,7 +1,9 @@
 package entity.npc;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Vector;
 
 import entity.Entity;
@@ -20,26 +22,40 @@ public class NPC extends Entity {
     Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 15);
     Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20);
 
-    public NPC(GamePanel gp) {
+    public NPC(GamePanel gp,String name) {
         layer = 0;
-        objName = "Te Quiero";
+        objName = name;
         collision = true;
         this.isTrigger = true;
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        setWords("sin cong sin bang 2 sin cos,cos cong cos bang tru 2 sin sin, end");
-        setWords("sin thi sin cos cos sin,cos thi cos cos sin sin dau tru,dia dia,end");
-        setWords("co day em bai the duc buoi sang, mot hai ba co len, end");
+        if(Objects.equals(objName, "Te Quiero")) {
+            setWords("sin cong sin bang 2 sin cos,cos cong cos bang tru 2 sin sin, end");
+            setWords("sin thi sin cos cos sin,cos thi cos cos sin sin dau tru,dia dia,end");
+            setWords("co day em bai the duc buoi sang, mot hai ba co len, end");
+        }
+        else if(Objects.equals(objName, "Amireux")){
+            setWords("Finally,you are here,I have not met you since that day,The Crow of War is waiting for you,end");
+        }
         gp.keyH.SpacePressed = false;
     }
 
     public void getNPCImage() {
-        String []s = new String[7];
-        for(int i = 0;i< 6;i++){
-            s[i] = "/npc/idle (" + (i+1) + ").png";
+        if(Objects.equals(objName, "Te Quiero")) {
+            String[] s = new String[7];
+            for (int i = 0; i < 6; i++) {
+                s[i] = "/npc/idle (" + (i + 1) + ").png";
+            }
+            importEachImage(s, true);
         }
-        importEachImage(s, true);
+        else if(Objects.equals(objName, "Amireux")){
+            String[] s = new String[9];
+            for (int i = 0; i < 9; i++) {
+                s[i] = "/npc/Idle/Idle" + (i+1) + ".png";
+            }
+            importEachImage(s, true);
+        }
     }
 
     @Override
@@ -67,8 +83,21 @@ public class NPC extends Entity {
 
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
+        if(Objects.equals(objName, "Te Quiero")) {
+            drawObjImage(g2, gp);
+        }
+        else if(Objects.equals(objName, "Amireux")){
+            screenX = worldX - gp.player.worldX + gp.player.screenX;
+            screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-        drawObjImage(g2, gp);
+            if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
+                    && worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
+                    && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
+                    && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+                BufferedImage image = animations.get(aniCount).get(spriteNum);
+                g2.drawImage(image, screenX - 12, screenY - 12, 48*3/2, 48*3/2, null);
+            }
+        }
         rectDraw(g2);
     }
     @Override
@@ -126,7 +155,7 @@ public class NPC extends Entity {
                 String currentDialogue = words.get(index).get(dialogueIndex);
 
                 // Khi đến đoạn hội thoại yêu cầu lựa chọn
-                if (dialogueIndex == 1 && !choiceMade && index == 0) {
+                if (dialogueIndex == 1 && !choiceMade && index == 0 && words.size() > 1) {
 
                     int choiceBoxWidth = (int)(dialogueBoxWidth * 2 / 3);
                     int choiceBoxHeight = (int)(dialogueBoxHeight * 3 / 4);
