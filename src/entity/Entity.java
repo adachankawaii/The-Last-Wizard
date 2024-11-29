@@ -30,7 +30,7 @@ public class Entity{
 
     public GamePanel gp;
     public KeyHandler keyH;
-
+    public boolean done = false;
     // Dành cho collision
     public boolean collisionOn;
     public boolean collision;

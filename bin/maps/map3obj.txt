@@ -65,7 +65,7 @@ ChestHB 1
 Hole1 1
 62,53
 Hole2 1
-41,34
+42,35
 Layer33 1
 79,73
 Treasure 1

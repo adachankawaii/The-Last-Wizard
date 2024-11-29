@@ -16,6 +16,7 @@ public class CommonItem extends Entity {
         getNPCImage(path);
         this.gp = gp;
         isItem = true;
+        layer = 0;
     }
 
     public void getNPCImage(String path) {
@@ -23,6 +24,8 @@ public class CommonItem extends Entity {
             case "Key":
                 path = "/item/key.png";
                 break;
+            case "Box":
+                path = "/item/Micro Chests/micro chest 01 BRONZE1.png";
             default:
                 break;
         }

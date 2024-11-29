@@ -1,5 +1,13 @@
 package entity.player;
 
+import entity.Items.CommonItem;
+import entity.Items.HPBottle;
+import entity.Items.ThrowingBottle;
+import entity.enemy.*;
+import entity.npc.GuildMaster;
+import entity.npc.NPC;
+import entity.npc.Portal;
+import entity.npc.ShopKeeper;
 import main.FontLoader;
 import main.KeyHandler;
 
@@ -302,7 +310,7 @@ public class Player extends Entity{
         Composite originalComposite = g2.getComposite();
 
         // Kích thước và bán kính của vòng sáng quanh người chơi
-        int radius = 150;  // Bán kính của vùng sáng
+        int radius = 300;  // Bán kính của vùng sáng
         float[] dist = {0.0f, 0.5f, 1.0f}; // Phân bố độ sáng (trong phạm vi 0-1)
         Color[] colors = {new Color(1f, 1f, 1f, 0f), new Color(0f, 0f, 0f, 0.6f), new Color(0f, 0f, 0f, 1f)};
 
@@ -356,8 +364,7 @@ public class Player extends Entity{
                         hasKey++;
                         System.out.println(objName + " " + hasKey);
                     }
-                    case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion" -> {
-                        if (items.size() < 8) {
+                    case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion","Box" -> {
                             boolean flag = false;
                             for (int j = 0; j < itemsCount.size(); j++) {
                                 if (items.get(j).objName.equals(gp.obj.get(i).objName)) {
@@ -368,10 +375,33 @@ public class Player extends Entity{
                                     break; // Thêm break để dừng vòng lặp sau khi tìm thấy item
                                 }
                             }
-                            if (!flag) {
+                        if (!flag) {
+                            if (items.size() < 8) {
+                                // Nếu kho đồ chưa đầy
                                 items.add(gp.obj.get(i));
                                 itemsCount.add(1); // Thêm mới số lượng item là 1
                                 pointer = items.size() - 1;
+                            } else {
+                                // Nếu kho đồ đầy
+                                // Lấy vật phẩm hiện tại tại con trỏ
+                                Entity replacedItem = items.get(pointer);
+
+                                // Giảm số lượng của vật phẩm bị thay thế
+                                for(int j = 0;j< itemsCount.get(pointer);j++){
+                                    Entity droppedItem = createObject(replacedItem.objName);
+                                    if (droppedItem != null) {
+                                        droppedItem.worldX = gp.player.worldX; // Vị trí người chơi
+                                        droppedItem.worldY = gp.player.worldY; // Vị trí người chơi
+                                        gp.obj.add(droppedItem); // Thêm vật phẩm bị rơi vào danh sách đối tượng trong game
+                                    }
+                                }
+
+                                // Thay thế vật phẩm bị thay thế bằng vật phẩm mới
+                                items.add(pointer, gp.obj.get(i));
+                                itemsCount.add(pointer, 1);
+
+                                // Tạo lại vật phẩm bị thay thế và rơi ra tại vị trí người chơi
+
                             }
                         }
                         itemTimer = 50;
@@ -532,5 +562,47 @@ public class Player extends Entity{
             }
         }
     }
-
+    public Entity createObject(String objectType) {
+        switch (objectType) {
+            case "Slime":
+                return new Slime(gp);
+            case "NPC":
+                return new NPC(gp);
+            case "Portal":
+                return new Portal(gp);
+            case "ThrowingBottle":
+                return new ThrowingBottle(gp);
+            case "HPBottle":
+                return new HPBottle("HPBottle",gp);
+            case "InvisiblePotion":
+                return new HPBottle("InvisiblePotion",gp);
+            case "Key":
+                return new CommonItem("Key", gp);
+            case "ShopKeeper":
+                return new ShopKeeper(gp);
+            case "Soldier":
+                return new Soldier(gp);
+            case "Knight":
+                return new Knight(gp);
+            case "MageSeeker":
+                return new Mage(gp);
+            case "Golem":
+                return new Golem(gp);
+            case "Executioner":
+                return new Executioner(gp);
+            case "Tower":
+                return new Tower(gp);
+            case "Box":
+                return new CommonItem("Box", gp);
+            case "Ghost":
+                return new Ghost(gp);
+            case "GuildMaster":
+                return new GuildMaster(gp);
+            case "FinalBoss":
+                return new FinalBoss(gp);
+            default:
+                System.out.println("Unknown object type: " + objectType);
+                return null;
+        }
+    }
 }
