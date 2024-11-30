@@ -514,7 +514,7 @@ public class GamePanel extends JPanel implements Runnable{
         else if(map == 3) {
             Rectangle[] zone = new Rectangle[]{new Rectangle(70 * tileSize, 33 * tileSize, 19 * tileSize, 33 * tileSize),
             new Rectangle(20 * tileSize, 44 * tileSize, 18 * tileSize, 45 * tileSize),
-            new Rectangle(20 * tileSize, 12 * tileSize, 19 * tileSize, 26 * tileSize)};
+            };
             boolean flag = false;
             CopyOnWriteArrayList<Entity> objList2 = new CopyOnWriteArrayList<>(obj);
             for(Entity object : objList2){
@@ -1130,6 +1130,16 @@ public class GamePanel extends JPanel implements Runnable{
                 return new HPBottle("InvisiblePotion",this);
             case "Key":
                 return new CommonItem("Key", this);
+            case "CrystalFragment1":
+                return new CommonItem("CrystalFragment1", this);
+            case "CrystalFragment2":
+                return new CommonItem("CrystalFragment2", this);
+            case "CrystalFragment3":
+                return new CommonItem("CrystalFragment3", this);
+            case "CrystalFragment":
+                return new CommonItem("CrystalFragment", this);
+            case "AetherCrystal":
+                return new CommonItem("AetherCrystal", this);
             case "ShopKeeper":
                 return new ShopKeeper(this);
             case "Soldier":
@@ -1156,6 +1166,10 @@ public class GamePanel extends JPanel implements Runnable{
                 return new CommonItem("Artichoke", this);
             case "FinalBoss":
                 return new FinalBoss(this);
+            case "Pike":
+                Pike p = new Pike(this);
+                p.pike = true;
+                return p;
             case "Bell":
                 return new Bell(this);
             default:

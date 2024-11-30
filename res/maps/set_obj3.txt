@@ -6,6 +6,12 @@ Ghost 1
 23,64
 Soldier 4
 87,51 35,61 25,61 83,51
+CrystalFragment1 1
+87,51
+CrystalFragment2 1
+85,51
+CrystalFragment3 1
+83,51
 MageSeeker 1
 30,61
 Knight 5

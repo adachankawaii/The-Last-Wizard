@@ -221,6 +221,16 @@ public class AssetSetter {
                 return new HPBottle("InvisiblePotion",gp);
             case "Key":
                 return new CommonItem("Key", gp);
+            case "CrystalFragment1":
+                return new CommonItem("CrystalFragment1", gp);
+            case "CrystalFragment2":
+                return new CommonItem("CrystalFragment2", gp);
+            case "CrystalFragment3":
+                return new CommonItem("CrystalFragment3", gp);
+            case "CrystalFragment":
+                return new CommonItem("CrystalFragment", gp);
+            case "AetherCrystal":
+                return new CommonItem("AetherCrystal", gp);
             case "ShopKeeper":
                 return new ShopKeeper(gp);
             case "Soldier":

@@ -147,6 +147,7 @@ public class Player extends Entity{
             itemY += itemSize + 10; // Thêm khoảng cách giữa các item
         }
     }
+    int delayE = 0;
     boolean isDead = false;
     public void update() {
         for (int i = itemsCount.size() - 1; i >= 0; i--) {
@@ -160,7 +161,7 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
-            System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
+            //System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
@@ -267,9 +268,10 @@ public class Player extends Entity{
                     money++;
                     gp.obj.remove(gp.obj.get(objIndex));
                 }
-                if (keyH.EPressed && close) {
+                if (keyH.EPressed && close && delayE <= 0) {
                     pickUpObj(objIndex);
                     close = false;
+                    delayE = 20;
                 }
             } else {
                 close = false;
@@ -281,7 +283,7 @@ public class Player extends Entity{
                 if (pointer != gp.keyH.i) itemTimer = 50;
                 pointer = gp.keyH.i;
             }
-
+            delayE --;
             timer--;
             itemTimer--;
         }
@@ -367,7 +369,7 @@ public class Player extends Entity{
                         hasKey++;
                         System.out.println(objName + " " + hasKey);
                     }
-                    case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion","Box","Artichoke","Feather","Bell" -> {
+                    case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion","Box","Artichoke","Feather","Bell","CrystalFragment1","CrystalFragment2","CrystalFragment3","CrystalFragment","AetherCrystal" -> {
                             boolean flag = false;
                             for (int j = 0; j < itemsCount.size(); j++) {
                                 if (items.get(j).objName.equals(gp.obj.get(i).objName)) {
@@ -385,6 +387,7 @@ public class Player extends Entity{
                                 itemsCount.add(1); // Thêm mới số lượng item là 1
                                 pointer = items.size() - 1;
                             } else {
+                                System.out.println("lf");
                                 // Nếu kho đồ đầy
                                 // Lấy vật phẩm hiện tại tại con trỏ
                                 Entity replacedItem = items.get(pointer);
@@ -398,7 +401,7 @@ public class Player extends Entity{
                                         gp.obj.add(droppedItem); // Thêm vật phẩm bị rơi vào danh sách đối tượng trong game
                                     }
                                 }
-
+                                itemsCount.set(pointer, 0);
                                 // Thay thế vật phẩm bị thay thế bằng vật phẩm mới
                                 items.add(pointer, gp.obj.get(i));
                                 itemsCount.add(pointer, 1);
@@ -407,6 +410,7 @@ public class Player extends Entity{
 
                             }
                         }
+                        combineFragments(gp);
                         itemTimer = 50;
                         gp.obj.remove(gp.obj.get(i));
                         gp.soundManager.play("got_sth");
@@ -418,6 +422,57 @@ public class Player extends Entity{
 
         }
     }
+    private void combineFragments(GamePanel gp) {
+        // Kiểm tra các mảnh ngọc trong kho
+        boolean hasFragment1 = false, hasFragment2 = false, hasFragment3 = false, hasCrystalFragment= false;
+
+        for (int j = 0; j < items.size(); j++) {
+            String objName = items.get(j).objName;
+            if (objName.equals("CrystalFragment1")) hasFragment1 = true;
+            if (objName.equals("CrystalFragment2")) hasFragment2 = true;
+            if (objName.equals("CrystalFragment3")) hasFragment3 = true;
+            if (objName.equals("CrystalFragment")) hasCrystalFragment= true;
+        }
+
+        // Kết hợp thành CrystalFragmentnếu đủ mảnh 1, 2, 3
+        if (hasFragment1 && hasFragment2) {
+            removeItems("CrystalFragment1", gp);
+            removeItems("CrystalFragment2", gp);
+            Entity f = createObject("CrystalFragment");
+            f.worldX = this.worldX;
+            f.worldY = this.worldY;
+            gp.obj.add(f);
+        }
+
+        // Kết hợp thành AetherCrystal nếu có CrystalFragmentvà bất kỳ mảnh nào trong 1, 2, 3
+        if (hasCrystalFragment&& (hasFragment3)) {
+            removeItems("CrystalFragment", gp);
+            removeItems("CrystalFragment3", gp);
+            Entity f = createObject("AetherCrystal");
+            f.worldX = this.worldX;
+            f.worldY = this.worldY;
+            gp.obj.add(f);
+        }
+    }
+    private void removeItems(String objName, GamePanel gp) {
+        for (int j = 0; j < items.size(); j++) {
+            if (items.get(j).objName.equals(objName)) {
+                // Nếu số lượng lớn hơn 1, giảm số lượng
+                if (itemsCount.get(j) > 1) {
+                    itemsCount.set(j, itemsCount.get(j) - 1);
+                } else {
+                    // Nếu số lượng bằng 1, xóa vật phẩm khỏi kho
+                    items.remove(j);
+                    itemsCount.remove(j);
+                }
+                return; // Thoát vòng lặp sau khi xử lý
+            }
+        }
+
+        // Nếu không tìm thấy vật phẩm
+        System.out.println("Item not found in inventory: " + objName);
+    }
+
     public boolean isDarken = false;
     public void draw(Graphics2D g2) {
         if(true) {
@@ -583,6 +638,16 @@ public class Player extends Entity{
                 return new HPBottle("InvisiblePotion",gp);
             case "Key":
                 return new CommonItem("Key", gp);
+            case "CrystalFragment1":
+                return new CommonItem("CrystalFragment1", gp);
+            case "CrystalFragment2":
+                return new CommonItem("CrystalFragment2", gp);
+            case "CrystalFragment3":
+                return new CommonItem("CrystalFragment3", gp);
+            case "CrystalFragment":
+                return new CommonItem("CrystalFragment", gp);
+            case "AetherCrystal":
+                return new CommonItem("AetherCrystal", gp);
             case "ShopKeeper":
                 return new ShopKeeper(gp);
             case "Soldier":

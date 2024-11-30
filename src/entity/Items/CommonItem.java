@@ -4,6 +4,7 @@ import entity.Entity;
 import main.GamePanel;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class CommonItem extends Entity {
     GamePanel gp;
@@ -21,20 +22,17 @@ public class CommonItem extends Entity {
 
     public void getNPCImage(String path) {
         switch (objName) {
-            case "Key":
-                path = "/item/key.png";
-                break;
-            case "Box":
-                path = "/item/Micro Chests/micro chest 01 BRONZE1.png";
-                break;
-            case "Feather":
-                path = "/item/Feather.png";
-                break;
-            case "Artichoke":
-                path = "/item/artichoke.png";
-                break;
-            default:
-                break;
+            case "Key" -> path = "/item/key.png";
+            case "Box" -> path = "/item/Micro Chests/micro chest 01 BRONZE1.png";
+            case "Feather" -> path = "/item/Feather.png";
+            case "Artichoke" -> path = "/item/artichoke.png";
+            case "CrystalFragment1" -> path = "/item/mảnh vỡ 1.png";
+            case "CrystalFragment2" -> path = "/item/mảnh vỡ 2.png";
+            case "CrystalFragment3" -> path = "/item/mảnh vỡ 3.png";
+            case "CrystalFragment" -> path = "/item/mất 1 còn 2.png";
+            case "AetherCrystal" -> path = "/item/viên lành lặn.png";
+            default -> {
+            }
         }
         // IMPORT NPC
         importAnImage(path, true);
@@ -48,6 +46,26 @@ public class CommonItem extends Entity {
             if(spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
             spriteCounter = 0;
         }
+        if(Objects.equals(objName, "CrystalFragment1")){
+            for(int i= 0;i<gp.player.items.size();i++){
+                if(gp.player.items.get(i).objName.equals("CrystalFragment1") || gp.player.items.get(i).objName.equals("CrystalFragment") || gp.player.items.get(i).objName.equals("AetherCrystal")){
+                    gp.obj.remove(this);
+                }
+            }
+        }if(Objects.equals(objName, "CrystalFragment2")){
+            for(int i= 0;i<gp.player.items.size();i++){
+                if(gp.player.items.get(i).objName.equals("CrystalFragment") || gp.player.items.get(i).objName.equals("AetherCrystal")){
+                    gp.obj.remove(this);
+                }
+            }
+        }if(Objects.equals(objName, "CrystalFragment3")){
+            for(int i= 0;i<gp.player.items.size();i++){
+                if(gp.player.items.get(i).objName.equals("AetherCrystal")){
+                    gp.obj.remove(this);
+                }
+            }
+        }
+
     }
 
     @Override
