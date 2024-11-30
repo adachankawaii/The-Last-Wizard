@@ -1,7 +1,7 @@
 Portal 1
 22,63
 Executioner 1
-27,17
+24,17
 Ghost 1
 23,64
 Soldier 4

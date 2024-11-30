@@ -4,3 +4,9 @@ Slime 1
 49,50
 Box 3
 87,24 87,25 87,26
+Amireux 1
+23,22
+Feather 1
+32,17
+Artichoke 1
+11,12

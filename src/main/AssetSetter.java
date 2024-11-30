@@ -82,7 +82,7 @@ public class AssetSetter {
                 Pole p = new Pole(gp,"Pole",tmp[i],63 + 5*i, 67);
                 gp.obj.add(p);
             }
-            int[][] horizontalWalls = {{23,41},{67,42},{67,55}};
+            int[][] horizontalWalls = {{23,44},{67,44},{67,55}};
             for (int[] pos : horizontalWalls) {
                 CombatWall c = new CombatWall(gp, 10, 1); // Width = 8, Height = 1
                 c.worldX = pos[0] * gp.tileSize;
@@ -116,7 +116,7 @@ public class AssetSetter {
             for (int[] pos : cornerPositions) {
                 int x = pos[0];
                 int y = pos[1];
-                Placer p = new Placer(gp, "Placer", count, x, y);
+                Placer p = new Placer(gp, "Box", count, x, y);
                 gp.obj.add(p);
                 count++;
             }
@@ -126,33 +126,39 @@ public class AssetSetter {
                 // Cạnh trên (trái sang phải, trừ góc)
                 int xTop = startX + i * interval;
                 int yTop = startY;
-                Placer pTop = new Placer(gp, "Placer", count, xTop, yTop);
+                Placer pTop = new Placer(gp, "Box", count, xTop, yTop);
                 gp.obj.add(pTop);
                 count++;
 
                 // Cạnh dưới (trái sang phải, trừ góc)
                 int xBottom = startX + i * interval;
                 int yBottom = startY + edgeLength;
-                Placer pBottom = new Placer(gp, "Placer", count, xBottom, yBottom);
+                Placer pBottom = new Placer(gp, "Box", count, xBottom, yBottom);
                 gp.obj.add(pBottom);
                 count++;
 
                 // Cạnh trái (trên xuống dưới, trừ góc)
                 int xLeft = startX;
                 int yLeft = startY + i * interval;
-                Placer pLeft = new Placer(gp, "Placer", count, xLeft, yLeft);
+                Placer pLeft = new Placer(gp, "Box", count, xLeft, yLeft);
                 gp.obj.add(pLeft);
                 count++;
 
                 // Cạnh phải (trên xuống dưới, trừ góc)
                 int xRight = startX + edgeLength;
                 int yRight = startY + i * interval;
-                Placer pRight = new Placer(gp, "Placer", count, xRight, yRight);
+                Placer pRight = new Placer(gp, "Box", count, xRight, yRight);
                 gp.obj.add(pRight);
                 count++;
             }
-            Placer pRight = new Placer(gp, "Placer", count, 87*gp.tileSize, 28*gp.tileSize);
+            Placer pRight = new Placer(gp, "Box", count, 87*gp.tileSize, 28*gp.tileSize);
             gp.obj.add(pRight);
+            Placer p = new Placer(gp, "Feather", 20, 29*gp.tileSize, 23*gp.tileSize);
+            p.objName = "Placer2";
+            gp.obj.add(p);
+            Placer e = new Placer(gp, "Artichoke", 20, 25*gp.tileSize, 23*gp.tileSize);
+            e.objName = "Placer2";
+            gp.obj.add(e);
 
         }
         else if(gp.map == 3) {
@@ -189,7 +195,9 @@ public class AssetSetter {
             case "Slime":
                 return new Slime(gp);
             case "NPC":
-                return new NPC(gp);
+                return new NPC(gp, "Te Quiero");
+            case "Amireux":
+                return new NPC(gp, "Amireux");
             case "Portal":
                 return new Portal(gp);
             case "ThrowingBottle":
@@ -220,8 +228,14 @@ public class AssetSetter {
                 return new GuildMaster(gp);
             case "Box":
                 return new CommonItem("Box", gp);
+            case "Feather":
+                return new CommonItem("Feather", gp);
+            case "Artichoke":
+                return new CommonItem("Artichoke", gp);
             case "FinalBoss":
                 return new FinalBoss(gp);
+            case "Bell":
+                return new Bell(gp);
             default:
                 System.out.println("Unknown object type: " + objectType);
                 return null;
