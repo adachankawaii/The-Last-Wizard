@@ -13,14 +13,38 @@ public class Sound {
         volumeControls = new HashMap<>();
 
         // Import các tệp âm thanh tại đây
-        addSound("background", "/sound/bgmusic.wav");
+        addSound("background", "/sound/combat11.wav");
         addSound("got_sth", "/sound/got_sth.wav");
         addSound("wand", "/sound/wand.wav");
         addSound("player_die", "/sound/player_die.wav");
         addSound("slime_die", "/sound/slime_die.wav");
+        setVolume("slime_die", -20.0f);
         addSound("pew","/sound/pew-laser-fx_C_minor.wav");
+        setVolume("pew", -20.0f);
         addSound("opening","/sound/OpeningBG.wav");
-        setVolume("opening", 10.0f);
+
+        addSound("map21", "/sound/map2.wav");
+        addSound("map22", "/sound/map22.wav");
+        addSound("combat", "/sound/combat.wav");
+        addSound("combat12", "/sound/combat12.wav");
+        addSound("combat3", "/sound/combat3.wav");
+        addSound("menu", "/sound/menu.wav");
+        addSound("combat4", "/sound/combat4.wav");
+        addSound("map4", "/sound/map4.wav");
+        setVolume("opening", 20.0f);
+    }
+    // Phương thức để tạm dừng âm thanh
+    public void pause(String name) {
+        Clip clip = soundEffects.get(name);
+        if (clip != null) {
+            if (clip.isRunning()) {
+                clip.stop(); // Dừng âm thanh
+                // Lưu lại vị trí hiện tại để khi tiếp tục có thể phát lại từ đó
+                clip.setFramePosition(clip.getFramePosition());
+            }
+        } else {
+            System.out.println("Sound not found: " + name);
+        }
     }
 
     // Phương thức để thêm âm thanh vào danh sách quản lý
@@ -62,7 +86,7 @@ public class Sound {
         }
     }
 
-    // Phương thức để lặp âm thanh
+    // Phương thức để lặp nhiều âm thanh
     public void loop(String name) {
         Clip clip = soundEffects.get(name);
         if (clip != null) {
@@ -71,6 +95,8 @@ public class Sound {
             System.out.println("Sound not found: " + name);
         }
     }
+
+
 
     // Phương thức để dừng âm thanh
     public void stop(String name) {

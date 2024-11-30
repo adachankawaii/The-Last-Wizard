@@ -136,6 +136,8 @@ public class Golem extends Entity {
             targetY = gp.player.worldY;
             if (distanceToTarget <= 10 * gp.tileSize && !done) {
                 c.on = true;
+                gp.soundManager.stop("background");
+                gp.soundManager.loop("combat12");
                  // Thêm tường vào danh sách đối tượng
                 startTalk = true;
                 done = true;
@@ -406,6 +408,8 @@ public class Golem extends Entity {
                     gp.obj.add(p);
                 }
                 dead = true;
+                gp.soundManager.stop("combat12");
+                gp.soundManager.loop("background");
             }
         }
     }
