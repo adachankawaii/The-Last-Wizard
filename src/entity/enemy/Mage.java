@@ -76,11 +76,6 @@ public class Mage extends Entity {
         }
         // Kiểm tra khoảng cách giữa root và enemy
         double distanceToRoot = Math.sqrt(Math.pow(rootX - worldX, 2) + Math.pow(rootY - worldY, 2));
-        if (!back && distanceToRoot > 25 * gp.tileSize) {
-            back = true;
-            HP = 8;
-            awake = false;
-        }
         if(back && distanceToRoot <= 0.5*gp.tileSize){
             back  =false;
         }
@@ -144,7 +139,7 @@ public class Mage extends Entity {
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (!collisionOn && delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 9 * gp.tileSize&& gp.player.alpha >= 1f && awake) {
+            if (!collisionOn && delayTime <= 0 && distanceToTarget >= 9 * gp.tileSize&& gp.player.alpha >= 1f && awake) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;

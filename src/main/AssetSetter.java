@@ -7,6 +7,8 @@ import entity.Items.*;
 import entity.enemy.*;
 import entity.npc.*;
 
+import javax.swing.*;
+
 public class AssetSetter {
     GamePanel gp;
 
@@ -162,7 +164,18 @@ public class AssetSetter {
 
         }
         else if(gp.map == 3) {
-
+            Placer p = new Placer(gp, "Box",20, 29* gp.tileSize, 46*gp.tileSize);
+            gp.obj.add(p);
+            CommonItem box = new CommonItem("Box", gp);
+            box.worldX = 86*gp.tileSize;
+            box.worldY = 86*gp.tileSize;
+            gp.obj.add(box);
+            CombatWall wall = new CombatWall(gp, 10, 1);
+            wall.objName = "bossWall";
+            wall.worldX = 27*gp.tileSize;
+            wall.worldY = 42*gp.tileSize;
+            wall.on = true;
+            gp.obj.add(wall);
             int[][] horizontalWalls = {{73, 69}};
             for (int[] pos : horizontalWalls) {
                 CombatWall c = new CombatWall(gp, 4, 1); // Width = 4, Height = 1
@@ -234,6 +247,10 @@ public class AssetSetter {
                 return new CommonItem("Artichoke", gp);
             case "FinalBoss":
                 return new FinalBoss(gp);
+            case "Pike":
+                Pike p = new Pike(gp);
+                p.pike = true;
+                return p;
             case "Bell":
                 return new Bell(gp);
             default:

@@ -128,7 +128,7 @@ public class Ghost extends Entity{
             collisionOn = false; // Đặt lại biến để tránh va chạm lặp lại
         }*/
         if(!back) {
-            if (delayTime <= 0 && distanceToTarget <= 15 * gp.tileSize && distanceToTarget >= 2 * gp.tileSize && !isJumping && gp.player.alpha >= 1f && awake) {
+            if (delayTime <= 0 && distanceToTarget >= 2 * gp.tileSize && !isJumping && gp.player.alpha >= 1f && awake) {
                 objName = "Slime";
                 switch (direction) {
                     case "up":

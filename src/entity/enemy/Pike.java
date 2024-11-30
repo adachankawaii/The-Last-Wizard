@@ -10,6 +10,7 @@ import java.awt.*;
 public class Pike extends Entity{
     int timer = 0;
     public boolean canDeath = false;
+    public boolean pike = false;
     public Pike(GamePanel gp){
         layer = 0;
         objName = "enemyBullet";
@@ -30,7 +31,7 @@ public class Pike extends Entity{
             if (spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
             spriteCounter = 0;
         }
-        spriteCounter++;
+        if(!pike) spriteCounter++;
         timer++;
         if(timer >= 300 && canDeath){
             gp.obj.remove(this);
@@ -38,7 +39,7 @@ public class Pike extends Entity{
     }
     @Override
     public void draw(Graphics2D g2, GamePanel gp){
-        drawObjImage(g2, gp);
+        if(!pike) drawObjImage(g2, gp);
         rectDraw(g2);
     }
 

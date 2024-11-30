@@ -40,7 +40,7 @@ public class Executioner extends Entity {
         objName = "Golem";
         collision = true;
         direction = "down";
-        HP = 75;
+        HP = 5;
         speed = 4;
         isTrigger = true;
         this.gp = gp;
@@ -175,6 +175,7 @@ public class Executioner extends Entity {
                 c.get(i).on = false;
             }
             collision = false;
+            gp.player.lineOn = true;
         }
     }
     private void selectNextMoveSet(int bound) {

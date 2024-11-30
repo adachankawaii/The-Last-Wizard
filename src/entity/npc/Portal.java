@@ -183,6 +183,7 @@ public class Portal extends Entity {
                                 gp.fadingIn = true;
                                 index = 3;
                                 gp.map++;
+                                gp.dialogueIndex = 0;
                                 gp.nextMap();
                             }
                         }

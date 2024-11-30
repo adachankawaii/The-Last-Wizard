@@ -3,9 +3,7 @@ package main;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 // import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.imageio.ImageIO;
@@ -90,7 +88,7 @@ public class GamePanel extends JPanel implements Runnable{
     // TẠO SET OBJECT
     AssetSetter aSetter = new AssetSetter(this);
     ObjectSetter oSetter = new ObjectSetter(this);
-
+    String [][][] voice = {{{"starter1","dm doi"}, {"zone1"}, {"outzone1"}, {"zone2"}, {"outzone2"}},{{"zone1"}, {"zone2"}, {"zone3"}, {"zone4"}},{{"starter3"}},{{"starter4"}}};
     // MOUSE
     public MouseHandler mouseH = new MouseHandler(this);
     public int mouseX = 0, mouseY = 0;
@@ -173,6 +171,8 @@ public class GamePanel extends JPanel implements Runnable{
         reloadTime = 0;
         player.kills= 0;
         player.money = 5;
+        dialogueIndex = 0;
+        visited.clear();
         soundManager.setVolumeAll(-20.0f);
         soundManager.setVolume("background", -30.0f);
         soundManager.play("background");
@@ -222,6 +222,8 @@ public class GamePanel extends JPanel implements Runnable{
         tileMng = new TileManager(this);// Gọi lại setup ban đầu của game
         loadingTime = 100;
         isSpawn = false;
+        dialogueIndex = 0;
+        visited.clear();
         repaint();
         saveGame();
     }
@@ -232,8 +234,10 @@ public class GamePanel extends JPanel implements Runnable{
     private Rectangle menuButton;
 
     // Khởi tạo vị trí và kích thước nút
-    int current = -1;
+    Vector<Integer> visited = new Vector<>();
+    boolean startTalk = false;
     boolean inCombat = false;
+    int index = 0;
     public void update() {
         if (gameOver) {
             if(keyH.RPressed){
@@ -275,15 +279,17 @@ public class GamePanel extends JPanel implements Runnable{
         HPbar.update(player.HP);
         EnergyBar.update(player.Energy);
         if(map == 1){
-            Rectangle[] zone = new Rectangle[]{new Rectangle(41 * tileSize, 70 * tileSize, 30 * tileSize, 10 * tileSize), new Rectangle(10*tileSize, 20*tileSize, 28*tileSize, 19*tileSize), new Rectangle(10*tileSize, 40*tileSize, 28*tileSize, 10*tileSize)};
+            Rectangle[] zone = new Rectangle[]{new Rectangle(41 * tileSize, 70 * tileSize, 30 * tileSize, 10 * tileSize), new Rectangle(10*tileSize, 40*tileSize, 28*tileSize, 10*tileSize), new Rectangle(10*tileSize, 20*tileSize, 28*tileSize, 19*tileSize)};
             boolean flag = false;
 
             for(int i = 0;i<zone.length;i++){
 
                 if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f) {
-                    if(i != current){
-                        if(player.voiceline.length > player.voiceIndex + 1) player.voiceIndex++;
-                        current = i;
+                    if(!visited.contains(i)){
+                        visited.add(i);
+                        startTalk = true;
+                        player.combat = false;
+                        dialogueIndex = i+1;
                     }
                     inCombat = true;
                     CopyOnWriteArrayList<Entity> objList1 = new CopyOnWriteArrayList<>(obj);
@@ -294,7 +300,7 @@ public class GamePanel extends JPanel implements Runnable{
                         }
                     }
                     // Player đã vào vùng, bật trạng thái `on` cho các CombatWall
-                    if (i == 1 && !isSpawn) {
+                    if (i == 2 && !isSpawn) {
 
                         // Danh sách tạm để thêm lính mới
                         ArrayList<Entity> tempKnights = new ArrayList<>();
@@ -324,7 +330,7 @@ public class GamePanel extends JPanel implements Runnable{
                         obj.addAll(tempKnights);
                         isSpawn = true; // Đảm bảo chỉ spawn một lần
                     }
-                    if (flag) {
+                    if (flag && player.combat) {
                         // Sử dụng CopyOnWriteArrayList để tránh ConcurrentModificationException
                         CopyOnWriteArrayList<Entity> objList = new CopyOnWriteArrayList<>(obj);
 
@@ -356,6 +362,12 @@ public class GamePanel extends JPanel implements Runnable{
             boolean flag = false;
             for(int i = 0;i<zone.length;i++){
                 if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f){
+                    if(!visited.contains(i)){
+                        visited.add(i);
+                        startTalk = true;
+                        player.combat = false;
+                        dialogueIndex = i;
+                    }
                     System.out.println(i);
                     if(i == 0){
                         player.isDarken = true;
@@ -479,9 +491,20 @@ public class GamePanel extends JPanel implements Runnable{
         else if(map == 3) {
             Rectangle[] zone = new Rectangle[]{new Rectangle(70 * tileSize, 33 * tileSize, 19 * tileSize, 33 * tileSize),
             new Rectangle(20 * tileSize, 44 * tileSize, 18 * tileSize, 45 * tileSize),
-            new Rectangle(20 * tileSize, 12 * tileSize, 19 * tileSize, 26 * tileSize)};
+            };
             boolean flag = false;
-
+            CopyOnWriteArrayList<Entity> objList2 = new CopyOnWriteArrayList<>(obj);
+            for(Entity object : objList2){
+                if(object != null && Objects.equals(object.objName, "Placer") && object.done){
+                    for(int i = 0;i<obj.size();i++){
+                        if(objList2.get(i) != null && Objects.equals(objList2.get(i).objName, "bossWall")){
+                            obj.get(i).on = false;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
             for(int i = 0; i < zone.length;i++){
 
                 if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f) {
@@ -670,6 +693,8 @@ public class GamePanel extends JPanel implements Runnable{
             player.itemsCount.clear();
             player.quests.clear();
             player.alpha = 1;
+            dialogueIndex = 0;
+            visited.clear();
             for(String item : saveData.items){
                 player.items.add(createObject(item));
             }
@@ -956,6 +981,7 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     int timer = 0;
+    public int dialogueIndex  =0;
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -993,7 +1019,7 @@ public class GamePanel extends JPanel implements Runnable{
                     fadingIn = true;
                     setupGame();
                     loadingTime = -10;
-                    player.combat = true;
+
                 }
             }
             else if (fadingIn) {
@@ -1001,9 +1027,45 @@ public class GamePanel extends JPanel implements Runnable{
                 draw(g2); // Vẽ màn hình game
                 fadeAlpha += 0.02f; // Giảm dần độ trong suốt
                 if (fadeAlpha >= 1.0) {
+                    startTalk = true;
+                    player.combat = false;
+                    keyH.SpacePressed = false;
+                    timer = 20;
                     fadeAlpha = 0;
                     fadingIn = false; // Kết thúc hiệu ứng chuyển cảnh
                 }
+            }else if (!player.combat && startTalk) {
+                draw(g2);
+                int dialogueBoxHeight = tileSize * 2;
+                int dialogueBoxY = screenHeight - dialogueBoxHeight - 10;
+                int dialogueBoxX = 20;
+                int dialogueBoxWidth = screenWidth - 40;
+
+                int textX = dialogueBoxX + 20;
+                int textY = dialogueBoxY + 40;
+                // Vẽ khung hội thoại
+                g2.setColor(new Color(0, 0, 0, 180));
+                g2.fillRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
+                g2.setColor(Color.WHITE);
+                g2.drawRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
+                String currentDialogue = voice[map - 1][dialogueIndex][index];
+
+                // Khi đến đoạn hội thoại yêu cầu lựa chọn
+
+                if ((keyH.SpacePressed || mouseH.isClicked) && index < voice[map-1][dialogueIndex].length && timer <= 0) {
+                    index++; // Chuyển sang đoạn tiếp theo
+                    keyH.SpacePressed = false;
+                    timer = 20;
+                }
+                if (index >= voice[map-1][dialogueIndex].length) {
+                    startTalk = false;
+                    player.combat = true;
+                    keyH.SpacePressed = false;
+                    index = 0;
+                }
+                g2.setFont(smallFont);
+                g2.setColor(Color.WHITE);
+                g2.drawString(currentDialogue, textX, textY);
             } else if (gameOver) {
                 // Hiển thị màn hình Game Over
                 soundManager.muteAll();

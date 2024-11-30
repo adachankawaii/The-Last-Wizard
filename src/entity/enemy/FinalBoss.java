@@ -39,7 +39,7 @@ public class FinalBoss extends Entity {
         objName = "Fami";
         collision = true;
         direction = "down";
-        HP = 75;
+        HP = 5;
         speed = 4;
         isTrigger = true;
         this.gp = gp;
@@ -173,7 +173,7 @@ public class FinalBoss extends Entity {
                 if(phaseCount >= 400){
                     HP++;
                     if(HP >= 75){
-                        HP = 75;
+                        HP = 5;
                         int bulletCount = 18; // Ví dụ: 5 viên đạn
                         double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
 

@@ -94,6 +94,7 @@ public class Golem extends Entity {
         }
         timer--;
         if(!dead){
+            gp.player.lineOn = false;
             if (rootY == -1) {
                 rootY = this.worldY;
                 rootX = this.worldX;
@@ -167,7 +168,7 @@ public class Golem extends Entity {
         else {
             aniCount = 3;
             c.on = false;
-
+            gp.player.lineOn = true;
         }
     }
 

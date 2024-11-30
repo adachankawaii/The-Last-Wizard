@@ -48,8 +48,8 @@ public class Player extends Entity{
     Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 15);
     Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20);
     public boolean call = false;
-    public String[] voiceline = {"DM CUOC DOI","line 1", "line 2"};
-    public int voiceIndex = 0;
+    public boolean lineOn = true;
+
     public Player(GamePanel gp, KeyHandler keyH) {
         if(gp.map == 1){
             locX = 18;
@@ -160,7 +160,7 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
-            // System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
+            System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
@@ -431,29 +431,6 @@ public class Player extends Entity{
     public void drawUI(Graphics2D g2, GamePanel gp){
         if(combat && !isDead){
             // Kích thước và vị trí của khung
-            int screenWidth = gp.screenWidth;
-
-            // Vẽ nền khung (màu đen, độ trong suốt 180)
-            g2.setColor(new Color(0, 0, 0, 180));
-            g2.fillRoundRect((screenWidth - screenWidth/2) / 2 - 20, 20, screenWidth/2, 40, 15, 15);
-
-            // Vẽ viền khung (màu trắng)
-            g2.setColor(Color.WHITE);
-            g2.drawRoundRect((screenWidth - screenWidth/2) / 2 - 20, 20, screenWidth/2, 40, 15, 15);
-
-            // Vẽ chuỗi voiceline ở giữa khung
-            g2.setFont(smallFont);
-            g2.setColor(Color.WHITE);
-
-            // Tính toán vị trí của chuỗi text để căn giữa
-            FontMetrics fm = g2.getFontMetrics(smallFont);
-            int lineWidth = fm.stringWidth(voiceline[voiceIndex]);
-            int lineHeight = fm.getAscent(); // Chiều cao từ baseline đến đỉnh chữ
-            int lineX = (screenWidth - screenWidth/2) / 2 -20+ (screenWidth/2 - lineWidth) / 2; // Căn giữa theo chiều ngang
-            int lineY = 20 + (40 + lineHeight) / 2 - 5; // Căn giữa theo chiều dọc
-
-            // Vẽ chuỗi voiceline
-            g2.drawString(voiceline[voiceIndex], lineX, lineY);
             if(isDarken) drawTorchEffect(g2, gp.screenWidth/2, gp.screenHeight/2);
             if(!quests.isEmpty()) drawQuests(g2);
             drawItems(g2);  // Vẽ danh sách các item
