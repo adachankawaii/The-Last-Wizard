@@ -142,6 +142,8 @@ public class Executioner extends Entity {
                     c.get(i).on = true;
                     gp.obj.add(c.get(i)); // Thêm tường vào danh sách đối tượng
                 }
+                gp.soundManager.stop("map22");
+                gp.soundManager.loop("combat3");
                 startTalk = true;
                 done = true;
             }
@@ -573,6 +575,8 @@ public class Executioner extends Entity {
             isHurt = true;
             if(HP <= 0){
                 dead = true;
+                gp.soundManager.stop("combat3");
+                gp.soundManager.loop("map22");
             }
         }
     }

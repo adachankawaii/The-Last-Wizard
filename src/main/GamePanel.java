@@ -105,6 +105,7 @@ public class GamePanel extends JPanel implements Runnable{
         tileMng = new TileManager(this);
     }
 
+    String bgMusic;
     // CHẠY GAME
     @Override
     public void run() {
@@ -140,6 +141,7 @@ public class GamePanel extends JPanel implements Runnable{
             // }
         }
     }
+
     public void resetGame() {
         if(map == 1){
             player.locX = 18;
@@ -150,7 +152,7 @@ public class GamePanel extends JPanel implements Runnable{
             player.locY = 57;
         }
         else if(map == 3){
-            player.locX = 17;
+            player.locX = 15;
             player.locY = 67;
         }
         else if(map == 4){
@@ -171,8 +173,6 @@ public class GamePanel extends JPanel implements Runnable{
         reloadTime = 0;
         player.kills= 0;
         player.money = 5;
-        dialogueIndex = 0;
-        visited.clear();
         soundManager.setVolumeAll(-20.0f);
         soundManager.setVolume("background", -30.0f);
         soundManager.play("background");
@@ -194,7 +194,7 @@ public class GamePanel extends JPanel implements Runnable{
             player.locY = 57;
         }
         else if(map == 3){
-            player.locX = 17;
+            player.locX = 15;
             player.locY = 67;
         }
         else if(map == 4){
@@ -215,10 +215,35 @@ public class GamePanel extends JPanel implements Runnable{
         reloadTime = 0;
         player.call = false;
         player.kills= 0;
-        soundManager.setVolumeAll(-20.0f);
-        soundManager.setVolume("background", -30.0f);
-        soundManager.play("background");
-        soundManager.loop("background");
+        switch (map) {
+            case 1:
+                soundManager.setVolume("background", -10.0f);
+                soundManager.play("background");
+                soundManager.loop("background");
+                break;
+            case 2:
+                soundManager.stop("background");
+                soundManager.setVolume("map21", -10.0f);
+                soundManager.play("map21");
+                soundManager.loop("map21");
+                break;
+            case 3:
+                soundManager.stop("map21");
+                soundManager.setVolume("map22", -10.0f);
+                soundManager.play("map22");
+                soundManager.loop("map22");
+                break;
+            case 4:
+                soundManager.stop("map22");
+                soundManager.setVolume("map4", -10.0f);
+                soundManager.play("map4");
+                soundManager.loop("map4");
+                break;
+            default:
+                // Xử lý trường hợp mặc định nếu map không phải là 1, 2, 3, hay 4
+                break;
+        }
+
         tileMng = new TileManager(this);// Gọi lại setup ban đầu của game
         loadingTime = 100;
         isSpawn = false;
@@ -257,15 +282,15 @@ public class GamePanel extends JPanel implements Runnable{
         if (pauseMenu) {
             return; // Nếu đang pause hoặc game over, không cập nhật game
         }
-        if (keyH.volumeUpPressed) {
-            soundManager.increaseVolume("background"); // Tăng âm lượng của nhạc nền
-            keyH.volumeUpPressed = false;
-        }
+        // if (keyH.volumeUpPressed) {
+        //     soundManager.increaseVolume("background"); // Tăng âm lượng của nhạc nền
+        //     keyH.volumeUpPressed = false;
+        // }
 
-        if (keyH.volumeDownPressed) {
-            soundManager.decreaseVolume("background"); // Giảm âm lượng của nhạc nền
-            keyH.volumeDownPressed = false;
-        }
+        // if (keyH.volumeDownPressed) {
+        //     soundManager.decreaseVolume("background"); // Giảm âm lượng của nhạc nền
+        //     keyH.volumeDownPressed = false;
+        // }
 
         player.update();
         for (int i = 0; i < obj.size(); i++) {
@@ -351,9 +376,7 @@ public class GamePanel extends JPanel implements Runnable{
                                 object.on = false;
                             }
                         }
-
                     }
-
                 }
 
             }
@@ -491,7 +514,7 @@ public class GamePanel extends JPanel implements Runnable{
         else if(map == 3) {
             Rectangle[] zone = new Rectangle[]{new Rectangle(70 * tileSize, 33 * tileSize, 19 * tileSize, 33 * tileSize),
             new Rectangle(20 * tileSize, 44 * tileSize, 18 * tileSize, 45 * tileSize),
-            };
+            new Rectangle(20 * tileSize, 12 * tileSize, 19 * tileSize, 26 * tileSize)};
             boolean flag = false;
             CopyOnWriteArrayList<Entity> objList2 = new CopyOnWriteArrayList<>(obj);
             for(Entity object : objList2){
@@ -576,6 +599,7 @@ public class GamePanel extends JPanel implements Runnable{
         if (startMenu) { // Kiểm tra nếu đang ở trạng thái Start Menu
             if (mouseInfo == 1 && selectedChoice != -1) { // Nếu nhấn chuột trái
                 if(selectedChoice % 4 == 0){
+                    soundManager.stop("menu");
                     clearGameData();
                     newGameSlideShow = true;
                     loadSlideImages();
@@ -585,6 +609,7 @@ public class GamePanel extends JPanel implements Runnable{
                     soundManager.loop("opening");
                 }
                 else if(selectedChoice % 4 == 1){
+                    soundManager.stop("menu");
                     loadGame();
                     loadingTime = 100;
                 }
@@ -678,7 +703,7 @@ public class GamePanel extends JPanel implements Runnable{
                 player.locY = 57;
             }
             else if(map == 3){
-                player.locX = 17;
+                player.locX = 15;
                 player.locY = 67;
             }
             else if(map == 4){
@@ -990,6 +1015,7 @@ public class GamePanel extends JPanel implements Runnable{
         if (introPhase) {
             drawIntro(g2); // Vẽ phần giới thiệu
         } else if (startMenu) {
+            soundManager.loop("menu");
             drawStartMenu(g2); // Vẽ màn hình Start Menu
         } else if (newGameSlideShow) {
             drawSlideShow(g2); // Hàm vẽ slideshow

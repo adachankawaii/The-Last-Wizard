@@ -123,6 +123,8 @@ public class FinalBoss extends Entity {
             targetX = gp.player.worldX;
             targetY = gp.player.worldY;
             if (distanceToTarget <= 10 * gp.tileSize && !done) {
+                gp.soundManager.stop("map4");
+                gp.soundManager.loop("combat4");
                 startTalk = true;
                 done = true;
             }
@@ -525,7 +527,11 @@ public class FinalBoss extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                if(phase == 2 && !phase2) dead = true;
+                if(phase == 2 && !phase2) {
+                dead = true;
+                gp.soundManager.stop("combat4");
+                gp.soundManager.loop("map4");
+                }
                 else {
                     phase = 2;
                     phase2 = true;
