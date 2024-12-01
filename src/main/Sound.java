@@ -14,24 +14,32 @@ public class Sound {
 
         // Import các tệp âm thanh tại đây
         addSound("background", "/sound/combat11.wav");
+        setVolume("background", 30.0f);
         addSound("got_sth", "/sound/got_sth.wav");
+        setVolume("got_sth", -20.0f);      
         addSound("wand", "/sound/wand.wav");
+        setVolume("wand", -20.0f);
         addSound("player_die", "/sound/player_die.wav");
         addSound("slime_die", "/sound/slime_die.wav");
         setVolume("slime_die", -20.0f);
         addSound("pew","/sound/pew-laser-fx_C_minor.wav");
         setVolume("pew", -20.0f);
         addSound("opening","/sound/OpeningBG.wav");
-
+        setVolume("opening", -10.0f);
+        addSound("hurt", "/sound/hurt3.wav");
+        setVolume("hurt", -30.0f);      
         addSound("map21", "/sound/map2.wav");
         addSound("map22", "/sound/map22.wav");
         addSound("combat", "/sound/combat.wav");
         addSound("combat12", "/sound/combat12.wav");
+        setVolume("combat12", -10.0f);
         addSound("combat3", "/sound/combat3.wav");
+        setVolume("combat3", -15.0f);
         addSound("menu", "/sound/menu.wav");
+        setVolume("menu", 20.0f);
         addSound("combat4", "/sound/combat4.wav");
+        setVolume("combat4", -15.0f);
         addSound("map4", "/sound/map4.wav");
-        setVolume("opening", 20.0f);
     }
     // Phương thức để tạm dừng âm thanh
     public void pause(String name) {
@@ -95,8 +103,6 @@ public class Sound {
             System.out.println("Sound not found: " + name);
         }
     }
-
-
 
     // Phương thức để dừng âm thanh
     public void stop(String name) {

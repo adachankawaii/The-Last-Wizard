@@ -15,7 +15,7 @@ import entity.bullet.ThrowingObj;
 import entity.effect.Effect;
 import entity.npc.CombatWall;
 import entity.npc.Portal;
-import entity.player.Quest;
+// import entity.player.Quest;
 import main.FontLoader;
 import main.GamePanel;
 

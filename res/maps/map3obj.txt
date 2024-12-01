@@ -26,8 +26,6 @@ Layer34 1
 89,82
 Layer35 1
 69,90
-Stair 1
-8,66
 Sewer 2
 33,83 22,83
 Layer1 1
@@ -113,3 +111,5 @@ ChestHA 1
 70,88
 ChestHC 1
 75,88
+Stair 1
+7,66

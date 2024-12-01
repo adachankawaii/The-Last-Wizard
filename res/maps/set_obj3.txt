@@ -5,7 +5,7 @@ Executioner 1
 Ghost 1
 23,64
 Soldier 4
-87,51 35,61 25,61 83,51
+87,51 35,65 35,72 83,51
 CrystalFragment1 1
 87,51
 CrystalFragment2 1
@@ -13,9 +13,9 @@ CrystalFragment2 1
 CrystalFragment3 1
 83,51
 MageSeeker 1
-30,61
+31,68
 Knight 5
-87,62 35,71 25,71 30,71 83,62
+87,62 35,55 25,55 30,55 83,62
 Tower 2
 56,43 61,63
 Soldier 2

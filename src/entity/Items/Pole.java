@@ -1,9 +1,9 @@
 package entity.Items;
 
 import entity.Entity;
-import entity.bullet.Bullet;
-import entity.effect.Effect;
-import entity.npc.Portal;
+// import entity.bullet.Bullet;
+// import entity.effect.Effect;
+// import entity.npc.Portal;
 import main.FontLoader;
 import main.GamePanel;
 
@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Random;
+// import java.util.Random;
 
 public class Pole extends Entity {
     int count = 1;

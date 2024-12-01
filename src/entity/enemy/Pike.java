@@ -17,7 +17,7 @@ public class Pike extends Entity{
         collision = true;
         this.isTrigger = true;
         this.gp = gp;
-        rectGet(8, 8, gp.tileSize, gp.tileSize);
+        rectGet(8, 8, 28, 28);
         getNPCImage();
         direction = "down";
     }
