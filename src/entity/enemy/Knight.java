@@ -40,9 +40,16 @@ public class Knight extends Entity {
         isEnemy = true;
     }
     public void getImage() {
-        importAndSlice("/enemy/Soldier/Swordsman_Idle.png", 3, 0,0);
-        importAndSlice("/enemy/Soldier/Swordsman_Walk.png", 4, 0,0);
-        importAndSlice("/enemy/Soldier/sprite_sheet (1).png", 9, 0,0);
+        if(gp.map == 1) {
+            importAndSlice("/enemy/Soldier/Swordsman_Idle.png", 3, 0,0);
+            importAndSlice("/enemy/Soldier/Swordsman_Walk.png", 4, 0,0);
+            importAndSlice("/enemy/Soldier/sprite_sheet (1).png", 9, 0,0);
+        }
+        else if(gp.map == 3) {
+            importAndSlice("/enemy/Slime/Slime2_Idle.png", 6, 0,0);
+            importAndSlice("/enemy/Slime/Slime2_Walk.png", 8, 0,0);
+            importAndSlice("/enemy/Slime/Slime2_Attack.png", 8, 0,0);           
+        }
     }
     boolean isSlash = false;
     @Override

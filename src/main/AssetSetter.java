@@ -7,7 +7,7 @@ import entity.Items.*;
 import entity.enemy.*;
 import entity.npc.*;
 
-import javax.swing.*;
+// import javax.swing.*;
 
 public class AssetSetter {
     GamePanel gp;

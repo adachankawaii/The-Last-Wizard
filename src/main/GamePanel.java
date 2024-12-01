@@ -172,10 +172,34 @@ public class GamePanel extends JPanel implements Runnable{
         reloadTime = 0;
         player.kills= 0;
         player.money = 5;
-        soundManager.setVolumeAll(-20.0f);
-        soundManager.setVolume("background", -30.0f);
-        soundManager.play("background");
-        soundManager.loop("background");
+        switch (map) {
+            case 1:
+                soundManager.setVolume("background", -10.0f);
+                soundManager.play("background");
+                soundManager.loop("background");
+                break;
+            case 2:
+                soundManager.stop("background");
+                soundManager.setVolume("map21", -10.0f);
+                soundManager.play("map21");
+                soundManager.loop("map21");
+                break;
+            case 3:
+                soundManager.stop("map21");
+                soundManager.setVolume("map22", -10.0f);
+                soundManager.play("map22");
+                soundManager.loop("map22");
+                break;
+            case 4:
+                soundManager.stop("map22");
+                soundManager.setVolume("map4", -10.0f);
+                soundManager.play("map4");
+                soundManager.loop("map4");
+                break;
+            default:
+                // Xử lý trường hợp mặc định nếu map không phải là 1, 2, 3, hay 4
+                break;
+        }
         tileMng = new TileManager(this);
         loadGame();
         player.HP = 10;
@@ -390,7 +414,7 @@ public class GamePanel extends JPanel implements Runnable{
                         player.combat = false;
                         dialogueIndex = i;
                     }
-                    System.out.println(i);
+                    // System.out.println(i);
                     if(i == 0){
                         player.isDarken = true;
                     }
@@ -522,8 +546,11 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
         else if(map == 3) {
-            Rectangle[] zone = new Rectangle[]{new Rectangle(70 * tileSize, 33 * tileSize, 19 * tileSize, 33 * tileSize),
-            new Rectangle(20 * tileSize, 44 * tileSize, 18 * tileSize, 45 * tileSize),
+            Rectangle[] zone = new Rectangle[]{new Rectangle(72 * tileSize, 34 * tileSize, 16 * tileSize, 10 * tileSize),
+            new Rectangle(72 * tileSize, 45 * tileSize, 16 * tileSize, 10 * tileSize),
+            new Rectangle(72 * tileSize, 56 * tileSize, 16 * tileSize, 10 * tileSize),
+            new Rectangle(23 * tileSize, 44 * tileSize, 12 * tileSize, 14 * tileSize), 
+            new Rectangle(23 * tileSize, 62 * tileSize, 12 * tileSize, 26 * tileSize)
             };
             boolean flag = false;
 
@@ -582,6 +609,23 @@ public class GamePanel extends JPanel implements Runnable{
             // Dừng nhạc nền khi người chơi chết
             soundManager.play("player_die"); // Phát âm thanh khi người chơi chết
             gameOver = true;
+            switch (map) {
+                case 1:
+                    soundManager.stop("background");
+                    break;
+                case 2:
+                    soundManager.stop("map21");
+                    break;
+                case 3:
+                    soundManager.stop("map22");
+                    break;
+                case 4:
+                    soundManager.stop("map4");
+                    break;
+                default:
+                    // Xử lý trường hợp mặc định nếu map không phải là 1, 2, 3, hay 4
+                    break;
+            }
         }
     }
     boolean isSpawn = false;

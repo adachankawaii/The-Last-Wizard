@@ -1,7 +1,7 @@
 package entity.player;
 
 import entity.Items.CommonItem;
-import entity.Items.Crow;
+// import entity.Items.Crow;
 import entity.Items.HPBottle;
 import entity.Items.ThrowingBottle;
 import entity.enemy.*;
@@ -169,6 +169,7 @@ public class Player extends Entity{
                 invisibleTimer = 150;
                 timer = 20;
                 HP--;
+                gp.soundManager.play("hurt");
                 if(HP > 0) isHurt = true;
                 else{
                     isDead = true;

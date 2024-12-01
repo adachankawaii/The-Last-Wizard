@@ -40,10 +40,17 @@ public class Soldier extends Entity {
         isEnemy = true;
     }
     public void getImage() {
-        importAndSlice("/enemy/Soldier/Archer-idle-spritesheet.png", 3, 0,0);
-        importAndSlice("/enemy/Soldier/run1.png", 3, 0,0);
-        importAnImage("/enemy/Soldier/run2.png",false);
-        importAndSlice("/enemy/Soldier/Archer-atk-spritesheet.png", 3, 0,0);
+        if(gp.map == 1) {
+            importAndSlice("/enemy/Soldier/Archer-idle-spritesheet.png", 3, 0,0);
+            importAndSlice("/enemy/Soldier/run1.png", 3, 0,0);
+            importAnImage("/enemy/Soldier/run2.png",false);
+            importAndSlice("/enemy/Soldier/Archer-atk-spritesheet.png", 3, 0,0);
+        }
+        else if(gp.map == 3) {
+            importAndSlice("/enemy/Soldier/Bat_Idle.png", 9, 0,0);
+            importAndSlice("/enemy/Soldier/Bat_Run.png", 8, 0,0);   
+            importAndSlice("/enemy/Soldier/Bat_Attack.png", 5, 0,0);         
+        }
     }
     @Override
     public void update() {

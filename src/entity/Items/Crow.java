@@ -2,14 +2,14 @@ package entity.Items;
 
 import entity.Entity;
 import entity.bullet.Bullet;
-import entity.bullet.NormalBullet;
+// import entity.bullet.NormalBullet;
 import entity.effect.Effect;
 import main.GamePanel;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.Objects;
+// import java.util.Objects;
 
 public class Crow extends Entity {
     public int count = 0;
