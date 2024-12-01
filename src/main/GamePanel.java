@@ -88,8 +88,7 @@ public class GamePanel extends JPanel implements Runnable{
     // TẠO SET OBJECT
     AssetSetter aSetter = new AssetSetter(this);
     ObjectSetter oSetter = new ObjectSetter(this);
-    String [][][] voice = {{{"starter1","dm doi"}, {"zone1"}, {"outzone1"}, {"zone2"}, {"outzone2"}},{{"zone1"}, {"zone2"}, {"zone3"}, {"zone4"}},{{"starter3"}},{{"starter4"}}};
-    // MOUSE
+    String [][][] voice = {{{"Trên tay bạn đang sở hữu một cây đũa phép vô cùng mạnh mẽ, kích chuột trái để có thể sử dụng phép thuật cơ bản.","Lunar: Trước khi rời khỏi nơi này, trong nhật ký tộc trưởng có nói đã cất giấu một báu vật tại lăng mộ.","Đầu tiên chúng ta phải vượt qua Rừng cấm!","Lunar: Cùng bắt đầu cuộc hành trình thôi!","Rừng cấm : Vượt qua khu rừng cấm đầy nguy hiểm với nhiều cạm bẫy phía trước!"}, {"Lunar: Tại sao chỗ này lại được gọi là rừng cấm nhỉ, trông chẳng khác gì một khu rừng bình thường cả.","Hệ thống:Không tự dưng nơi đây được gọi là rừng cấm, đừng để vẻ bề ngoài của nó làm bạn chủ quan. Nhìn kìa, đó chính là Smiley!!","Cẩn thận, chúng có khả năng tấn công và gây tổn thương cho bạn, hãy sử dụng bùa chú và phép thuật để đánh bại chúng."}, {"Đến lúc sử dụng phép thuật rồi, hãy sử dụng bình dame diện rộng!"}, {"Lunar: Chỉ có 4 tên thôi sao, hahaha","Lunar: Ôi không, tôi khinh thường chúng rồi!","Đến lúc sử dụng bình tàng hình rồi!"}, {"Để nâng cấp và có thể sử dụng nhiều chú thuật hơn","hãy đến với hội quán và lấy về cho mình thật nhiều vật phẩm hữu ích nhé"}},{{"Lunar: Sao tối om thế này?","Đây là mê cung bóng đêm, cẩn thận với các xác chết bạn có thể gặp trên đường đi nhé"}, {"Lunar: May quá, cuối cùng cũng thoát khỏi đây rồi","Tiến vào thành phố nào!","Trong thành phố này tương truyền một câu đố không biết do ai đã để lại","Tuy nhiên đến giờ vẫn chưa có ai giải mã được. Hãy đến và xem xét!"}, {"Hãy đến trang viên Bly! Có thể chúng ta sẽ tiếp tục tìm thấy thứ gì ở đó!","Lunar: Thật là một trang viên rộng lớn","Chiếc cối xay gió kia trông có vẻ khả nghi, hãy đến đó xem thử!"}, {"Lunar: Phù, thật mệt mỏi. Mọi chuyện dần trở nên hấp dẫn rồi! Đi tiếp thôi!","Đợi chút có mảnh giấy gì đó"}},{{"Lunar: Cuối cùng chúng ta cũng đến được cung điện","Lunar: Chỗ này thật khiến tôi phải rùng mình, thật đáng sợ!","Cảnh giác, đây là hầm ngục! Bẫy có thể ở khắp nơi!","Dorry: Quạ quạ quạ","Lunar: Im lặng nào, Dorry"}},{{"Lunar: Lâu đài ở trước mặt chúng ta rồi"}}};    // MOUSE
     public MouseHandler mouseH = new MouseHandler(this);
     public int mouseX = 0, mouseY = 0;
     int reloadTime = 0;
@@ -274,7 +273,7 @@ public class GamePanel extends JPanel implements Runnable{
             }
             return;
         }
-        if (keyH.escPressed) {
+        if (keyH.escPressed && player.combat) {
             pauseMenu = !pauseMenu; // Chuyển đổi trạng thái pause khi nhấn ESC
             keyH.escPressed = false; // Đặt lại trạng thái phím ESC
         }
@@ -304,7 +303,7 @@ public class GamePanel extends JPanel implements Runnable{
         HPbar.update(player.HP);
         EnergyBar.update(player.Energy);
         if(map == 1){
-            Rectangle[] zone = new Rectangle[]{new Rectangle(41 * tileSize, 70 * tileSize, 30 * tileSize, 10 * tileSize), new Rectangle(10*tileSize, 40*tileSize, 28*tileSize, 10*tileSize), new Rectangle(10*tileSize, 20*tileSize, 28*tileSize, 19*tileSize)};
+            Rectangle[] zone = new Rectangle[]{new Rectangle(41 * tileSize, 70 * tileSize, 30 * tileSize, 10 * tileSize), new Rectangle(10*tileSize, 40*tileSize, 28*tileSize, 10*tileSize), new Rectangle(10*tileSize, 20*tileSize, 28*tileSize, 19*tileSize), new Rectangle(60*tileSize, 59*tileSize,10*tileSize,tileSize)};
             boolean flag = false;
 
             for(int i = 0;i<zone.length;i++){
@@ -497,6 +496,17 @@ public class GamePanel extends JPanel implements Runnable{
                                 Effect a = new Effect("/effect/effect1.png", 0, 0, bell.worldX, bell.worldY, 10, this, 0, 2, 2, 0, 0);
                                 obj.add(a);
                                 obj.add(bell);
+                                CommonItem s = new CommonItem("CrystalFragment2", this);
+                                s.worldX = 27 * tileSize;
+                                s.worldY = 27*tileSize;
+                                Effect b = new Effect("/effect/effect1.png", 0, 0, s.worldX, s.worldY, 10, this, 0, 2, 2, 0, 0);
+                                obj.add(s);
+                                obj.add(b);
+                                Board bi = new Board(this, "Di thư", "/UI/Di thư.png", "/UI/Di thư.png");
+                                bi.worldX = tileSize* 27;
+                                bi.worldY = tileSize*29;
+                                bi.layer = 10;
+                                obj.add(bi);
                                 isSpawn = true;
                             }
 
@@ -516,6 +526,7 @@ public class GamePanel extends JPanel implements Runnable{
             new Rectangle(20 * tileSize, 44 * tileSize, 18 * tileSize, 45 * tileSize),
             };
             boolean flag = false;
+
             CopyOnWriteArrayList<Entity> objList2 = new CopyOnWriteArrayList<>(obj);
             for(Entity object : objList2){
                 if(object != null && Objects.equals(object.objName, "Placer") && object.done){
@@ -582,7 +593,7 @@ public class GamePanel extends JPanel implements Runnable{
     private ArrayList<BufferedImage> slideImages = new ArrayList<>();
     Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf",50);
     Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf",30);
-
+    Font textFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf",15);
     private void loadSlideImages() {
         try {
             for (int i = 1; i <= 5; i++) { // Giả sử bạn có 5 cặp ảnh
@@ -889,7 +900,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     // Hàm vẽ phần giới thiệu (Intro)
     private void drawIntro(Graphics2D g2) {
-        g2.setColor(Color.WHITE);
+        g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, screenWidth, screenHeight);
 
         g2.setFont(smallFont);
@@ -905,7 +916,22 @@ public class GamePanel extends JPanel implements Runnable{
                 e.printStackTrace();
             }
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, introAlpha));
-            g2.drawImage(img, screenWidth/2 - img.getWidth()/2, screenHeight/2 - img.getHeight()/2, img.getWidth(), img.getHeight(), null);
+            g2.drawImage(img, screenWidth/2 - img.getWidth()*3/2, screenHeight/2 - img.getHeight()*3/2, img.getWidth()*3, img.getHeight()*3, null);
+            g2.setColor(Color.WHITE);
+            g2.setFont(bigFont); // Sử dụng font đã khai báo trước đó
+
+// Tính vị trí vẽ chuỗi
+            String text = "Một sản phầm của DM THA";
+            FontMetrics metrics = g2.getFontMetrics(bigFont);
+            int textWidth = metrics.stringWidth(text);
+            int textHeight = metrics.getHeight();
+
+// Tính tọa độ vẽ chuỗi
+            int textX = screenWidth / 2 - textWidth / 2; // Căn giữa theo chiều ngang
+            int textY = screenHeight / 2 + img.getHeight() * 3 / 2 + textHeight; // Vẽ dưới hình ảnh
+
+// Vẽ chuỗi vào màn hình
+            g2.drawString(text, textX, textY);
         }
 
         if (introFadingIn) {
@@ -1089,17 +1115,18 @@ public class GamePanel extends JPanel implements Runnable{
                     keyH.SpacePressed = false;
                     index = 0;
                 }
-                g2.setFont(smallFont);
+                g2.setFont(textFont);
                 g2.setColor(Color.WHITE);
                 g2.drawString(currentDialogue, textX, textY);
             } else if (gameOver) {
                 // Hiển thị màn hình Game Over
+                player.combat = false;
                 soundManager.muteAll();
                 g2.setColor(Color.RED);
                 g2.setFont(bigFont);
-                g2.drawString("GAME OVER", screenWidth / 2 - 150, screenHeight / 2);
+                g2.drawString("GAME OVER", screenWidth / 2 - g2.getFontMetrics(bigFont).stringWidth("GAME OVER")/2, screenHeight / 2);
                 g2.setFont(smallFont);
-                g2.drawString("Press R to Restart", screenWidth / 2 - 130, screenHeight / 2 + 50);
+                g2.drawString("Press R to Restart", screenWidth / 2 - g2.getFontMetrics(smallFont).stringWidth("Press R to Restart")/2, screenHeight / 2 + 50);
             } else if (pauseMenu) {
                 draw(g2); // Vẽ nội dung game phía sau khung pause
                 drawPauseMenu(g2);

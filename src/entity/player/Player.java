@@ -161,7 +161,7 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
-            //System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
+            System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
@@ -387,8 +387,6 @@ public class Player extends Entity{
                                 itemsCount.add(1); // Thêm mới số lượng item là 1
                                 pointer = items.size() - 1;
                             } else {
-                                System.out.println("lf");
-                                // Nếu kho đồ đầy
                                 // Lấy vật phẩm hiện tại tại con trỏ
                                 Entity replacedItem = items.get(pointer);
 
@@ -484,9 +482,9 @@ public class Player extends Entity{
     public ArrayList<Quest> quests = new ArrayList<>();
     @Override
     public void drawUI(Graphics2D g2, GamePanel gp){
+        if(isDarken) drawTorchEffect(g2, gp.screenWidth/2, gp.screenHeight/2);
         if(combat && !isDead){
             // Kích thước và vị trí của khung
-            if(isDarken) drawTorchEffect(g2, gp.screenWidth/2, gp.screenHeight/2);
             if(!quests.isEmpty()) drawQuests(g2);
             drawItems(g2);  // Vẽ danh sách các item
 

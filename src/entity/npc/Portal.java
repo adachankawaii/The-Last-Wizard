@@ -1,6 +1,7 @@
 package entity.npc;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Vector;
@@ -27,10 +28,10 @@ public class Portal extends Entity {
         collision = true;
         this.isTrigger = true;
         this.gp = gp;
-        rectGet(0, 0, 48, 48);
+        rectGet(-12, -12, 48*2, 48*2);
         getNPCImage();
         setWords("Do you want to go the next map?, end");
-        setWords("Key required,end");
+        setWords("Crystal required,end");
         setWords("..., end");
         setWords("end");
         gp.keyH.SpacePressed = false;
@@ -65,26 +66,16 @@ public class Portal extends Entity {
 
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
-        int npcCenterX = worldX + gp.tileSize / 2;
-        int npcCenterY = worldY + gp.tileSize / 2;
+        screenX = worldX - gp.player.worldX + gp.player.screenX;
+        screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-        int playerCenterX = gp.player.worldX + gp.tileSize / 2;
-        int playerCenterY = gp.player.worldY + gp.tileSize / 2;
-
-        double distance = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
-
-        // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
-        if (distance <= 1.5 * gp.tileSize) {
-            g2.setFont(smallFont);
-            int textWidth = g2.getFontMetrics(smallFont).stringWidth(objName);
-            screenX = worldX - gp.player.worldX + gp.player.screenX + this.solidArea.width / 2 - textWidth / 2;
-            screenY = worldY - gp.player.worldY + gp.player.screenY - 5;
-            g2.setColor(new Color(100,100,100,120));
-            g2.fillRect(screenX - 2,screenY - 12,textWidth + 5,15);
-            g2.setColor(Color.WHITE);
-            g2.drawString(objName, screenX, screenY);
+        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
+                && worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
+                && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
+                && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+            BufferedImage image = animations.get(aniCount).get(spriteNum);
+            g2.drawImage(image, screenX - 12, screenY - 12, 48*2, 48*2, null);
         }
-        drawObjImage(g2, gp);
         rectDraw(g2);
     }
     @Override
@@ -162,23 +153,15 @@ public class Portal extends Entity {
                     if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && selectedChoice != -1 && timer <= 0) {
                         dialogueIndex = 0; // Chuyển sang đoạn hội thoại tương ứng
                         if(selectedChoice == 0){
-                            int pos = -1;
-                            for(int i = 0;i<gp.player.items.size();i++){
-                                if(Objects.equals(gp.player.items.get(i).objName, "Key")){
-                                    pos = i;
-                                    break;
+                            int pos = -1; // Vị trí mặc định nếu không tìm thấy
+                            for (int i = 0; i < gp.player.items.size(); i++) {
+                                if (gp.player.items.get(i).objName.contains("Crystal")) {
+                                    pos = i; // Lưu vị trí của item có chứa "Crystal"
+                                    break;   // Dừng vòng lặp sau khi tìm thấy
                                 }
                             }
                             if(pos == -1) index = 1;
                             else{
-                                gp.player.itemsCount.set(pos, gp.player.itemsCount.get(pos) - 1);
-                                if(gp.player.itemsCount.get(pos) <= 0){
-                                    gp.player.itemsCount.remove(pos);
-                                    gp.player.items.remove(pos);
-                                    if(gp.player.pointer >= gp.player.items.size()){
-                                        gp.player.pointer = 0;
-                                    }
-                                }
                                 gp.fadeAlpha = 0;
                                 gp.fadingIn = true;
                                 index = 3;

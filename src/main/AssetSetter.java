@@ -79,6 +79,16 @@ public class AssetSetter {
             }
         }
         else if(gp.map == 2){
+            Board b = new Board(gp, "Hint", "/UI/caudo23ne.png", "/UI/caudo23ne.png");
+            b.worldX = gp.tileSize* 72;
+            b.worldY = gp.tileSize*16;
+            b.layer = 10;
+            gp.obj.add(b);
+            Board r = new Board(gp, "Hint", "/UI/22.png", "/UI/22.png");
+            r.worldX = gp.tileSize* 78;
+            r.worldY = gp.tileSize*60;
+            r.layer = 10;
+            gp.obj.add(r);
             int []tmp = {3,1,4,2};
             for(int i = 0;i<4;i++){
                 Pole p = new Pole(gp,"Pole",tmp[i],63 + 5*i, 67);

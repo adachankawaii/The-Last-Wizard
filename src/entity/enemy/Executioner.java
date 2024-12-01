@@ -5,6 +5,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
+
+import entity.Items.CommonItem;
 import entity.bullet.Bullet;
 import entity.Entity;
 // import entity.Items.Coin;
@@ -12,6 +14,7 @@ import entity.Entity;
 // import entity.effect.Effect;
 // import entity.player.Quest;
 import entity.bullet.ThrowingObj;
+import entity.effect.Effect;
 import entity.npc.CombatWall;
 import main.FontLoader;
 import main.GamePanel;
@@ -47,10 +50,12 @@ public class Executioner extends Entity {
         rectGet(70*2, 70*2, 48*2, 52*2);
         getImage();
         aniCount = 1;
-        map.put("bullet", 1);
+        map.put("bullet", 75);
         map.put("Bigbullet", 3);
         isEnemy = true;
-        addWords(new String[]{"No one leave hera","Especially a wizard like","you","end"});
+        addWords(new String[]{"Sao tự dưng tôi lại thấy ớn lạnh nhỉ!","Đ-đó là the Dementor!!!","end"});
+        addWords(new String[]{"Đây là mảnh ngọc thứ 3! Chúng ta đã thu thập được cả 3 mảnh ngọc rồi.","end"});
+
         isBoss =true;
         c.add(new CombatWall(gp, 1, 10));
         c.get(0).worldX = 17 * gp.tileSize;
@@ -177,6 +182,12 @@ public class Executioner extends Entity {
                 c.get(i).on = false;
             }
             collision = false;
+            if(done) {
+                startTalk = true;
+                index = 1;
+                dialogueIndex = 0;
+                done = false;
+            }
             gp.player.lineOn = true;
         }
     }
@@ -500,69 +511,67 @@ public class Executioner extends Entity {
     }
     @Override
     public void drawUI(Graphics2D g2, GamePanel gp){
-        if(!dead){
-            int dialogueBoxHeight = gp.tileSize * 2;
-            int dialogueBoxY = gp.screenHeight - dialogueBoxHeight - 10;
-            int dialogueBoxX = 20;
-            int dialogueBoxWidth = gp.screenWidth - 40;
+        int dialogueBoxHeight = gp.tileSize * 2;
+        int dialogueBoxY = gp.screenHeight - dialogueBoxHeight - 10;
+        int dialogueBoxX = 20;
+        int dialogueBoxWidth = gp.screenWidth - 40;
 
-            int textX = dialogueBoxX + 20;
-            int textY = dialogueBoxY + 40;
-            if (!gp.player.combat && !words.isEmpty() && startTalk) {
-                // Vẽ khung hội thoại
-                g2.setColor(new Color(0, 0, 0, 180));
-                g2.fillRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
-                g2.setColor(Color.WHITE);
-                g2.drawRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
-                String currentDialogue = words.get(index).get(dialogueIndex);
+        int textX = dialogueBoxX + 20;
+        int textY = dialogueBoxY + 40;
+        if (!gp.player.combat && !words.isEmpty() && startTalk) {
+            // Vẽ khung hội thoại
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
+            g2.setColor(Color.WHITE);
+            g2.drawRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
+            String currentDialogue = words.get(index).get(dialogueIndex);
 
-                // Khi đến đoạn hội thoại yêu cầu lựa chọn
+            // Khi đến đoạn hội thoại yêu cầu lựa chọn
 
-                if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
-                    dialogueIndex++; // Chuyển sang đoạn tiếp theo
-                    gp.keyH.SpacePressed = false;
-                    timer = 20;
-                }
-                if (dialogueIndex >= words.get(index).size() - 1) {
-                    startTalk = false;
-                    gp.player.combat = true;
-                    gp.keyH.SpacePressed = false;
-                    awake = true;
-                }
-                g2.setFont(font);
-                g2.setColor(Color.WHITE);
-                g2.drawString(objName + ": " + currentDialogue, textX, textY);
-            } else {
-                if (startTalk) {
-                    gp.player.combat = false;
-                    gp.keyH.SpacePressed = false;
-                    timer = 20;
-                }
+            if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
+                dialogueIndex++; // Chuyển sang đoạn tiếp theo
+                gp.keyH.SpacePressed = false;
+                timer = 20;
             }
-            if (awake) {
-                // Vẽ thanh máu của boss ngay dưới khung hội thoại
-                int healthBarWidth = dialogueBoxWidth - 40; // Chiều dài thanh máu
-                int healthBarHeight = 20; // Chiều cao thanh máu
-                int healthBarX = dialogueBoxX;
-                int healthBarY = dialogueBoxY + dialogueBoxHeight - 40; // Vị trí ngay dưới khung chat
-
-                float healthPercentage = (float) HP / 75; // Tính phần trăm máu
-                int filledWidth = (int) (healthBarWidth * healthPercentage);
-
-                // Vẽ khung thanh máu
-                g2.setColor(Color.BLACK);
-                g2.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
-
-                // Vẽ thanh máu dựa trên phần trăm máu còn lại
-                g2.setColor(Color.RED);
-                g2.fillRect(healthBarX, healthBarY, filledWidth, healthBarHeight);
-
-                // Vẽ viền cho thanh máu
-                g2.setColor(Color.WHITE);
-                g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
-                g2.setFont(font);
-                g2.drawString(objName, healthBarX, healthBarY - 20);
+            if (dialogueIndex >= words.get(index).size() - 1) {
+                startTalk = false;
+                gp.player.combat = true;
+                gp.keyH.SpacePressed = false;
+                awake = true;
             }
+            g2.setFont(font);
+            g2.setColor(Color.WHITE);
+            g2.drawString(objName + ": " + currentDialogue, textX, textY);
+        } else {
+            if (startTalk) {
+                gp.player.combat = false;
+                gp.keyH.SpacePressed = false;
+                timer = 20;
+            }
+        }
+        if (awake && !dead) {
+            // Vẽ thanh máu của boss ngay dưới khung hội thoại
+            int healthBarWidth = dialogueBoxWidth - 40; // Chiều dài thanh máu
+            int healthBarHeight = 20; // Chiều cao thanh máu
+            int healthBarX = dialogueBoxX;
+            int healthBarY = dialogueBoxY + dialogueBoxHeight - 40; // Vị trí ngay dưới khung chat
+
+            float healthPercentage = (float) HP / 75; // Tính phần trăm máu
+            int filledWidth = (int) (healthBarWidth * healthPercentage);
+
+            // Vẽ khung thanh máu
+            g2.setColor(Color.BLACK);
+            g2.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+            // Vẽ thanh máu dựa trên phần trăm máu còn lại
+            g2.setColor(Color.RED);
+            g2.fillRect(healthBarX, healthBarY, filledWidth, healthBarHeight);
+
+            // Vẽ viền cho thanh máu
+            g2.setColor(Color.WHITE);
+            g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+            g2.setFont(font);
+            g2.drawString(objName, healthBarX, healthBarY - 20);
         }
     }
     boolean dead = false;
@@ -575,6 +584,12 @@ public class Executioner extends Entity {
             isHurt = true;
             if(HP <= 0){
                 dead = true;
+                CommonItem s = new CommonItem("CrystalFragment3", gp);
+                s.worldX = worldX + solidArea.x + solidArea.width / 2;
+                s.worldY = worldY + solidArea.y + solidArea.height / 2 + 6*gp.tileSize;
+                gp.obj.add(s);
+                Effect b = new Effect("/effect/effect1.png", 0, 0, s.worldX, s.worldY, 10, gp, 0, 2, 2, 0, 0);
+                gp.obj.add(b);
                 gp.soundManager.stop("combat3");
                 gp.soundManager.loop("map22");
             }
