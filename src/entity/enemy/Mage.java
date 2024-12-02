@@ -306,11 +306,6 @@ public class Mage extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                CommonItem key = new CommonItem("Key",gp);
-                key.worldX = this.worldX;
-                key.worldY = this.worldY;
-                gp.obj.add(key);
-
                 Effect a = new Effect("/effect/effect1.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 2, 2, 0, 0);
                 gp.obj.add(a);
                 gp.soundManager.play("slime_die");

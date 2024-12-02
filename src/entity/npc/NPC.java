@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Vector;
 
 import entity.Entity;
+import entity.Items.CommonItem;
 import main.FontLoader;
 import main.GamePanel;
 
@@ -30,7 +31,7 @@ public class NPC extends Entity {
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        if(Objects.equals(objName, "Te Quiero")) {
+        if(Objects.equals(objName, "Meraki")) {
             setWords("sin cong sin bang 2 sin cos,cos cong cos bang tru 2 sin sin, end");
             setWords("sin thi sin cos cos sin,cos thi cos cos sin sin dau tru,dia dia,end");
             setWords("co day em bai the duc buoi sang, mot hai ba co len, end");
@@ -42,7 +43,7 @@ public class NPC extends Entity {
     }
 
     public void getNPCImage() {
-        if(Objects.equals(objName, "Te Quiero")) {
+        if(Objects.equals(objName, "Meraki")) {
             String[] s = new String[7];
             for (int i = 0; i < 6; i++) {
                 s[i] = "/npc/idle (" + (i + 1) + ").png";
@@ -83,7 +84,7 @@ public class NPC extends Entity {
 
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
-        if(Objects.equals(objName, "Te Quiero")) {
+        if(Objects.equals(objName, "Meraki")) {
             drawObjImage(g2, gp);
         }
         else if(Objects.equals(objName, "Amireux")){
@@ -213,6 +214,12 @@ public class NPC extends Entity {
                     index = 0;
                     dialogueIndex = 0; // Đặt lại để sẵn sàng cho lần sau
                     choiceMade = false; // Cho phép lựa chọn lại lần sau
+                    if(Objects.equals(objName, "Amireux")){
+                        CommonItem c = new CommonItem("Feather", gp);
+                        c.worldX = gp.player.worldX;
+                        c.worldY = gp.player.worldY;
+                        gp.obj.add(c);
+                    }
                 }
 
                 g2.setFont(font);

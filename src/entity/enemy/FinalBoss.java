@@ -32,11 +32,11 @@ public class FinalBoss extends Entity {
     int moveSet = 0;
     boolean phase2 = false;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
-    Font font =  FontLoader.loadFont("/UI/SVN-Determination Sans.otf",20);
+    Font font =  FontLoader.loadFont("/UI/SVN-Determination Sans.otf",15);
 
     public FinalBoss(GamePanel gp) {
         layer = 2;
-        objName = "Fami";
+        objName = "King";
         collision = true;
         direction = "down";
         HP = 75;
@@ -53,7 +53,7 @@ public class FinalBoss extends Entity {
                 "Aiss, nhà ngươi cũng có phép thuật!!!!!!??? Chuyện gì đang xảy ra thế này!",
                 "Chẳng giấu gì với ngươi, chính ta là người giật dây đằng sau cho sự diệt chủng của lũ phù thủy ngu dốt các người,","mang trong mình sức mạnh như vậy nhưng lại không cai trị thế giới, đúng là ngu ngốc.","Chính vì vậy, ta đã thuyết phục đám mọi dân rằng các ngươi là những kẻ xấu xa, tàn bạo cần phải diệt chủng ngay lập tức.","Và dĩ nhiên, ta đã nằm quyền cai trị vương quốc này, bước tiếp theo chính là thế giới này kkkk.","Để sót ngươi đúng là một lỗ hổng trong kế hoạch của ta. Nhưng không sao, chính tay ta sẽ tiêu diệt nhà ngươi",
                 "Hãy xem đây.","end"});
-        addWords(new String[]{"Không thể tin được, nhà ngươi sao lại có thứ sức mạnh phi lý đến vậy!","Lunar:....","end"});
+        addWords(new String[]{objName + ": " + "Không thể tin được, nhà ngươi sao lại có thứ sức mạnh phi lý đến vậy!","Lunar:....","end"});
         isBoss = true;
     }
     public void addWords(String[] inputWords) {
@@ -220,16 +220,11 @@ public class FinalBoss extends Entity {
                         gp.obj.add(g);
                         phase2 = false;
                         isResting = false;
-
+                        dead = false;
                     }
                 }
             }
-            else if(done){
-                startTalk = true;
-                index = 1;
-                dialogueIndex = 0;
-                done = false;
-            }
+
         }
     }
     int phaseCount = 0;
@@ -275,6 +270,7 @@ public class FinalBoss extends Entity {
             Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX + (int)(4*gp.tileSize* Math.cos(angle)), npcCenterY + (int)(4*gp.tileSize* Math.cos(angle)), 15, gp, 0, 2, 2, 0, 0);
             gp.obj.add(a);
             Ghost g = new Ghost(gp);
+            if(phase == 2) g.fire = true;
             g.worldX = npcCenterX + (int)(4*gp.tileSize* Math.cos(angle));
             g.worldY = npcCenterY + (int)(4*gp.tileSize* Math.cos(angle));
             gp.obj.add(g);
@@ -285,30 +281,37 @@ public class FinalBoss extends Entity {
 
         if (shootCounter >= 1) {
             if(phase == 2) {
-                int bulletCount = 12; // Ví dụ: 5 viên đạn
+                double angle = random.nextDouble(Math.toRadians(360));
+                Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX + (int)(4*gp.tileSize* Math.cos(angle)), npcCenterY + (int)(4*gp.tileSize* Math.cos(angle)), 15, gp, 0, 2, 2, 0, 0);
+                gp.obj.add(a);
+                Ghost g = new Ghost(gp);
+                g.worldX = npcCenterX + (int)(4*gp.tileSize* Math.cos(angle));
+                g.worldY = npcCenterY + (int)(4*gp.tileSize* Math.cos(angle));
+                gp.obj.add(g);
+                g.fire = true;
+                int bulletCount = 4; // Ví dụ: 5 viên đạn
                 double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
 
                 // Bắn từng luồng đạn
                 for (int i = 0; i < bulletCount; i++) {
                     // Góc hiện tại của từng viên đạn
-                    double angle = Math.toRadians(180) + i * angleStep;
+                    double angle2 = Math.toRadians(180) + i * angleStep;
 
                     // Tính toán tọa độ mục tiêu cho từng viên đạn
-                    int targetBulletX = (int) (npcCenterX + Math.cos(angle) * 12 * gp.tileSize); // Khoảng cách từ tâm là 25
-                    int targetBulletY = (int) (npcCenterY + Math.sin(angle) * 12 * gp.tileSize);
+                    int targetBulletX = (int) (npcCenterX + Math.cos(angle2) * 12 * gp.tileSize); // Khoảng cách từ tâm là 25
+                    int targetBulletY = (int) (npcCenterY + Math.sin(angle2) * 12 * gp.tileSize);
 
                     // Tạo đối tượng đạn
-                    FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet",
+                    Bullet b = new Bullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet",
                             0, 0, 8 * 6, 8 * 6,
-                            (int) (targetBulletX - 10*gp.tileSize), (int) (targetBulletY - 10*gp.tileSize), 10, gp,
+                            (int) (npcCenterX), (int) (npcCenterY), 20, gp,
                             0, 8, 1, 1,
-                            targetBulletX, targetBulletY, null);
+                            targetBulletX, targetBulletY);
                     b.root = this.objName;
 
                     // Thêm đạn vào danh sách đối tượng
                     gp.obj.add(b);
                 }
-
             }
             delayMove = 0;
             startResting();
@@ -462,69 +465,90 @@ public class FinalBoss extends Entity {
     }
     @Override
     public void drawUI(Graphics2D g2, GamePanel gp){
-        if(!dead){
-            int dialogueBoxHeight = gp.tileSize * 2;
-            int dialogueBoxY = gp.screenHeight - dialogueBoxHeight - 10;
-            int dialogueBoxX = 20;
-            int dialogueBoxWidth = gp.screenWidth - 40;
+        int dialogueBoxHeight = gp.tileSize * 2;
+        int dialogueBoxY = gp.screenHeight - dialogueBoxHeight - 10;
+        int dialogueBoxX = 20;
+        int dialogueBoxWidth = gp.screenWidth - 40;
 
-            int textX = dialogueBoxX + 20;
-            int textY = dialogueBoxY + 40;
-            if (!gp.player.combat && !words.isEmpty() && startTalk) {
-                // Vẽ khung hội thoại
-                g2.setColor(new Color(0, 0, 0, 180));
-                g2.fillRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
-                g2.setColor(Color.WHITE);
-                g2.drawRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
-                String currentDialogue = words.get(index).get(dialogueIndex);
+        int textX = dialogueBoxX + 20;
+        int textY = dialogueBoxY + 40;
+        if (!gp.player.combat && !words.isEmpty() && startTalk) {
+            // Vẽ khung hội thoại
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
+            g2.setColor(Color.WHITE);
+            g2.drawRoundRect(dialogueBoxX, dialogueBoxY, dialogueBoxWidth, dialogueBoxHeight, 25, 25);
+            String currentDialogue = words.get(index).get(dialogueIndex);
 
-                // Khi đến đoạn hội thoại yêu cầu lựa chọn
+            // Khi đến đoạn hội thoại yêu cầu lựa chọn
 
-                if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
-                    dialogueIndex++; // Chuyển sang đoạn tiếp theo
-                    gp.keyH.SpacePressed = false;
-                    timer = 20;
-                }
-                if (dialogueIndex >= words.get(index).size() - 1) {
-                    startTalk = false;
-                    gp.player.combat = true;
-                    gp.keyH.SpacePressed = false;
-                    awake = true;
-                }
-                g2.setFont(font);
-                g2.setColor(Color.WHITE);
-                g2.drawString(objName + ": " + currentDialogue, textX, textY);
-            } else {
-                if (startTalk) {
-                    gp.player.combat = false;
-                    gp.keyH.SpacePressed = false;
-                    timer = 20;
-                }
+            if ((gp.keyH.SpacePressed || gp.mouseH.isClicked) && dialogueIndex < words.get(index).size() - 1 && timer <= 0) {
+                dialogueIndex++; // Chuyển sang đoạn tiếp theo
+                gp.keyH.SpacePressed = false;
+                timer = 20;
             }
-            if (awake) {
-                // Vẽ thanh máu của boss ngay dưới khung hội thoại
-                int healthBarWidth = dialogueBoxWidth - 40; // Chiều dài thanh máu
-                int healthBarHeight = 20; // Chiều cao thanh máu
-                int healthBarX = dialogueBoxX;
-                int healthBarY = dialogueBoxY + dialogueBoxHeight - 40; // Vị trí ngay dưới khung chat
-
-                float healthPercentage = (float) HP / 75; // Tính phần trăm máu
-                int filledWidth = (int) (healthBarWidth * healthPercentage);
-
-                // Vẽ khung thanh máu
-                g2.setColor(Color.BLACK);
-                g2.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
-
-                // Vẽ thanh máu dựa trên phần trăm máu còn lại
-                g2.setColor(Color.RED);
-                g2.fillRect(healthBarX, healthBarY, filledWidth, healthBarHeight);
-
-                // Vẽ viền cho thanh máu
-                g2.setColor(Color.WHITE);
-                g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
-                g2.setFont(font);
-                g2.drawString(objName, healthBarX, healthBarY - 20);
+            if (dialogueIndex >= words.get(index).size() - 1) {
+                startTalk = false;
+                gp.player.combat = true;
+                gp.keyH.SpacePressed = false;
+                awake = true;
+                if(index == 1) gp.done = true;
             }
+            g2.setFont(font);
+            g2.setColor(Color.WHITE);
+            if(index == 0){
+                currentDialogue = objName + ": " + currentDialogue;
+            }
+            g2.drawString(currentDialogue, textX, textY);
+        } else {
+            if (startTalk) {
+                gp.player.combat = false;
+                gp.keyH.SpacePressed = false;
+                timer = 20;
+            }
+        }
+        if (awake && !dead) {
+            // Vẽ thanh máu của boss ngay dưới khung hội thoại
+            int healthBarWidth = dialogueBoxWidth - 40; // Chiều dài thanh máu
+            int healthBarHeight = 20; // Chiều cao thanh máu
+            int healthBarX = dialogueBoxX;
+            int healthBarY = dialogueBoxY + dialogueBoxHeight - 40; // Vị trí ngay dưới khung chat
+
+            float healthPercentage = (float) HP / 75; // Tính phần trăm máu
+            int filledWidth = (int) (healthBarWidth * healthPercentage);
+
+            // Vẽ khung thanh máu
+            g2.setColor(Color.BLACK);
+            g2.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+            // Vẽ thanh máu dựa trên phần trăm máu còn lại
+            g2.setColor(Color.RED);
+            g2.fillRect(healthBarX, healthBarY, filledWidth, healthBarHeight);
+
+            // Vẽ viền cho thanh máu
+            g2.setColor(Color.WHITE);
+            g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+            g2.setFont(font);
+            g2.drawString("Celerion, Crowned of the Arcane", healthBarX, healthBarY - 20);
+        }
+        if(dead && !startTalk){
+            String prompt = "Đặt AetherCrystal xuống để sử dụng";
+            int promptWidth = g2.getFontMetrics(font).stringWidth(prompt);
+            int promptX = (gp.screenWidth - promptWidth) / 2;
+            int promptY = gp.screenHeight - gp.tileSize - 40;
+
+            int boxWidth = promptWidth + 20;
+            int boxHeight = 40;
+            int boxX = promptX - 10;
+            int boxY = promptY - 30;
+
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+            g2.setColor(Color.WHITE);
+            g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+            g2.setFont(font);
+            g2.setColor(Color.WHITE);
+            g2.drawString(prompt, promptX, promptY);
         }
     }
     boolean dead = false;
@@ -539,6 +563,12 @@ public class FinalBoss extends Entity {
             if(HP <= 0){
                 if(phase == 2 && !phase2) {
                 dead = true;
+                if(done){
+                    startTalk = true;
+                    dialogueIndex = 0;
+                    index = 1;
+                    done = false;
+                }
                 gp.soundManager.stop("combat4");
                 gp.soundManager.loop("map4");
                 }

@@ -58,7 +58,18 @@ public class Ghost extends Entity{
         spriteCounter++;
         if (spriteCounter > animationDelay) {
             spriteNum++;
-            if (spriteNum >= animations.get(aniCount).size()) spriteNum = 0;
+            if (spriteNum >= animations.get(aniCount).size()) {
+                if(fire) {
+                    Effect a = new Effect("/effect/enemyEffect .png", 0, 0, worldX, worldY, 15, gp, 0, 2, 2, 0, 0);
+                    gp.obj.add(a);
+                    Pike p = new Pike(gp);
+                    p.canDeath = true;
+                    p.worldX = worldX;
+                    p.worldY = worldY;
+                    gp.obj.add(p);
+                }
+                spriteNum = 0;
+            }
             spriteCounter = 0;
         }
         isTriggerOn = false;

@@ -17,7 +17,7 @@ public class FireBullet extends Bullet{
         timer--;
         if(timer <= 0){
             if(effect == null){
-                Effect a = new Effect("/effect/enemyEffect .png", 0, 0, worldX + (int)(4*gp.tileSize* Math.cos(angle)), worldY + (int)(4*gp.tileSize* Math.cos(angle)), 15, gp, 0, 2, 2, 0, 0);
+                Effect a = new Effect("/effect/enemyEffect .png", 0, 0, worldX, worldY, 15, gp, 0, 2, 2, 0, 0);
                 gp.obj.add(a);
                 Pike p = new Pike(gp);
                 p.canDeath = die;

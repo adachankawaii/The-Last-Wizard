@@ -86,9 +86,10 @@ public class AssetSetter {
             gp.obj.add(b);
             Board r = new Board(gp, "Hint", "/UI/22.png", "/UI/22.png");
             r.worldX = gp.tileSize* 78;
-            r.worldY = gp.tileSize*60;
+            r.worldY = gp.tileSize*79;
             r.layer = 10;
             gp.obj.add(r);
+
             int []tmp = {3,1,4,2};
             for(int i = 0;i<4;i++){
                 Pole p = new Pole(gp,"Pole",tmp[i],63 + 5*i, 67);
@@ -218,7 +219,7 @@ public class AssetSetter {
             case "Slime":
                 return new Slime(gp);
             case "NPC":
-                return new NPC(gp, "Te Quiero");
+                return new NPC(gp, "Meraki");
             case "Amireux":
                 return new NPC(gp, "Amireux");
             case "Portal":

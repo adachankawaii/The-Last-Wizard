@@ -28,10 +28,9 @@ public class GuildMaster extends Entity {
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        questsLine.add(new Quest("Get the Key","Get the Key from the ShopKeeper", "Items", 1,"Key","Coin", 15, gp));
         questsLine.add(new Quest("Get the HPBottle","Get the HPBottle", "Items", 1,"HPBottle","Coin", 15, gp));
         questsLine.add(new Quest("Defeat the enemies","Clear this area, cover it with blood","kills",4,null,"ThrowingBottle", 13, gp));
-        questsLine.add(new Quest("Talk to NPC","Talk to Te Quiero","interact",1,"Te Quiero","Coin", 28,gp));
+        questsLine.add(new Quest("Talk to NPC","Talk to Meraki","interact",1,"Meraki","Coin", 28,gp));
         addWords(new String[]{"Look like you have completed the quest","This is your reward","end"});
         addWords(new String[]{"Nothing here for you !", "end"});
         String[] tmp = new String[questsLine.size()+2];

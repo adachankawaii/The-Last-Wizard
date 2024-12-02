@@ -33,7 +33,7 @@ public class Pike extends Entity{
         }
         if(!pike) spriteCounter++;
         timer++;
-        if(timer >= 300 && canDeath){
+        if(timer >= 150 && canDeath){
             gp.obj.remove(this);
         }
     }

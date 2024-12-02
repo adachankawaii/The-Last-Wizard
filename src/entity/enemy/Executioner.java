@@ -40,7 +40,7 @@ public class Executioner extends Entity {
 
     public Executioner(GamePanel gp) {
         layer = 2;
-        objName = "Golem";
+        objName = "Dementor";
         collision = true;
         direction = "down";
         HP = 5;
@@ -571,7 +571,7 @@ public class Executioner extends Entity {
             g2.setColor(Color.WHITE);
             g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
             g2.setFont(font);
-            g2.drawString(objName, healthBarX, healthBarY - 20);
+            g2.drawString("Dreadveil the Dementor", healthBarX, healthBarY - 20);
         }
     }
     boolean dead = false;

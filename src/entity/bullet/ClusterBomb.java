@@ -25,7 +25,7 @@ public class ClusterBomb extends ThrowingObj{
             // Tạo đối tượng đạn
             Bullet b = new Bullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet",
                     0, 0, 8 * 6, 8 * 6,
-                    (int)(worldX), (int)(worldY), 18, gp,
+                    (int)(worldX), (int)(worldY), 15, gp,
                     0, 8, 1, 1,
                     targetBulletX, targetBulletY);
             b.root = this.objName;

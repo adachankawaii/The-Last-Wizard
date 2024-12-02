@@ -398,7 +398,7 @@ public class Golem extends Entity {
             g2.setColor(Color.WHITE);
             g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
             g2.setFont(font);
-            g2.drawString(objName, healthBarX, healthBarY - 20);
+            g2.drawString("Runethal, the Stonekeeper", healthBarX, healthBarY - 20);
         }
     }
     boolean dead = false;

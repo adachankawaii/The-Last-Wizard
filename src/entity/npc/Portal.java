@@ -135,6 +135,7 @@ public class Portal extends Entity {
                         g2.setColor(new Color(0, 0, 0, 180));
                         g2.fillRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
                         g2.setColor(Color.WHITE);
+                        g2.setFont(smallFont);
                         g2.drawRoundRect(choiceBoxX, choiceBoxY + i * choiceBoxHeight, choiceBoxWidth, 40, 15, 15);
                         g2.drawString("Key " + (i + 1) + ": " + choices[i], choiceBoxX + 10, choiceBoxY + i * choiceBoxHeight + 20);
                         if (r.contains(screenMouseX, screenMouseY)) {
