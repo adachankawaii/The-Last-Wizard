@@ -13,7 +13,7 @@ public class Sound {
         volumeControls = new HashMap<>();
 
         // Import các tệp âm thanh tại đây
-        addSound("background", "/sound/combat11.wav");
+        addSound("background", "/sound/Map01_Sound.wav");
         setVolume("background", 30.0f);
         addSound("got_sth", "/sound/got_sth.wav");
         setVolume("got_sth", -20.0f);      
@@ -39,7 +39,8 @@ public class Sound {
         setVolume("menu", 20.0f);
         addSound("combat4", "/sound/combat4.wav");
         setVolume("combat4", -15.0f);
-        addSound("map4", "/sound/map4.wav");
+        addSound("map4", "/sound/Map04_Sound.wav");
+        setVolume("map4", -10.0f);
     }
     // Phương thức để tạm dừng âm thanh
     public void pause(String name) {
