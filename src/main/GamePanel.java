@@ -293,6 +293,8 @@ public class GamePanel extends JPanel implements Runnable{
         if (gameOver) {
             if(keyH.RPressed){
                 System.out.println("isReset");
+                soundManager.unmuteAll();
+                soundManager.setDefaultSound();
                 resetGame();
                 loadingTime = 100;
                 keyH.RPressed = false;
@@ -553,7 +555,7 @@ public class GamePanel extends JPanel implements Runnable{
             new Rectangle(72 * tileSize, 45 * tileSize, 16 * tileSize, 10 * tileSize),
             new Rectangle(72 * tileSize, 56 * tileSize, 16 * tileSize, 10 * tileSize),
             new Rectangle(23 * tileSize, 44 * tileSize, 12 * tileSize, 14 * tileSize), 
-            new Rectangle(23 * tileSize, 62 * tileSize, 12 * tileSize, 26 * tileSize)
+            new Rectangle(23 * tileSize, 59 * tileSize, 12 * tileSize, 26 * tileSize)
             };
             boolean flag = false;
 
