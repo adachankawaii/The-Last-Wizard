@@ -29,6 +29,7 @@ public class Sound {
         addSound("menu", "/sound/menu.wav");
         addSound("combat4", "/sound/combat4.wav");
         addSound("map4", "/sound/Map04_Sound.wav");
+        addSound("credit", "/sound/credit.wav");
         setDefaultSound();
     }
 
@@ -44,7 +45,7 @@ public class Sound {
         setVolume("combat3", -15.0f);
         setVolume("menu", 20.0f);
         setVolume("combat4", -15.0f);
-        setVolume("map4", -10.0f);
+        setVolume("map4", -20.0f);
         setVolume("hurt", -30.0f);
     }
     

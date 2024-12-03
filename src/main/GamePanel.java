@@ -1120,6 +1120,8 @@ public class GamePanel extends JPanel implements Runnable{
                     g2.fillRect(0, 0, screenWidth, screenHeight); // Đảm bảo nền đen
                     g2.setFont(bigFont);
                     g2.setColor(Color.WHITE);
+                    soundManager.stop("map4");
+                    soundManager.loop("credit");
                     String endText = "THE END";
                     int endTextWidth = g2.getFontMetrics(bigFont).stringWidth(endText);
                     g2.drawString(endText, screenWidth / 2 - endTextWidth / 2, screenHeight / 2);
@@ -1159,6 +1161,7 @@ public class GamePanel extends JPanel implements Runnable{
                 } else if (fadePhase == 4) {
                     endgame = false;
                     clearGameData();
+                    soundManager.stop("credit");
                     startMenu = true;
                     done = false;
                     fadePhase = 0;
