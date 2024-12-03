@@ -723,7 +723,7 @@ public class GamePanel extends JPanel implements Runnable{
                         }
                     }
                 }
-                reloadTime = 10;
+                reloadTime = 15;
             }
         }
 
