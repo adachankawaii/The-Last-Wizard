@@ -290,6 +290,8 @@ public class GamePanel extends JPanel implements Runnable{
         if (gameOver) {
             if(keyH.RPressed){
                 System.out.println("isReset");
+                soundManager.unmuteAll();
+                soundManager.setDefaultSound();
                 resetGame();
                 loadingTime = 100;
                 keyH.RPressed = false;

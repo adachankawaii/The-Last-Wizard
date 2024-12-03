@@ -14,34 +14,40 @@ public class Sound {
 
         // Import các tệp âm thanh tại đây
         addSound("background", "/sound/Map01_Sound.wav");
-        setVolume("background", 30.0f);
-        addSound("got_sth", "/sound/got_sth.wav");
-        setVolume("got_sth", -20.0f);      
+        addSound("got_sth", "/sound/got_sth.wav");    
         addSound("wand", "/sound/wand.wav");
-        setVolume("wand", -20.0f);
         addSound("player_die", "/sound/player_die.wav");
         addSound("slime_die", "/sound/slime_die.wav");
-        setVolume("slime_die", -20.0f);
         addSound("pew","/sound/pew-laser-fx_C_minor.wav");
-        setVolume("pew", -20.0f);
         addSound("opening","/sound/OpeningBG.wav");
-        setVolume("opening", -10.0f);
-        addSound("hurt", "/sound/hurt3.wav");
-        setVolume("hurt", -30.0f);      
+        addSound("hurt", "/sound/hurt3.wav");     
         addSound("map21", "/sound/map2.wav");
         addSound("map22", "/sound/map22.wav");
         addSound("combat", "/sound/combat.wav");
         addSound("combat12", "/sound/combat12.wav");
-        setVolume("combat12", -10.0f);
         addSound("combat3", "/sound/combat3.wav");
-        setVolume("combat3", -15.0f);
         addSound("menu", "/sound/menu.wav");
-        setVolume("menu", 20.0f);
         addSound("combat4", "/sound/combat4.wav");
-        setVolume("combat4", -15.0f);
         addSound("map4", "/sound/Map04_Sound.wav");
-        setVolume("map4", -10.0f);
+        setDefaultSound();
     }
+
+    public void setDefaultSound() {
+        setVolume("background", 30.0f);
+        setVolume("got_sth", -20.0f);     
+        setVolume("wand", -20.0f);
+	    setVolume("player_die", -10.0f);
+        setVolume("slime_die", -20.0f);
+        setVolume("pew", -20.0f);
+        setVolume("opening", -10.0f);
+        setVolume("combat12", -10.0f);
+        setVolume("combat3", -15.0f);
+        setVolume("menu", 20.0f);
+        setVolume("combat4", -15.0f);
+        setVolume("map4", -10.0f);
+        setVolume("hurt", -30.0f);
+    }
+    
     // Phương thức để tạm dừng âm thanh
     public void pause(String name) {
         Clip clip = soundEffects.get(name);
@@ -167,6 +173,16 @@ public class Sound {
             if (volumeControl != null) {
                 float minVolume = volumeControl.getMinimum();
                 volumeControl.setValue(minVolume);
+            }
+        }
+    }
+
+    public void unmuteAll() {
+        for (String name : volumeControls.keySet()) {
+            FloatControl volumeControl = volumeControls.get(name);
+            if (volumeControl != null) {
+                float defaultVolume = 0.0f; // Giá trị âm lượng mặc định, bạn có thể thay đổi giá trị này
+                volumeControl.setValue(defaultVolume);
             }
         }
     }
