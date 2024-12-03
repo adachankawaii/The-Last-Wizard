@@ -554,8 +554,7 @@ public class GamePanel extends JPanel implements Runnable{
             Rectangle[] zone = new Rectangle[]{new Rectangle(72 * tileSize, 34 * tileSize, 16 * tileSize, 10 * tileSize),
             new Rectangle(72 * tileSize, 45 * tileSize, 16 * tileSize, 10 * tileSize),
             new Rectangle(72 * tileSize, 56 * tileSize, 16 * tileSize, 10 * tileSize),
-            new Rectangle(23 * tileSize, 44 * tileSize, 12 * tileSize, 14 * tileSize), 
-            new Rectangle(23 * tileSize, 59 * tileSize, 12 * tileSize, 26 * tileSize)
+            new Rectangle(20*tileSize,42*tileSize,18*tileSize,24*tileSize),
             };
             boolean flag = false;
 
@@ -659,6 +658,8 @@ public class GamePanel extends JPanel implements Runnable{
         if (startMenu) { // Kiểm tra nếu đang ở trạng thái Start Menu
             if (mouseInfo == 1 && selectedChoice != -1) { // Nếu nhấn chuột trái
                 if(selectedChoice % 4 == 0){
+                    map = 1;
+                    player.isDarken = false;
                     soundManager.stop("menu");
                     clearGameData();
                     newGameSlideShow = true;
@@ -703,17 +704,17 @@ public class GamePanel extends JPanel implements Runnable{
         }
         else if(player.combat && !gameOver){
             if(reloadTime <= 0){
-                if(mouseInfo == 1 && player.Energy >= 10){
+                if(mouseInfo == 1 && player.Energy >= 5){
                     NormalBullet b = new NormalBullet("/bullet/bullet.png","bullet",12,12, 8, 8, player.worldX, player.worldY,20,this ,0, 12, 1, 1, mouseX, mouseY);
                     b.off = false;
                     obj.add(b);
                     Effect c = new Effect ("/effect/Blue Effect.png", 0, 0, player.worldX, player.worldY, 15, this, 4, 1.5,1.5, mouseX, mouseY);
                     obj.add(c);
-                    player.Energy -= 10;
+                    player.Energy -= 5;
                 }
                 else if(mouseInfo == 2 && !player.items.isEmpty()){
                     player.items.get(player.pointer).effect();
-                    player.itemsCount.set(player.pointer, player.itemsCount.get(player.pointer) );
+                    if(!Objects.equals(player.items.get(player.pointer).objName, "Bell")) player.itemsCount.set(player.pointer, player.itemsCount.get(player.pointer) - 1);
                     if(player.itemsCount.get(player.pointer) <= 0){
                         player.itemsCount.remove(player.pointer);
                         player.items.remove(player.pointer);
@@ -722,7 +723,7 @@ public class GamePanel extends JPanel implements Runnable{
                         }
                     }
                 }
-                reloadTime = 20;
+                reloadTime = 10;
             }
         }
 
@@ -825,7 +826,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ các đối tượng trong obj, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < obj.size(); i++) {
             Entity entity = obj.get(i);
-            if (entity != null && ((entity.layer < 1 && isObjectInScreen(entity)) || Objects.equals(Objects.requireNonNull(entity).objName, "Golem"))) {
+            if (entity != null && ((entity.layer < 1 && isObjectInScreen(entity)) || entity.isBoss)) {
                 entity.draw(g2, this);
             }
         }
@@ -844,7 +845,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Vẽ các đối tượng ở layer >= 1 trong obj, chỉ vẽ khi chúng nằm trong phạm vi màn hình
         for (int i = 0; i < obj.size(); i++) {
             Entity entity = obj.get(i);
-            if (entity != null && ((entity.layer >= 1 && isObjectInScreen(entity)) || Objects.equals(Objects.requireNonNull(entity).objName, "Golem"))) {
+            if (entity != null && ((entity.layer >= 1 && isObjectInScreen(entity)) || entity.isBoss)) {
                 entity.draw(g2, this);
             }
         }
@@ -1091,79 +1092,80 @@ public class GamePanel extends JPanel implements Runnable{
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         if(endgame){
-            if (endgame) {
-                if (fadeAlpha < 1.0f && fadePhase == 0) {
-                    draw(g2);
-                    // Pha đầu tiên: Chuyển từ màn hình hiện tại sang màu trắng
-                    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeAlpha));
-                    g2.setColor(Color.WHITE);
-                    g2.fillRect(0, 0, screenWidth, screenHeight);
-                    fadeAlpha += 0.01f; // Tăng độ sáng dần
-                    if (fadeAlpha >= 1.0f) {
-                        fadeAlpha = 1.0f;
-                        fadePhase = 1; // Chuyển sang pha tiếp theo
-                    }
-                } else if (fadePhase == 1) {
-                    // Pha thứ hai: Chuyển từ trắng sang đen
-                    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeAlpha));
-                    g2.setColor(Color.BLACK);
-                    g2.fillRect(0, 0, screenWidth, screenHeight);
-                    fadeAlpha -= 0.01f; // Giảm độ sáng dần
-                    if (fadeAlpha <= 0.0f) {
-                        fadeAlpha = 0.0f;
-                        fadePhase = 2; // Chuyển sang pha tiếp theo
-                        creditY = screenHeight; // Bắt đầu credit từ đáy màn hình
-                    }
-                } else if (fadePhase == 2) {
-                    // Pha thứ ba: Hiển thị chữ "The End"
-                    g2.setColor(Color.BLACK);
-                    g2.fillRect(0, 0, screenWidth, screenHeight); // Đảm bảo nền đen
-                    g2.setFont(bigFont);
-                    g2.setColor(Color.WHITE);
-                    String endText = "THE END";
-                    int endTextWidth = g2.getFontMetrics(bigFont).stringWidth(endText);
-                    g2.drawString(endText, screenWidth / 2 - endTextWidth / 2, screenHeight / 2);
-
-                    endTimer--; // Đếm ngược thời gian hiển thị "The End"
-                    if (endTimer <= 0) {
-                        fadePhase = 3; // Chuyển sang hiển thị credit
-                    }
-                } else if (fadePhase == 3) {
-                    // Pha thứ tư: Hiển thị credit
-                    g2.setColor(Color.BLACK);
-                    g2.fillRect(0, 0, screenWidth, screenHeight); // Đảm bảo nền đen
-                    g2.setFont(smallFont);
-                    g2.setColor(Color.WHITE);
-
-                    String[] credits = {
-                            "Game Design: Your Name","",
-                            "Lead Programmer: Your Name","",
-                            "Art and Graphics: Artist Name","",
-                            "Music and Sound: Composer Name","",
-                            "Special Thanks: Your Friends","",
-                            "Thanks for playing!"
-                    };
-
-                    // Vẽ từng dòng credit
-                    int lineHeight = g2.getFontMetrics(smallFont).getHeight();
-                    for (int i = 0; i < credits.length; i++) {
-                        int creditX = screenWidth / 2 - g2.getFontMetrics(smallFont).stringWidth(credits[i]) / 2;
-                        int creditYLine = creditY + i * lineHeight;
-                        g2.drawString(credits[i], creditX, creditYLine);
-                    }
-
-                    creditY -= 2; // Credit cuộn lên trên
-                    if (creditY + credits.length * lineHeight < 0) {
-                        fadePhase = 4; // Kết thúc credit
-                    }
-                } else if (fadePhase == 4) {
-                    endgame = false;
-                    clearGameData();
-                    startMenu = true;
-                    done = false;
-                    fadePhase = 0;
-                    endTimer = 50;
+            if (fadeAlpha < 1.0f && fadePhase == 0) {
+                draw(g2);
+                // Pha đầu tiên: Chuyển từ màn hình hiện tại sang màu trắng
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeAlpha));
+                g2.setColor(Color.WHITE);
+                g2.fillRect(0, 0, screenWidth, screenHeight);
+                fadeAlpha += 0.01f; // Tăng độ sáng dần
+                if (fadeAlpha >= 1.0f) {
+                    fadeAlpha = 1.0f;
+                    fadePhase = 1; // Chuyển sang pha tiếp theo
                 }
+            } else if (fadePhase == 1) {
+                // Pha thứ hai: Chuyển từ trắng sang đen
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeAlpha));
+                g2.setColor(Color.BLACK);
+                g2.fillRect(0, 0, screenWidth, screenHeight);
+                fadeAlpha -= 0.01f; // Giảm độ sáng dần
+                if (fadeAlpha <= 0.0f) {
+                    fadeAlpha = 0.0f;
+                    fadePhase = 2; // Chuyển sang pha tiếp theo
+                    creditY = screenHeight; // Bắt đầu credit từ đáy màn hình
+                }
+            } else if (fadePhase == 2) {
+                // Pha thứ ba: Hiển thị chữ "The End"
+                g2.setColor(Color.BLACK);
+                g2.fillRect(0, 0, screenWidth, screenHeight); // Đảm bảo nền đen
+                g2.setFont(bigFont);
+                g2.setColor(Color.WHITE);
+                String endText = "THE END";
+                int endTextWidth = g2.getFontMetrics(bigFont).stringWidth(endText);
+                g2.drawString(endText, screenWidth / 2 - endTextWidth / 2, screenHeight / 2);
+
+                endTimer--; // Đếm ngược thời gian hiển thị "The End"
+                if (endTimer <= 0) {
+                    fadePhase = 3; // Chuyển sang hiển thị credit
+                }
+            } else if (fadePhase == 3) {
+                // Pha thứ tư: Hiển thị credit
+                g2.setColor(Color.BLACK);
+                g2.fillRect(0, 0, screenWidth, screenHeight); // Đảm bảo nền đen
+                g2.setFont(smallFont);
+                g2.setColor(Color.WHITE);
+
+                String[] credits = {
+                        "Under the instructions of Mr Trần Nhật Hóa", "", "",
+                        "Developers: Nguyễn Ngọc Ánh, Lê Minh Hoàng, Trần Tiến Dũng", "",
+                        "Designers: Nguyễn Thị Chi Mai, Nguyễn Ngọc Ánh, Nguyễn Minh Tùng", "",
+                        "Editors: Nguyễn Ngọc Ánh, Nguyễn Minh Tùng", "",
+                        "Music and Sound: Nguyễn Thị Chi Mai, Nguyễn Ngọc Ánh", "",
+                        "Ideas: Nguyễn Minh Tùng, Lê Minh Hoàng", "",
+                        "Tester: Trần Tiến Dũng", "",
+                        "", "",
+                        "Thanks for playing!"
+                };
+
+                // Vẽ từng dòng credit
+                int lineHeight = g2.getFontMetrics(smallFont).getHeight();
+                for (int i = 0; i < credits.length; i++) {
+                    int creditX = screenWidth / 2 - g2.getFontMetrics(smallFont).stringWidth(credits[i]) / 2;
+                    int creditYLine = creditY + i * lineHeight;
+                    g2.drawString(credits[i], creditX, creditYLine);
+                }
+
+                creditY -= 1; // Credit cuộn lên trên
+                if (creditY + credits.length * lineHeight < 0) {
+                    fadePhase = 4; // Kết thúc credit
+                }
+            } else if (fadePhase == 4) {
+                endgame = false;
+                clearGameData();
+                startMenu = true;
+                done = false;
+                fadePhase = 0;
+                endTimer = 50;
             }
         }
         else {

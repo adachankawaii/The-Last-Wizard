@@ -233,7 +233,7 @@ public class Ghost extends Entity{
             int barHeight = 4; // Chiều cao của thanh máu
 
             // Tính toán phần trăm HP
-            double healthPercent = (double) HP / 8.0; // HP hiện tại chia cho HP tối đa
+            double healthPercent = (double) HP / 1.0; // HP hiện tại chia cho HP tối đa
 
             // Lưu trạng thái gốc của Graphics2D
             screenY = worldY - gp.player.worldY + gp.player.screenY;

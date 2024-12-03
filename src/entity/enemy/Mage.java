@@ -8,6 +8,7 @@ import java.util.Random;
 
 import entity.Entity;
 
+import entity.Items.Coin;
 import entity.Items.CommonItem;
 // import entity.bullet.NormalBullet;
 // import entity.Items.Coin;
@@ -28,7 +29,7 @@ public class Mage extends Entity {
     private int rootX = -1, rootY = -1;
     boolean back = false;
     private int targetX, targetY;
-    int moveset = new Random().nextInt(3);
+    int moveset = 0;
     Random random = new Random();
     HashMap<String, Integer> map = new HashMap<String, Integer>();
     public Mage(GamePanel gp) {
@@ -37,18 +38,26 @@ public class Mage extends Entity {
         collision = true;
         direction = "down";
         HP = 8;
+        if(gp.map == 3){
+            HP = 20;
+        }
         speed = 4;
         isTrigger = true;
         this.gp = gp;
-        rectGet(-8, -8, 48, 48);
+        if(gp.map == 3) rectGet(100, 100, 48, 48);
+        else rectGet(-8, -8, 48, 48);
         getImage();
         aniCount = 1;
         map.put("bullet", 1);
         map.put("Bigbullet", 3);
         isEnemy = true;
+        if(gp.map == 3) isBoss = true;
     }
     public void getImage() {
-
+        if(gp.map == 3){
+            importAndSlice("/enemy/Idle.png", 10,0,0);
+            importAndSlice("/enemy/Run.png", 8, 0,0);
+        }
         // CHUYỂN ĐỘNG IDLE CỦA SLIME.
         importAndSlice("/enemy/MageSeeker/Character-Idle-Sprite-Sheet.png", 6,0,0);
         importAndSlice("/enemy/MageSeeker/Character-Run-Sprite-Sheet.png", 8, 0,0);
@@ -86,8 +95,9 @@ public class Mage extends Entity {
             targetX = rootX;
             targetY = rootY;
         }
-
-        angle = Math.atan2(targetY + (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldY, targetX + (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - worldX);
+        int npcCenterX = worldX + solidArea.x + solidArea.width / 2;
+        int npcCenterY = worldY + solidArea.y + solidArea.height / 2;
+        angle = Math.atan2(targetY + (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - npcCenterY, targetX + (new Random().nextInt(1*gp.tileSize) - gp.tileSize/2) - npcCenterX);
         double angleDegrees = Math.toDegrees(angle);
         if (angleDegrees > -22.5 && angleDegrees <= 22.5) {
             direction = "right";
@@ -115,8 +125,7 @@ public class Mage extends Entity {
 
         //gp.cCheck.checkObjectForObj(this);
 
-        int npcCenterX = worldX + gp.tileSize / 2;
-        int npcCenterY = worldY + gp.tileSize / 2;
+
 
         int playerCenterX = targetX + gp.tileSize / 2;
         int playerCenterY = targetY + gp.tileSize / 2;
@@ -172,32 +181,39 @@ public class Mage extends Entity {
                 }
                 aniCount = 1;
                 timer = 0;
-            }if (distanceToTarget <= 9 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
+            }else if (distanceToTarget <= 9 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
                 // Tạo hiệu ứng tại vị trí hiện tại của enemy
                 if(moveset == 0){
-                    ThrowingObj b = new ThrowingObj(null, "enemyBullet", 20 * gp.tileSize, 20 * gp.tileSize, 1, 1, worldX, worldY, 20, gp, 0, 7, 4, 4, targetX, targetY);
+                    ThrowingObj b = new ThrowingObj(null, "enemyBullet", 20 * gp.tileSize, 20 * gp.tileSize, 1, 1, npcCenterX, npcCenterY, 20, gp, 0, 7, 4, 4, targetX, targetY);
                     gp.obj.add(b);
                     // Đặt lại thời gian chờ
                     delayTime = 50;
+                    if(gp.map == 3) moveset = random.nextInt(3);
                 }
                 else if(moveset == 1){
-                    FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12,12, 8, 8, npcCenterX +  (flip ? -12-32 : 12+41), npcCenterY - 45, 65, gp, 0, 10, 1, 1, targetX, targetY, null);
+                    FireBullet b = new FireBullet("/bullet/Red Effect Bullet Impact Explosion 32x32.png", "enemyBullet", 12,12, 8, 8, npcCenterX, npcCenterY, 65, gp, 0, 10, 1, 1, targetX, targetY, null);
                     gp.obj.add(b);
                     delayTime = 50;
+                    if(gp.map == 3) moveset = random.nextInt(3);
                 }
                 else{
-                    double angle = random.nextDouble(Math.toRadians(360));
-                    Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX + (int)(4*gp.tileSize* Math.cos(angle)), npcCenterY + (int)(4*gp.tileSize* Math.cos(angle)), 15, gp, 0, 2, 2, 0, 0);
+                    Effect a = new Effect("/effect/enemyEffect .png", 0, 0, npcCenterX, npcCenterY, 15, gp, 0, 2, 2, 0, 0);
                     gp.obj.add(a);
                     Ghost g = new Ghost(gp);
-                    g.worldX = npcCenterX + (int)(4*gp.tileSize* Math.cos(angle));
-                    g.worldY = npcCenterY + (int)(4*gp.tileSize* Math.cos(angle));
+                    g.worldX = npcCenterX;
+                    g.worldY = npcCenterY;
                     gp.obj.add(g);
                     delayTime = 50;
+                    if(gp.map == 3) moveset = random.nextInt(3);
                 }
+                aniCount = 0;
+            }
+            else {
+                aniCount = 0;
             }
 
-            aniCount = 0;
+
+
         }
         else{
             switch (direction) {
@@ -235,15 +251,26 @@ public class Mage extends Entity {
         collisionOn = false;
         delayTime--;
         delayHP--;
+        if(HP <= 0){
+            Effect a = new Effect("/effect/effect1.png", 0, 0, npcCenterX, npcCenterY, 10, gp, 0, 2, 2, 0, 0);
+            gp.obj.add(a);
+            gp.soundManager.play("slime_die");
+            gp.player.kills++;
+            gp.obj.remove(this);
+        }
     }
 
     boolean flip = false;
 
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
-        // Tọa độ để vẽ thanh máu trên đầu của Slime
         int barX = this.screenX;
-        int barY = this.screenY - 10; // Thanh máu cách đầu Slime 10 pixel
+        int barY = this.screenY -10;
+        // Tọa độ để vẽ thanh máu trên đầu của Slime
+        if(gp.map == 3){
+            barX = this.screenX + 120;
+            barY = this.screenY + 100 - 15;
+        } // Thanh máu cách đầu Slime 10 pixel
 
         // Kích thước của thanh máu
         int barWidth = this.solidArea.width; // Chiều rộng của thanh máu bằng với kích thước của Slime
@@ -251,7 +278,7 @@ public class Mage extends Entity {
 
         // Tính toán phần trăm HP
         double healthPercent = (double) HP / 8.0; // HP hiện tại chia cho HP tối đa
-
+        if(gp.map == 3) healthPercent = (double) HP / 20.0;
         // Lưu trạng thái gốc của Graphics2D
         screenY = worldY - gp.player.worldY + gp.player.screenY;
         screenX = worldX - gp.player.worldX + gp.player.screenX;
@@ -269,7 +296,14 @@ public class Mage extends Entity {
         // Tính toán chính xác tâm của hình ảnh
         int centerX = screenX + gp.tileSize / 2 ;
         int centerY = screenY + gp.tileSize / 2;
+        if(gp.map == 3){
+            imageWidth = (int) (image.getWidth()) * 2;
+            imageHeight = (int) (image.getHeight()) * 2;
 
+            // Tính toán chính xác tâm của hình ảnh
+            centerX = screenX + imageWidth / 2;
+            centerY = screenY + imageHeight / 2;
+        }
         // Dịch hệ tọa độ đến tâm của vật thể (tâm của hình ảnh)
         g2.translate(centerX, centerY);
 
@@ -306,11 +340,11 @@ public class Mage extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                Effect a = new Effect("/effect/effect1.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 2, 2, 0, 0);
-                gp.obj.add(a);
-                gp.soundManager.play("slime_die");
-                gp.player.kills++;
-                gp.obj.remove(this);
+                int tmp = gp.map == 3 ? 20 : 5;
+                for(int i = 0;i< tmp;i++){
+                    Coin coin = new Coin(this.worldX + new Random().nextInt(gp.tileSize), this.worldY + new Random().nextInt(gp.tileSize), gp);
+                    gp.obj.add(coin);
+                }
             }
         }
     }

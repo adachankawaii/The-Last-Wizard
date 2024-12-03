@@ -176,6 +176,8 @@ public class Soldier extends Entity {
                     aniCount = 2;
                     animationDelay = 10;
                     if (spriteNum == animations.get(aniCount).size() - 1) {
+                        Effect a = new Effect("/effect/Red Effect Bullet Impact Explosion 32x32.png", 0, 0, worldX, worldY, 8, gp, 0, 2, 2, gp.player.worldX, gp.player.worldY);
+                        gp.obj.add(a);
                         Bullet b = new Bullet("/bullet/Bow and Arrows.png", "enemyBullet", 12,12, 8, 8, this.worldX, this.worldY, 50, gp, 0, 7, 1, 1, targetX, targetY);
                         b.root = this.objName;
                         gp.obj.add(b);
@@ -315,7 +317,7 @@ public class Soldier extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                int tmp = new Random().nextInt(3);
+                int tmp = 4;
                 for(int i = 0;i< tmp;i++){
                     Coin coin = new Coin(this.worldX + new Random().nextInt(gp.tileSize), this.worldY + new Random().nextInt(gp.tileSize), gp);
                     gp.obj.add(coin);

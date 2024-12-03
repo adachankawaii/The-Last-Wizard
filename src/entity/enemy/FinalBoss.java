@@ -36,7 +36,7 @@ public class FinalBoss extends Entity {
 
     public FinalBoss(GamePanel gp) {
         layer = 2;
-        objName = "King";
+        objName = "Nhà vua";
         collision = true;
         direction = "down";
         HP = 75;
@@ -46,10 +46,10 @@ public class FinalBoss extends Entity {
         rectGet(250, 250, 48*2, 52*2);
         getImage();
         aniCount = 1;
-        map.put("bullet", 75);
+        map.put("bullet", 1);
         map.put("Bigbullet", 3);
         isEnemy = true;
-        addWords(new String[]{"Nhà vua: Hahahaha, thì ra tên nhãi nhép nhà ngươi cũng lết được xác đến đây rồi sao. Lũ lính canh và giám ngục thật vô dụng",
+        addWords(new String[]{"Hahahaha, thì ra tên nhãi nhép nhà ngươi cũng lết được xác đến đây rồi sao. Lũ lính canh và giám ngục thật vô dụng",
                 "Aiss, nhà ngươi cũng có phép thuật!!!!!!??? Chuyện gì đang xảy ra thế này!",
                 "Chẳng giấu gì với ngươi, chính ta là người giật dây đằng sau cho sự diệt chủng của lũ phù thủy ngu dốt các người,","mang trong mình sức mạnh như vậy nhưng lại không cai trị thế giới, đúng là ngu ngốc.","Chính vì vậy, ta đã thuyết phục đám mọi dân rằng các ngươi là những kẻ xấu xa, tàn bạo cần phải diệt chủng ngay lập tức.","Và dĩ nhiên, ta đã nằm quyền cai trị vương quốc này, bước tiếp theo chính là thế giới này kkkk.","Để sót ngươi đúng là một lỗ hổng trong kế hoạch của ta. Nhưng không sao, chính tay ta sẽ tiêu diệt nhà ngươi",
                 "Hãy xem đây.","end"});
@@ -179,7 +179,7 @@ public class FinalBoss extends Entity {
                 if(phaseCount >= 400){
                     HP++;
                     if(HP >= 75){
-                        HP = 75;
+                        HP = 75 ;
                         int bulletCount = 18; // Ví dụ: 5 viên đạn
                         double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
 
@@ -529,7 +529,7 @@ public class FinalBoss extends Entity {
             g2.setColor(Color.WHITE);
             g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
             g2.setFont(font);
-            g2.drawString("Celerion, Crowned of the Arcane", healthBarX, healthBarY - 20);
+            g2.drawString("Celerion, kẻ thôn tính", healthBarX, healthBarY - 20);
         }
         if(dead && !startTalk){
             String prompt = "Đặt AetherCrystal xuống để sử dụng";

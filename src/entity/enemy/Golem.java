@@ -10,6 +10,7 @@ import entity.Entity;
 // import entity.Items.Coin;
 // import entity.bullet.NormalBullet;
 // import entity.player.Quest;
+import entity.Items.Coin;
 import entity.Items.CommonItem;
 import entity.bullet.Bullet;
 import entity.bullet.ThrowingObj;
@@ -44,14 +45,14 @@ public class Golem extends Entity {
         objName = "Golem";
         collision = true;
         direction = "down";
-        HP = 75;
+        HP = 35;
         speed = 4;
         isTrigger = true;
         this.gp = gp;
         rectGet(70*2, 70*2, 48*2, 52*2);
         getImage();
         aniCount = 1;
-        map.put("bullet", 75);
+        map.put("bullet", 1);
         map.put("Bigbullet", 3);
         isEnemy = true;
         isBoss = true;
@@ -383,7 +384,7 @@ public class Golem extends Entity {
             int healthBarX = dialogueBoxX;
             int healthBarY = dialogueBoxY + dialogueBoxHeight - 40; // Vị trí ngay dưới khung chat
 
-            float healthPercentage = (float) HP / 75; // Tính phần trăm máu
+            float healthPercentage = (float) HP / 35; // Tính phần trăm máu
             int filledWidth = (int) (healthBarWidth * healthPercentage);
 
             // Vẽ khung thanh máu
@@ -398,7 +399,7 @@ public class Golem extends Entity {
             g2.setColor(Color.WHITE);
             g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
             g2.setFont(font);
-            g2.drawString("Runethal, the Stonekeeper", healthBarX, healthBarY - 20);
+            g2.drawString("Runethal, kẻ bảo vệ", healthBarX, healthBarY - 20);
         }
     }
     boolean dead = false;
@@ -412,15 +413,20 @@ public class Golem extends Entity {
             if(HP <= 0){
                 if(!dead) {
                     Portal p = new Portal(gp);
-                    p.worldX = worldX + solidArea.x + solidArea.width / 2;
-                    p.worldY = worldY + solidArea.y + solidArea.height / 2 + 4*gp.tileSize;
+                    p.worldX = 70*gp.tileSize;
+                    p.worldY = 17*gp.tileSize;
                     gp.obj.add(p);
                     CommonItem s = new CommonItem("CrystalFragment1", gp);
-                    s.worldX = worldX + solidArea.x + solidArea.width / 2;
-                    s.worldY = worldY + solidArea.y + solidArea.height / 2 + 6*gp.tileSize;
+                    s.worldX = 70*gp.tileSize;
+                    s.worldY = 19*gp.tileSize;
                     gp.obj.add(s);
                     Effect b = new Effect("/effect/effect1.png", 0, 0, s.worldX, s.worldY, 10, gp, 0, 2, 2, 0, 0);
                     gp.obj.add(b);
+                    int tmp = 25;
+                    for(int i = 0;i< tmp;i++){
+                        Coin coin = new Coin(this.worldX + new Random().nextInt(4*gp.tileSize), this.worldY + new Random().nextInt(4*gp.tileSize), gp);
+                        gp.obj.add(coin);
+                    }
                 }
                 dead = true;
                 gp.soundManager.stop("combat12");

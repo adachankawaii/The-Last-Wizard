@@ -321,12 +321,11 @@ public class Knight extends Entity {
             HP-= map.get(entity.objName);
             isHurt = true;
             if(HP <= 0){
-                int tmp = new Random().nextInt(3);
+                int tmp = 4;
                 for(int i = 0;i< tmp;i++){
                     Coin coin = new Coin(this.worldX + new Random().nextInt(gp.tileSize), this.worldY + new Random().nextInt(gp.tileSize), gp);
                     gp.obj.add(coin);
                 }
-
                 Effect a = new Effect("/effect/effect1.png", 0, 0, this.worldX, this.worldY, 10, gp, 0, 2, 2, 0, 0);
                 gp.obj.add(a);
                 gp.soundManager.play("slime_die");

@@ -187,7 +187,7 @@ public class AssetSetter {
             wall.worldY = 42*gp.tileSize;
             wall.on = true;
             gp.obj.add(wall);
-            int[][] horizontalWalls = {{73, 69}};
+            int[][] horizontalWalls = {{73, 69},{28,78}};
             for (int[] pos : horizontalWalls) {
                 CombatWall c = new CombatWall(gp, 4, 1); // Width = 4, Height = 1
                 c.worldX = pos[0] * gp.tileSize;

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
+import entity.Items.Coin;
 import entity.Items.CommonItem;
 import entity.bullet.Bullet;
 import entity.Entity;
@@ -43,14 +44,14 @@ public class Executioner extends Entity {
         objName = "Dementor";
         collision = true;
         direction = "down";
-        HP = 5;
-        speed = 4;
+        HP = 35;
+        speed = 1;
         isTrigger = true;
         this.gp = gp;
         rectGet(70*2, 70*2, 48*2, 52*2);
         getImage();
         aniCount = 1;
-        map.put("bullet", 75);
+        map.put("bullet", 1);
         map.put("Bigbullet", 3);
         isEnemy = true;
         addWords(new String[]{"Sao tự dưng tôi lại thấy ớn lạnh nhỉ!","Đ-đó là the Dementor!!!","end"});
@@ -556,7 +557,7 @@ public class Executioner extends Entity {
             int healthBarX = dialogueBoxX;
             int healthBarY = dialogueBoxY + dialogueBoxHeight - 40; // Vị trí ngay dưới khung chat
 
-            float healthPercentage = (float) HP / 75; // Tính phần trăm máu
+            float healthPercentage = (float) HP / 35; // Tính phần trăm máu
             int filledWidth = (int) (healthBarWidth * healthPercentage);
 
             // Vẽ khung thanh máu
@@ -571,7 +572,7 @@ public class Executioner extends Entity {
             g2.setColor(Color.WHITE);
             g2.drawRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
             g2.setFont(font);
-            g2.drawString("Dreadveil the Dementor", healthBarX, healthBarY - 20);
+            g2.drawString("Giám ngục Dreadveil", healthBarX, healthBarY - 20);
         }
     }
     boolean dead = false;
@@ -585,13 +586,18 @@ public class Executioner extends Entity {
             if(HP <= 0){
                 dead = true;
                 CommonItem s = new CommonItem("CrystalFragment3", gp);
-                s.worldX = worldX + solidArea.x + solidArea.width / 2;
-                s.worldY = worldY + solidArea.y + solidArea.height / 2 + 6*gp.tileSize;
+                s.worldX = 28*gp.tileSize;
+                s.worldY = 28*gp.tileSize;
                 gp.obj.add(s);
                 Effect b = new Effect("/effect/effect1.png", 0, 0, s.worldX, s.worldY, 10, gp, 0, 2, 2, 0, 0);
                 gp.obj.add(b);
                 gp.soundManager.stop("combat3");
                 gp.soundManager.loop("map22");
+                int tmp = 25;
+                for(int i = 0;i< tmp;i++){
+                    Coin coin = new Coin(this.worldX + new Random().nextInt(4*gp.tileSize), this.worldY + new Random().nextInt(4*gp.tileSize), gp);
+                    gp.obj.add(coin);
+                }
             }
         }
     }

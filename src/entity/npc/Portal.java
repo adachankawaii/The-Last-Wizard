@@ -30,8 +30,8 @@ public class Portal extends Entity {
         this.gp = gp;
         rectGet(-12, -12, 48*2, 48*2);
         getNPCImage();
-        setWords("Do you want to go the next map?, end");
-        setWords("Crystal required,end");
+        setWords("Bạn có chắc chắn muốn sang khu vực khác?, end");
+        setWords("Bạn cần Crystal để đi tiếp,end");
         setWords("..., end");
         setWords("end");
         gp.keyH.SpacePressed = false;

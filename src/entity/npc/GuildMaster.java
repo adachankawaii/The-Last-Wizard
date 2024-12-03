@@ -28,15 +28,15 @@ public class GuildMaster extends Entity {
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        questsLine.add(new Quest("Get the HPBottle","Get the HPBottle", "Items", 1,"HPBottle","Coin", 15, gp));
-        questsLine.add(new Quest("Defeat the enemies","Clear this area, cover it with blood","kills",4,null,"ThrowingBottle", 13, gp));
-        questsLine.add(new Quest("Talk to NPC","Talk to Meraki","interact",1,"Meraki","Coin", 28,gp));
-        addWords(new String[]{"Look like you have completed the quest","This is your reward","end"});
-        addWords(new String[]{"Nothing here for you !", "end"});
+        questsLine.add(new Quest("Sở hữu HPBottle","Hãy mua HPBottle từ ShopKeeper", "Items", 1,"HPBottle","Coin", 15, gp));
+        questsLine.add(new Quest("Tiêu diệt kẻ địch","Quét sạch, nhuộm đỏ nơi này","kills",4,null,"ThrowingBottle", 13, gp));
+        questsLine.add(new Quest("Gặp Meraki","Meraki muốn gặp bạn","interact",1,"Meraki","Coin", 28,gp));
+        addWords(new String[]{"Có vẻ ngươi đã hoàn thành nhiệm vụ","Đây là phần thưởng","end"});
+        addWords(new String[]{"Không có gì cho ngươi đâu", "end"});
         String[] tmp = new String[questsLine.size()+2];
         for (int i = 0; i < tmp.length;i++){
             if(i == 0){
-                tmp[i] = "Complete these, and you can encounter the boss";
+                tmp[i] = "Hoàn thành nhiệm vụ, và ta sẽ mở cửa khu lăng mộ";
             }
             else if(i == tmp.length -1){
                 tmp[i] = "end";

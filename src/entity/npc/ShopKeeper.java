@@ -20,7 +20,7 @@ public class ShopKeeper extends Entity {
     int timer = 0;
     GamePanel gp;
     String[] choices = {"Choice 1", "Choice 2","Choice 3",""}; // Các lựa chọn
-    int[] cost = {1,0,0};
+    int[] cost = {10,10,10};
     Vector<Integer> tmp = new Vector<>(choices.length);
     String[] items = {"HPBottle","ThrowingBottle","InvisiblePotion"};
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
@@ -35,9 +35,9 @@ public class ShopKeeper extends Entity {
         this.gp = gp;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        setWords("Welcome to my shop!,What would you like to buy?, end");
-        setWords("Thank you !, end");
-        setWords("Sorry we don't have what you need, end");
+        setWords("Chào mừng đến với của hàng!,Bạn cần gì nhỉ?, end");
+        setWords("Cảm ơn đã mua hàng!, end");
+        setWords("Xin lỗi nhưng tôi không có thứ bạn cần, end");
         tmp.add(-1);
         for(int i = 1; i<choices.length;i++) {
             int a = new Random().nextInt(items.length);
@@ -160,7 +160,7 @@ public class ShopKeeper extends Entity {
                         Rectangle r = new Rectangle(choiceBoxX, choiceBoxY - i * choiceBoxHeight, choiceBoxWidth, 40);
                         String info = "Sold out";
                         if(i == 0) info = "* Leave *";
-                        else if (tmp.get(i) != -1) info = items[tmp.get(i)] + " || cost " + cost[tmp.get(i)];
+                        else info = items[tmp.get(i)] + " || cost " + cost[tmp.get(i)];
 
                         g2.drawString("Key " + (i + 1) + ": " + info, choiceBoxX + 10, choiceBoxY - i * choiceBoxHeight + 20);
 
@@ -204,7 +204,6 @@ public class ShopKeeper extends Entity {
 
                             }
                             gp.player.money -= cost[tmp.get(selectedChoice)];
-                            tmp.set(selectedChoice, -1);
                         }
                         else {
                             index = 2;

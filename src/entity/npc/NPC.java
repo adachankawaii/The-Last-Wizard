@@ -17,7 +17,7 @@ public class NPC extends Entity {
     int dialogueIndex = 0;
     int timer = 0;
     GamePanel gp;
-    String[] choices = {"Choice 1", "Choice 2"}; // Các lựa chọn
+    String[] choices = {"Có", "Không"}; // Các lựa chọn
 
     int selectedChoice = -1; // Chỉ số lựa chọn hiện tại (-1: chưa chọn)
     Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 15);
@@ -32,12 +32,12 @@ public class NPC extends Entity {
         rectGet(0, 0, 48, 48);
         getNPCImage();
         if(Objects.equals(objName, "Meraki")) {
-            setWords("sin cong sin bang 2 sin cos,cos cong cos bang tru 2 sin sin, end");
-            setWords("sin thi sin cos cos sin,cos thi cos cos sin sin dau tru,dia dia,end");
-            setWords("co day em bai the duc buoi sang, mot hai ba co len, end");
+            setWords("Chuyến hành trình của cậu bắt đầu rồi nhỉ,Cậu có hứa rằng sẽ sống sót trở về không, end");
+            setWords("Khẩu khí tốt đó chứ,Thượng lộ bình an nhé,end");
+            setWords("Đừng bi quan như vậy,Thượng lộ bình an nhé, end");
         }
         else if(Objects.equals(objName, "Amireux")){
-            setWords("Finally,you are here,I have not met you since that day,The Crow of War is waiting for you,end");
+            setWords(" Chà… ta biết là một ngày con sẽ đến được đây mà Lunar của ta,Ta là người đỡ đầu của con, là người bạn thân thiết với cha mẹ của con!, Trông con thật giống ba mẹ, chắc họ sẽ tự hào khi thấy con lắm, Con đến đây vì Dorry phải không?,Đây là chiếc lông quạ của Dorry,Hãy tìm kiếm thêm một bông artichoke để triệu hồi Dorry,end");
         }
         gp.keyH.SpacePressed = false;
     }
@@ -76,9 +76,6 @@ public class NPC extends Entity {
         words.get(words.size() - 1).addAll(Arrays.asList(splitWords));
     }
 
-    // Thêm biến để theo dõi việc đã hiển thị đoạn dialogueChoice chưa
-    // Biến để theo dõi trạng thái lựa chọn
-    // Biến để theo dõi trạng thái lựa chọn
     boolean isChoosing = false; // Đảm bảo rằng chỉ bật khi vào trạng thái lựa chọn
     boolean choiceMade = false; // Để kiểm tra xem đã thực hiện lựa chọn chưa
 
