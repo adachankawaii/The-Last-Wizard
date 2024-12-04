@@ -103,7 +103,7 @@ public class GuildMaster extends Entity {
         double distance = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
 
         // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
-        if (distance <= 1.5 * gp.tileSize) {
+        if (distance <= 2 * gp.tileSize) {
             g2.setFont(smallFont);
             int textWidth = g2.getFontMetrics(smallFont).stringWidth(objName);
             screenX = worldX - gp.player.worldX + gp.player.screenX + this.solidArea.width / 2 - textWidth / 2;

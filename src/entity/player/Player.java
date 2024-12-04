@@ -3,6 +3,7 @@ package entity.player;
 import entity.Items.CommonItem;
 // import entity.Items.Crow;
 import entity.Items.HPBottle;
+import entity.Items.Skill;
 import entity.Items.ThrowingBottle;
 import entity.enemy.*;
 import entity.npc.GuildMaster;
@@ -161,7 +162,7 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
-            System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
+            //System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {
@@ -302,6 +303,7 @@ public class Player extends Entity{
             }
         }
         else {
+            aniCount = 0;
             spriteCounter++;
             if (spriteCounter > delay) {
                 spriteNum++;
@@ -370,7 +372,7 @@ public class Player extends Entity{
                         hasKey++;
                         System.out.println(objName + " " + hasKey);
                     }
-                    case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion","Box","Artichoke","Feather","Bell","CrystalFragment1","CrystalFragment2","CrystalFragment3","CrystalFragment","AetherCrystal" -> {
+                    case "ThrowingBottle", "HPBottle", "Key","InvisiblePotion","Box","MagicBook","Artichoke","Feather","Bell","CrystalFragment1","CrystalFragment2","CrystalFragment3","CrystalFragment","AetherCrystal" -> {
                             boolean flag = false;
                             for (int j = 0; j < itemsCount.size(); j++) {
                                 if (items.get(j).objName.equals(gp.obj.get(i).objName)) {
@@ -665,6 +667,10 @@ public class Player extends Entity{
                 return new Ghost(gp);
             case "GuildMaster":
                 return new GuildMaster(gp);
+            case "Bell":
+                return new Skill(gp,"Bell");
+            case "MagicBook":
+                return new Skill(gp, "MagicBook");
             case "Box":
                 return new CommonItem("Box", gp);
             case "Feather":

@@ -519,7 +519,7 @@ public class GamePanel extends JPanel implements Runnable{
                                 }
                             }
                             if(!isSpawn){
-                                Bell bell = new Bell(this);
+                                Skill bell = new Skill(this, "Bell");
                                 bell.worldX = 27*tileSize;
                                 bell.worldY = 25*tileSize;
                                 Effect a = new Effect("/effect/effect1.png", 0, 0, bell.worldX, bell.worldY, 10, this, 0, 2, 2, 0, 0);
@@ -714,7 +714,7 @@ public class GamePanel extends JPanel implements Runnable{
                 }
                 else if(mouseInfo == 2 && !player.items.isEmpty()){
                     player.items.get(player.pointer).effect();
-                    if(!Objects.equals(player.items.get(player.pointer).objName, "Bell")) player.itemsCount.set(player.pointer, player.itemsCount.get(player.pointer) - 1);
+                    if(!player.items.get(player.pointer).isSkill) player.itemsCount.set(player.pointer, player.itemsCount.get(player.pointer) - 1);
                     if(player.itemsCount.get(player.pointer) <= 0){
                         player.itemsCount.remove(player.pointer);
                         player.items.remove(player.pointer);
@@ -1140,11 +1140,11 @@ public class GamePanel extends JPanel implements Runnable{
                         "Lead Programmers:", "Nguyễn Ngọc Ánh", "Lê Minh Hoàng", "",
                         "Developers: ", "Nguyễn Ngọc Ánh", "Lê Minh Hoàng","Nguyễn Thị Chi Mai","Nguyễn Minh Tùng","Trần Tiến Dũng","",
                         "Designers: ","Nguyễn Thị Chi Mai", "Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng", "",
-                        "Editors: ","Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng", "",
+                        "Editors: ","Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng","Trần Tiến Dũng", "",
                         "Music and Sound: ","Nguyễn Thị Chi Mai", "Nguyễn Ngọc Ánh", "",
                         "Ideas: ","Nguyễn Minh Tùng", "Lê Minh Hoàng", "",
                         "Tester: ","Trần Tiến Dũng","Nguyễn Ngọc Ánh", "",
-                        "Clown: ","Lê Minh Hoàng","",
+                        "Clowns: ","Lê Minh Hoàng","Trần Tiến Dũng","",
                         "", "",
                         "Thanks for playing!"
                 };
@@ -1331,7 +1331,9 @@ public class GamePanel extends JPanel implements Runnable{
                 p.pike = true;
                 return p;
             case "Bell":
-                return new Bell(this);
+                return new Skill(this, "Bell");
+            case "MagicBook":
+                return new Skill(this,"MagicBook");
             default:
                 System.out.println("Unknown object type: " + objectType);
                 return null;
