@@ -115,7 +115,7 @@ public class GuildMaster extends Entity {
         }
         Font font = bigFont;
         // Nếu khoảng cách <= 1.5 tile, hiển thị hội thoại hoặc nhắc nhở
-        if (distance <= 1.5 * gp.tileSize) {
+        if (distance <= 2 * gp.tileSize) {
             int dialogueBoxHeight = gp.tileSize * 2;
             int dialogueBoxY = gp.screenHeight - dialogueBoxHeight - 10;
             int dialogueBoxX = 20;

@@ -1137,12 +1137,14 @@ public class GamePanel extends JPanel implements Runnable{
 
                 String[] credits = {
                         "Under the instructions of Mr Trần Nhật Hóa", "", "",
-                        "Developers: Nguyễn Ngọc Ánh, Lê Minh Hoàng, Trần Tiến Dũng", "",
-                        "Designers: Nguyễn Thị Chi Mai, Nguyễn Ngọc Ánh, Nguyễn Minh Tùng", "",
-                        "Editors: Nguyễn Ngọc Ánh, Nguyễn Minh Tùng", "",
-                        "Music and Sound: Nguyễn Thị Chi Mai, Nguyễn Ngọc Ánh", "",
-                        "Ideas: Nguyễn Minh Tùng, Lê Minh Hoàng", "",
-                        "Tester: Trần Tiến Dũng", "",
+                        "Lead Programmers:", "Nguyễn Ngọc Ánh", "Lê Minh Hoàng", "",
+                        "Developers: ", "Nguyễn Ngọc Ánh", "Lê Minh Hoàng","Nguyễn Thị Chi Mai","Nguyễn Minh Tùng","Trần Tiến Dũng","",
+                        "Designers: ","Nguyễn Thị Chi Mai", "Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng", "",
+                        "Editors: ","Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng", "",
+                        "Music and Sound: ","Nguyễn Thị Chi Mai", "Nguyễn Ngọc Ánh", "",
+                        "Ideas: ","Nguyễn Minh Tùng", "Lê Minh Hoàng", "",
+                        "Tester: ","Trần Tiến Dũng","Nguyễn Ngọc Ánh", "",
+                        "Clown: ","Lê Minh Hoàng","",
                         "", "",
                         "Thanks for playing!"
                 };
