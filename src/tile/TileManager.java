@@ -12,70 +12,62 @@ public class TileManager {
 
     // Khai báo tile và mảng map chứa các tile
     public Tile[] tile;
-    public int[][] mapTile;
+    // public int[][] mapTile;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        tile = new Tile[200]; // Mảng lưu trữ các tile cần dùng
-        mapTile = new int[gp.maxWorldCol][gp.maxWorldRow]; // Tạo mảng map
+        tile = new Tile[10]; // Mảng lưu trữ các tile cần dùng
+        // mapTile = new int[gp.maxWorldCol][gp.maxWorldRow]; // Tạo mảng map
         getTileImage(); // Lấy tile từ res
-        loadMap("res/maps/world0" + gp.map +".txt"); // Match với ma trận ở file txt
+        // loadMap("res/maps/world0" + gp.map +".txt"); // Match với ma trận ở file txt
     }
 
     // LẤY MẪU TILE
     public void getTileImage() {
         try { // Lấy các tile
             if(gp.map == 1) {
-                for (int i = 1; i <= 8; i++) {
-                    tile[i] = new Tile();
-                    tile[i].image = ImageIO.read(new File("res/tiles/map1/" + i + ".png"));
-                }
+                tile[1] = new Tile();
+                tile[1].image = ImageIO.read(new File("res/tiles/map1/1.png"));
             } else if (gp.map == 2) {
-                for (int i = 1; i <= 33; i++) {
-                    tile[i] = new Tile();
-                    tile[i].image = ImageIO.read(new File("res/tiles/map2/" + i + ".png"));
-                }
+                tile[1] = new Tile();
+                tile[1].image = ImageIO.read(new File("res/tiles/map2/1.png"));
             } else if (gp.map == 3) {
-                for (int i = 1; i <= 2; i++) {
-                    tile[i] = new Tile();
-                    tile[i].image = ImageIO.read(new File("res/tiles/map3/" + i + ".png"));
-                }
+                tile[2] = new Tile();
+                tile[2].image = ImageIO.read(new File("res/tiles/map3/1.png"));
             }else if (gp.map == 4) {
-                for (int i = 1; i <= 34; i++) {
-                    tile[i] = new Tile();
-                    tile[i].image = ImageIO.read(new File("res/tiles/map4/" + i + ".png"));
-                }
+                tile[2] = new Tile();
+                tile[2].image = ImageIO.read(new File("res/tiles/map4/1.png"));
             }
         }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // LOAD MAP
-    public void loadMap(String mapPath) {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(mapPath));
-            int col = 0, row = 0;
+    // // LOAD MAP
+    // public void loadMap(String mapPath) {
+    //     try {
+    //         BufferedReader br = new BufferedReader(new FileReader(mapPath));
+    //         int col = 0, row = 0;
 
-            while(col < gp.maxWorldCol && row < gp.maxWorldRow) {
-                String line = br.readLine();
-                while(col < gp.maxWorldCol) {
-                    String[] number = line.split(" ");
-                    int num = Integer.parseInt(number[col]);
-                    mapTile[col][row] = num;
-                    col++;
-                }
-                if(col == gp.maxWorldCol) {
-                    col = 0;
-                    row++;
-                }
-            }
-            br.close();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
+    //         while(col < gp.maxWorldCol && row < gp.maxWorldRow) {
+    //             String line = br.readLine();
+    //             while(col < gp.maxWorldCol) {
+    //                 String[] number = line.split(" ");
+    //                 int num = Integer.parseInt(number[col]);
+    //                 mapTile[col][row] = num;
+    //                 col++;
+    //             }
+    //             if(col == gp.maxWorldCol) {
+    //                 col = 0;
+    //                 row++;
+    //             }
+    //         }
+    //         br.close();
+    //     } catch(Exception e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
     // VẼ MAP
     public void draw(Graphics2D gd) {
@@ -103,16 +95,10 @@ public class TileManager {
                         int i = 1;
                         if(gp.map == 4 || gp.map == 3) i = 2;
                         gd.drawImage(tile[i].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-                    } else {
-                        int num = mapTile[worldCol][worldRow];
-                        gd.drawImage(tile[num].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
                     }
                 }
             }
         }
     }
-
-
-    // TRẢ VỀ TILE THEO MA TRẬN
 
 }

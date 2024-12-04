@@ -297,8 +297,10 @@ public class GamePanel extends JPanel implements Runnable{
                 soundManager.setDefaultSound();
                 resetGame();
                 loadingTime = 100;
-                keyH.RPressed = false;
                 player.dead = false;
+                player.aniCount = 0; // Đặt lại trạng thái idle
+                player.spriteNum = 0; // Đặt lại sprite đầu tiên của trạng thái idle
+                player.spriteCounter = 0; // Đặt lại bộ đếm
             }
             return;
         }
@@ -616,15 +618,19 @@ public class GamePanel extends JPanel implements Runnable{
             switch (map) {
                 case 1:
                     soundManager.stop("background");
+                    soundManager.stop("combat11");
                     break;
                 case 2:
                     soundManager.stop("map21");
+                    soundManager.stop("combat12");
                     break;
                 case 3:
                     soundManager.stop("map22");
+                    soundManager.stop("combat3");
                     break;
                 case 4:
                     soundManager.stop("map4");
+                    soundManager.stop("combat4");
                     break;
                 default:
                     // Xử lý trường hợp mặc định nếu map không phải là 1, 2, 3, hay 4

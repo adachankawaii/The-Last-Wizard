@@ -1,3 +1,5 @@
+Map04 1
+0,0
 RayVertical 2
 0,13 59,13
 RayHorizontal 1

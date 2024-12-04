@@ -148,7 +148,7 @@ public class Player extends Entity{
         }
     }
     int delayE = 0;
-    boolean isDead = false;
+    public boolean isDead = false;
     public void update() {
         for (int i = itemsCount.size() - 1; i >= 0; i--) {
             if (itemsCount.get(i) <= 0) {
@@ -161,7 +161,7 @@ public class Player extends Entity{
         }
 
         if (combat && !isDead) {
-            System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
+            // System.out.println(worldX/gp.tileSize + " " + worldY/gp.tileSize);
             int objIndex = gp.cCheck.checkObject(this, true);
             // Điều kiện khi viên đạn hoặc slime chạm vào người chơi
             if (isTriggerOn && (gp.obj.get(objIndex).objName.equals("Slime_attack") || gp.obj.get(objIndex).objName.equals("enemyBullet")) && timer <= 0) {

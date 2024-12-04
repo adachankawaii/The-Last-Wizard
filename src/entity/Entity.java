@@ -39,9 +39,9 @@ public class Entity{
     public boolean isEnemy = false;
     protected boolean isHurt = false;
     // Dành cho importImage
-    protected int aniCount = 0;
-    protected int spriteCounter = 0;
-    protected int spriteNum = 0;
+    public int aniCount = 0;
+    public int spriteCounter = 0;
+    public int spriteNum = 0;
     public boolean isBoss = false;
     BufferedImage source;
     protected BufferedImage img;
