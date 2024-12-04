@@ -16,3 +16,5 @@ GuildMaster 1
 18,78
 Golem 1
 70,19
+Treasure 1
+25,80

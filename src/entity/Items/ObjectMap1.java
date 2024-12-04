@@ -100,7 +100,7 @@ public class ObjectMap1 extends Entity {
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
         drawObjMapImage(g2, gp);
-        mapRectDraw(g2);
+        // mapRectDraw(g2);
     }
 
     public void drawObjMapImage(Graphics2D g2, GamePanel gp) {

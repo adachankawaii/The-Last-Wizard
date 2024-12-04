@@ -273,7 +273,11 @@ public class AssetSetter {
                 p.pike = true;
                 return p;
             case "Bell":
-                return new Bell(gp);
+                return new Skill(gp,"Bell");
+            case "MagicBook":
+                return new Skill(gp, "MagicBook");
+            case "Treasure":
+                return new Chest(gp);
             default:
                 System.out.println("Unknown object type: " + objectType);
                 return null;

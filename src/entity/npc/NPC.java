@@ -216,6 +216,7 @@ public class NPC extends Entity {
                         c.worldX = gp.player.worldX;
                         c.worldY = gp.player.worldY;
                         gp.obj.add(c);
+                        gp.obj.remove(this);
                     }
                 }
 

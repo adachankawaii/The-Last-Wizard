@@ -184,7 +184,7 @@ public class Mage extends Entity {
             }else if (distanceToTarget <= 9 * gp.tileSize && gp.player.alpha >= 1 && delayTime <= 0) {
                 // Tạo hiệu ứng tại vị trí hiện tại của enemy
                 if(moveset == 0){
-                    ThrowingObj b = new ThrowingObj(null, "enemyBullet", 20 * gp.tileSize, 20 * gp.tileSize, 1, 1, npcCenterX, npcCenterY, 20, gp, 0, 7, 4, 4, targetX, targetY);
+                    ThrowingObj b = new ThrowingObj(null, "enemyBullet", 20 * gp.tileSize, 20 * gp.tileSize, 1, 1, npcCenterX, npcCenterY, 30, gp, 0, 7, 4, 4, targetX, targetY);
                     gp.obj.add(b);
                     // Đặt lại thời gian chờ
                     delayTime = 50;

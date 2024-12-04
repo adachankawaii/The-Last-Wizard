@@ -44,6 +44,7 @@ public class Entity{
     public int spriteNum = 0;
     public boolean isBoss = false;
     BufferedImage source;
+    public boolean isSkill = false;
     protected BufferedImage img;
     public Vector<Vector<BufferedImage>> animations = new Vector<>();
     public boolean flip = false;
@@ -126,8 +127,8 @@ public class Entity{
     // VẼ KHUNG RECT CỦA OBJECT
     public boolean isBullet = false;
     public void rectDraw(Graphics2D g2) {
-        g2.setColor(Color.red);
-        g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+        /*g2.setColor(Color.red);
+        g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);*/
     }
 
     // TẠO KHUNG RECT CỦA OBJECT
