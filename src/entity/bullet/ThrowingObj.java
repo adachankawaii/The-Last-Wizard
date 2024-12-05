@@ -46,7 +46,6 @@ public class ThrowingObj extends Bullet {
 
             // Kiểm tra nếu vượt quá thời gian sống hoặc va chạm
             if (timer >= lifeTime) {
-                gp.soundManager.play("wand");
                 Bullet a = new Bullet(Objects.equals(objName, "enemyBullet") ? "/effect/enemyEffect .png" : "/effect/effect1.png",objName,-10*5,-10*5,(int)(6*5),(int)(6*5),this.worldX,this.worldY,8, gp, 0, 0,4.5, 4.5, this.targetX, this.targetY);
                 a.death = false;
                 gp.obj.add(a);

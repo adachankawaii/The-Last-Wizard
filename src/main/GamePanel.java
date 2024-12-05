@@ -1124,7 +1124,7 @@ public class GamePanel extends JPanel implements Runnable{
                 fadeAlpha += 0.008f; // Tăng độ sáng dần
                 if (fadeAlpha >= 1.0f) {
                     fadeAlpha = 1.0f;
-                    fadePhase = 2; // Chuyển sang pha tiếp theo
+                    fadePhase = 1; // Chuyển sang pha tiếp theo
                 }
             } else if (fadePhase == 1) {
                 // Pha thứ hai: Chuyển từ trắng sang đen
@@ -1140,6 +1140,8 @@ public class GamePanel extends JPanel implements Runnable{
             } else if (fadePhase == 2) {
                 // Pha thứ ba: Hiển thị chữ "The End"
                 // Xử lý hiển thị endText
+                g2.setColor(Color.BLACK);
+                g2.fillRect(0, 0, screenWidth, screenHeight);
                 soundManager.stop("map4");
                 soundManager.loop("credit");
                 String endText = "Và với quyền năng của viên bảo ngọc này, Ký ức về phù thủy của toàn bộ người dân đã biến mất. Cuối cùng Lunar có thể sống hòa nhập với thế giới như người bình thường rồi! Cùng đón chờ một cuộc hành trình mới, một khởi đầu mới của Lunar nhé!";
