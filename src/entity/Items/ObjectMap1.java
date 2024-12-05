@@ -54,10 +54,10 @@ public class ObjectMap1 extends Entity {
 
     // Phương thức để vẽ tất cả các rect đã khởi tạo
     public void mapRectDraw(Graphics2D g2) {
-        /*g2.setColor(Color.red);
+        g2.setColor(Color.red);
         for (Rectangle rect : rectList) {
             g2.drawRect(screenX + rect.x, screenY + rect.y, rect.width, rect.height);
-        }*/
+        }
     }
 
         // Phương thức đọc từ file và thêm vào danh sách rect
@@ -100,7 +100,7 @@ public class ObjectMap1 extends Entity {
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
         drawObjMapImage(g2, gp);
-        mapRectDraw(g2);
+        // mapRectDraw(g2);
     }
 
     public void drawObjMapImage(Graphics2D g2, GamePanel gp) {
@@ -121,7 +121,8 @@ public class ObjectMap1 extends Entity {
 
     // Phương thức kiểm tra xem đối tượng có nằm trong phạm vi màn hình không
     // Phương thức kiểm tra xem đối tượng có nằm trong phạm vi màn hình không
-    private boolean isObjectInScreen(GamePanel gp) {
+    public boolean isObjectInScreen(GamePanel gp) {
+        
         // Lấy chiều rộng và chiều cao của đối tượng hiện tại
         BufferedImage image = animations.get(aniCount).get(spriteNum);
         int objectWidth = image.getWidth();

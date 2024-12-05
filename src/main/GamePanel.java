@@ -297,8 +297,10 @@ public class GamePanel extends JPanel implements Runnable{
                 soundManager.setDefaultSound();
                 resetGame();
                 loadingTime = 100;
-                keyH.RPressed = false;
                 player.dead = false;
+                player.aniCount = 0; // Đặt lại trạng thái idle
+                player.spriteNum = 0; // Đặt lại sprite đầu tiên của trạng thái idle
+                player.spriteCounter = 0; // Đặt lại bộ đếm
             }
             return;
         }
@@ -616,15 +618,19 @@ public class GamePanel extends JPanel implements Runnable{
             switch (map) {
                 case 1:
                     soundManager.stop("background");
+                    soundManager.stop("combat11");
                     break;
                 case 2:
                     soundManager.stop("map21");
+                    soundManager.stop("combat12");
                     break;
                 case 3:
                     soundManager.stop("map22");
+                    soundManager.stop("combat3");
                     break;
                 case 4:
                     soundManager.stop("map4");
+                    soundManager.stop("combat4");
                     break;
                 default:
                     // Xử lý trường hợp mặc định nếu map không phải là 1, 2, 3, hay 4
@@ -1137,34 +1143,13 @@ public class GamePanel extends JPanel implements Runnable{
                 g2.fillRect(0, 0, screenWidth, screenHeight); // Đảm bảo nền đen
                 g2.setFont(bigFont);
                 g2.setColor(Color.WHITE);
-                // Xử lý hiển thị endText
-                String endText = "Và với quyền năng của viên bảo ngọc này, Ký ức về phù thủy của toàn bộ người dân đã biến mất. Cuối cùng Lunar có thể sống hòa nhập với thế giới như người bình thường rồi! Cùng đón chờ một cuộc hành trình mới, một khởi đầu mới của Lunar nhé!";
+                String endText = "THE END";
+                int endTextWidth = g2.getFontMetrics(bigFont).stringWidth(endText);
+                g2.drawString(endText, screenWidth / 2 - endTextWidth / 2, screenHeight / 2);
 
-// Tách endText thành các dòng nhỏ vừa với màn hình
-                FontMetrics metrics = g2.getFontMetrics(smallFont);
-                int maxLineWidth = screenWidth - 50; // Dự chừa khoảng trống hai bên
-                List<String> endTextLines = new ArrayList<>();
-                StringBuilder currentLine = new StringBuilder();
-
-                for (String word : endText.split(" ")) {
-                    if (metrics.stringWidth(currentLine + word + " ") < maxLineWidth) {
-                        currentLine.append(word).append(" ");
-                    } else {
-                        endTextLines.add(currentLine.toString().trim());
-                        currentLine = new StringBuilder(word + " ");
-                    }
-                }
-                if (!currentLine.isEmpty()) {
-                    endTextLines.add(currentLine.toString().trim());
-                }
-                g2.setFont(smallFont);
-                g2.setColor(Color.WHITE);
-                int startY = screenHeight / 4;
-                int lineSpacing = metrics.getHeight();
-                for (int i = 0; i < endTextLines.size(); i++) {
-                    String line = endTextLines.get(i);
-                    int lineWidth = metrics.stringWidth(line);
-                    g2.drawString(line, (screenWidth - lineWidth) / 2, startY + i * lineSpacing);
+                endTimer--; // Đếm ngược thời gian hiển thị "The End"
+                if (endTimer <= 0) {
+                    fadePhase = 3; // Chuyển sang hiển thị credit
                 }
                 g2.drawString("THE END", (screenWidth - g2.getFontMetrics(smallFont).stringWidth("THE END")) / 2, screenHeight*3/4);
             } else if (fadePhase == 3) {
@@ -1202,6 +1187,7 @@ public class GamePanel extends JPanel implements Runnable{
             } else if (fadePhase == 4) {
                 endgame = false;
                 clearGameData();
+                soundManager.stop("credit");
                 startMenu = true;
                 done = false;
                 fadePhase = 0;

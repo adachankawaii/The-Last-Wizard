@@ -11,6 +11,7 @@ import entity.npc.NPC;
 import entity.npc.Portal;
 import entity.npc.ShopKeeper;
 import main.FontLoader;
+import main.GamePanel;
 import main.KeyHandler;
 
 import java.awt.*;
@@ -22,8 +23,6 @@ import java.util.Objects;
 // import java.util.Vector;
 
 import entity.Entity;
-import main.GamePanel;
-
 import javax.imageio.ImageIO;
 
 public class Player extends Entity{
@@ -149,7 +148,7 @@ public class Player extends Entity{
         }
     }
     int delayE = 0;
-    boolean isDead = false;
+    public boolean isDead = false;
     public void update() {
         for (int i = itemsCount.size() - 1; i >= 0; i--) {
             if (itemsCount.get(i) <= 0) {
