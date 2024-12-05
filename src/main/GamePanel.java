@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 // import java.util.Vector;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -88,8 +89,7 @@ public class GamePanel extends JPanel implements Runnable{
     // TẠO SET OBJECT
     AssetSetter aSetter = new AssetSetter(this);
     ObjectSetter oSetter = new ObjectSetter(this);
-    String [][][] voice = {{{"Trên tay bạn đang sở hữu một cây đũa phép vô cùng mạnh mẽ, kích chuột trái để có thể sử dụng phép thuật cơ bản.","Lunar: Trước khi rời khỏi nơi này, trong nhật ký tộc trưởng có nói đã cất giấu một báu vật tại lăng mộ.","Đầu tiên chúng ta phải vượt qua Rừng cấm!","Lunar: Cùng bắt đầu cuộc hành trình thôi!","Rừng cấm : Vượt qua khu rừng cấm đầy nguy hiểm với nhiều cạm bẫy phía trước!"}, {"Lunar: Tại sao chỗ này lại được gọi là rừng cấm nhỉ, trông chẳng khác gì một khu rừng bình thường cả.","Hệ thống:Không tự dưng nơi đây được gọi là rừng cấm, đừng để vẻ bề ngoài của nó làm bạn chủ quan. Nhìn kìa, đó chính là Smiley!!","Cẩn thận, chúng có khả năng tấn công và gây tổn thương cho bạn, hãy sử dụng bùa chú và phép thuật để đánh bại chúng."}, {"Đến lúc sử dụng phép thuật rồi, hãy sử dụng bình dame diện rộng!"}, {"Lunar: Chỉ có 4 tên thôi sao, hahaha","Lunar: Ôi không, tôi khinh thường chúng rồi!","Đến lúc sử dụng bình tàng hình rồi!"}, {"Để nâng cấp và có thể sử dụng nhiều chú thuật hơn","hãy đến với hội quán và lấy về cho mình thật nhiều vật phẩm hữu ích nhé"}},{{"Lunar: Sao tối om thế này?","Đây là mê cung bóng đêm, cẩn thận với các xác chết bạn có thể gặp trên đường đi nhé"}, {"Lunar: May quá, cuối cùng cũng thoát khỏi đây rồi","Tiến vào thành phố nào!","Trong thành phố này tương truyền một câu đố không biết do ai đã để lại","Tuy nhiên đến giờ vẫn chưa có ai giải mã được. Hãy đến và xem xét!"}, {"Hãy đến trang viên Bly! Có thể chúng ta sẽ tiếp tục tìm thấy thứ gì ở đó!","Lunar: Thật là một trang viên rộng lớn","Chiếc cối xay gió kia trông có vẻ khả nghi, hãy đến đó xem thử!"}, {"Lunar: Phù, thật mệt mỏi. Mọi chuyện dần trở nên hấp dẫn rồi! Đi tiếp thôi!","Đợi chút có mảnh giấy gì đó"}},{{"Lunar: Cuối cùng chúng ta cũng đến được cung điện","Lunar: Chỗ này thật khiến tôi phải rùng mình, thật đáng sợ!","Cảnh giác, đây là hầm ngục! Bẫy có thể ở khắp nơi!","Dorry: Quạ quạ quạ","Lunar: Im lặng nào, Dorry"}},{{"Lunar: Lâu đài ở trước mặt chúng ta rồi"}}};    // MOUSE
-    public MouseHandler mouseH = new MouseHandler(this);
+    String [][][] voice = {{{"Trên tay bạn đang sở hữu một cây đũa phép vô cùng mạnh mẽ, kích chuột trái để có thể sử dụng phép thuật cơ bản.","Lunar: Trước khi rời khỏi nơi này, trong nhật ký tộc trưởng có nói đã cất giấu một báu vật tại lăng mộ.","Đầu tiên chúng ta phải vượt qua Rừng cấm!","Lunar: Cùng bắt đầu cuộc hành trình thôi!","Hệ thống: Trước đó, hãy đến với Guild Master để nhận nhiệm vụ!","Rừng cấm : Vượt qua khu rừng cấm đầy nguy hiểm với nhiều cạm bẫy phía trước!"}, {"Lunar: Tại sao chỗ này lại được gọi là rừng cấm nhỉ, trông chẳng khác gì một khu rừng bình thường cả.","Hệ thống: Không tự dưng nơi đây được gọi là rừng cấm, đừng để vẻ bề ngoài của nó làm bạn chủ quan. Nhìn kìa, đó chính là Smiley!!","Cẩn thận, chúng có khả năng tấn công và gây tổn thương cho bạn, hãy sử dụng bùa chú và phép thuật để đánh bại chúng."}, {"Đến lúc sử dụng phép thuật rồi, hãy sử dụng bình dame diện rộng!"}, {"Lunar: Chỉ có 4 tên thôi sao, hahaha","Lunar: Ôi không, tôi khinh thường chúng rồi!","Đến lúc sử dụng bình tàng hình rồi!"}, {"Để nâng cấp và có thể sử dụng nhiều chú thuật hơn","Hãy đến với hội quán và lấy về cho mình thật nhiều vật phẩm hữu ích nhé"}},{{"Lunar: Sao tối om thế này?","Đây là mê cung bóng đêm, cẩn thận với các xác chết bạn có thể gặp trên đường đi nhé"}, {"Lunar: May quá, cuối cùng cũng thoát khỏi đây rồi","Tiến vào thành phố nào!","Trong thành phố này tương truyền một câu đố không biết do ai đã để lại","Tuy nhiên đến giờ vẫn chưa có ai giải mã được. Hãy đến và xem xét!"}, {"Hãy đến trang viên Bly! Có thể chúng ta sẽ tiếp tục tìm thấy thứ gì ở đó!","Lunar: Thật là một trang viên rộng lớn","Chiếc cối xay gió kia trông có vẻ khả nghi, hãy đến đó xem thử!"}, {"Lunar: Phù, thật mệt mỏi. Mọi chuyện dần trở nên hấp dẫn rồi! Đi tiếp thôi!","Đợi chút có mảnh giấy gì đó"}},{{"Lunar: Cuối cùng chúng ta cũng đến được cung điện","Lunar: Chỗ này thật khiến tôi phải rùng mình, thật đáng sợ!","Cảnh giác, đây là hầm ngục! Bẫy có thể ở khắp nơi!","Dorry: Quạ quạ quạ","Lunar: Im lặng nào, Dorry"}},{{"Lunar: Lâu đài ở trước mặt chúng ta rồi"}}};      public MouseHandler mouseH = new MouseHandler(this);
     public int mouseX = 0, mouseY = 0;
     int reloadTime = 0;
     public boolean done = false;
@@ -655,6 +655,12 @@ public class GamePanel extends JPanel implements Runnable{
     boolean clickSlide = false;
     boolean guild = false;
     public void onClick(int mouseInfo){
+        if(endgame){
+            if(fadePhase == 2){
+                fadePhase = 3;
+                creditY = screenHeight;
+            }
+        }
         if (startMenu) { // Kiểm tra nếu đang ở trạng thái Start Menu
             if (mouseInfo == 1 && selectedChoice != -1) { // Nếu nhấn chuột trái
                 if(selectedChoice % 4 == 0){
@@ -1004,16 +1010,26 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
     }
-
+    private BufferedImage loadImage(String path){
+        BufferedImage img = null;
+        try(InputStream is = getClass().getResourceAsStream(path)){
+            img = ImageIO.read(is);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return img;
+    }
     public void drawPauseMenu(Graphics g) {
         // Màu nền và các thiết lập cơ bản khác của menu pause
+
         int buttonWidth = 100;
         int buttonHeight = 50;
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
+        int centerX = getWidth() /2;
+        int centerY = getHeight() - 70;
 
-        restartButton = new Rectangle(centerX - buttonWidth / 2, centerY - 100, buttonWidth, buttonHeight);
-        menuButton = new Rectangle(centerX - buttonWidth / 2, centerY, buttonWidth, buttonHeight);
+        restartButton = new Rectangle(centerX - buttonWidth - 20, centerY, buttonWidth, buttonHeight);
+        menuButton = new Rectangle(centerX + 20, centerY, buttonWidth, buttonHeight);
         g.setColor(new Color(0, 0, 0, 150));
         g.fillRect(0, 0, getWidth(), getHeight());
         int screenMouseX = mouseX - (player.worldX - player.screenX);
@@ -1036,6 +1052,7 @@ public class GamePanel extends JPanel implements Runnable{
         g.fillRect(menuButton.x, menuButton.y, menuButton.width, menuButton.height);
         g.setColor(Color.BLACK);
         g.drawString("Menu", menuButton.x + 25, menuButton.y + 30);
+        g.drawImage(loadImage("/UI/Map" + map + ".png"), 140,50,getWidth()- 280, getHeight() - 140,null);
     }
     private float slideAlpha = 0f; // Độ trong suốt
 
@@ -1086,7 +1103,7 @@ public class GamePanel extends JPanel implements Runnable{
     public int dialogueIndex  =0;
     int fadePhase = 0;
     int creditY;
-    int endTimer = 50;
+    int endTimer = 150;
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -1098,10 +1115,10 @@ public class GamePanel extends JPanel implements Runnable{
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeAlpha));
                 g2.setColor(Color.WHITE);
                 g2.fillRect(0, 0, screenWidth, screenHeight);
-                fadeAlpha += 0.01f; // Tăng độ sáng dần
+                fadeAlpha += 0.008f; // Tăng độ sáng dần
                 if (fadeAlpha >= 1.0f) {
                     fadeAlpha = 1.0f;
-                    fadePhase = 1; // Chuyển sang pha tiếp theo
+                    fadePhase = 2; // Chuyển sang pha tiếp theo
                 }
             } else if (fadePhase == 1) {
                 // Pha thứ hai: Chuyển từ trắng sang đen
@@ -1112,7 +1129,7 @@ public class GamePanel extends JPanel implements Runnable{
                 if (fadeAlpha <= 0.0f) {
                     fadeAlpha = 0.0f;
                     fadePhase = 2; // Chuyển sang pha tiếp theo
-                    creditY = screenHeight; // Bắt đầu credit từ đáy màn hình
+                     // Bắt đầu credit từ đáy màn hình
                 }
             } else if (fadePhase == 2) {
                 // Pha thứ ba: Hiển thị chữ "The End"
@@ -1120,14 +1137,36 @@ public class GamePanel extends JPanel implements Runnable{
                 g2.fillRect(0, 0, screenWidth, screenHeight); // Đảm bảo nền đen
                 g2.setFont(bigFont);
                 g2.setColor(Color.WHITE);
-                String endText = "THE END";
-                int endTextWidth = g2.getFontMetrics(bigFont).stringWidth(endText);
-                g2.drawString(endText, screenWidth / 2 - endTextWidth / 2, screenHeight / 2);
+                // Xử lý hiển thị endText
+                String endText = "Và với quyền năng của viên bảo ngọc này, Ký ức về phù thủy của toàn bộ người dân đã biến mất. Cuối cùng Lunar có thể sống hòa nhập với thế giới như người bình thường rồi! Cùng đón chờ một cuộc hành trình mới, một khởi đầu mới của Lunar nhé!";
 
-                endTimer--; // Đếm ngược thời gian hiển thị "The End"
-                if (endTimer <= 0) {
-                    fadePhase = 3; // Chuyển sang hiển thị credit
+// Tách endText thành các dòng nhỏ vừa với màn hình
+                FontMetrics metrics = g2.getFontMetrics(smallFont);
+                int maxLineWidth = screenWidth - 50; // Dự chừa khoảng trống hai bên
+                List<String> endTextLines = new ArrayList<>();
+                StringBuilder currentLine = new StringBuilder();
+
+                for (String word : endText.split(" ")) {
+                    if (metrics.stringWidth(currentLine + word + " ") < maxLineWidth) {
+                        currentLine.append(word).append(" ");
+                    } else {
+                        endTextLines.add(currentLine.toString().trim());
+                        currentLine = new StringBuilder(word + " ");
+                    }
                 }
+                if (!currentLine.isEmpty()) {
+                    endTextLines.add(currentLine.toString().trim());
+                }
+                g2.setFont(smallFont);
+                g2.setColor(Color.WHITE);
+                int startY = screenHeight / 4;
+                int lineSpacing = metrics.getHeight();
+                for (int i = 0; i < endTextLines.size(); i++) {
+                    String line = endTextLines.get(i);
+                    int lineWidth = metrics.stringWidth(line);
+                    g2.drawString(line, (screenWidth - lineWidth) / 2, startY + i * lineSpacing);
+                }
+                g2.drawString("THE END", (screenWidth - g2.getFontMetrics(smallFont).stringWidth("THE END")) / 2, screenHeight*3/4);
             } else if (fadePhase == 3) {
                 // Pha thứ tư: Hiển thị credit
                 g2.setColor(Color.BLACK);
@@ -1136,17 +1175,16 @@ public class GamePanel extends JPanel implements Runnable{
                 g2.setColor(Color.WHITE);
 
                 String[] credits = {
-                        "Under the instructions of Mr Trần Nhật Hóa", "", "",
-                        "Lead Programmers:", "Nguyễn Ngọc Ánh", "Lê Minh Hoàng", "",
-                        "Developers: ", "Nguyễn Ngọc Ánh", "Lê Minh Hoàng","Nguyễn Thị Chi Mai","Nguyễn Minh Tùng","Trần Tiến Dũng","",
-                        "Designers: ","Nguyễn Thị Chi Mai", "Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng", "",
-                        "Editors: ","Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng","Trần Tiến Dũng", "",
-                        "Music and Sound: ","Nguyễn Thị Chi Mai", "Nguyễn Ngọc Ánh", "",
-                        "Ideas: ","Nguyễn Minh Tùng", "Lê Minh Hoàng", "",
-                        "Tester: ","Trần Tiến Dũng","Nguyễn Ngọc Ánh", "",
-                        "Clowns: ","Lê Minh Hoàng","Trần Tiến Dũng","",
+                        "Dưới sự hướng dẫn và giám sát của: TS. Trần Nhật Hóa", "", "",
+                        "Nhóm trưởng:", "Nguyễn Ngọc Ánh", "",
+                        "Phát triển: ", "Lê Minh Hoàng", "Nguyễn Ngọc Ánh","Nguyễn Thị Chi Mai","Nguyễn Minh Tùng","Trần Tiến Dũng","",
+                        "Thiết kế và đồ họa: ","Nguyễn Thị Chi Mai", "Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng", "",
+                        "Hiệu chỉnh: ","Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng","Trần Tiến Dũng", "",
+                        "Âm nhạc: ","Nguyễn Thị Chi Mai", "Nguyễn Ngọc Ánh", "Nguyễn Minh Tùng","",
+                        "Ý tưởng: ","Nguyễn Minh Tùng", "Lê Minh Hoàng", "",
+                        "Giám sát: ","Trần Tiến Dũng","Nguyễn Ngọc Ánh", "",
                         "", "",
-                        "Thanks for playing!"
+                        "Cảm ơn bạn đã đồng hành cùng DMTHA!"
                 };
 
                 // Vẽ từng dòng credit
@@ -1167,7 +1205,7 @@ public class GamePanel extends JPanel implements Runnable{
                 startMenu = true;
                 done = false;
                 fadePhase = 0;
-                endTimer = 50;
+                endTimer = 150;
             }
         }
         else {

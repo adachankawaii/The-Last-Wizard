@@ -38,7 +38,7 @@ public class Golem extends Entity {
     int moveSet = 0;
     HashMap<String, Integer> map = new HashMap<String, Integer>();
     CombatWall c; // Width = 1, Height = 8
-    Font font =  FontLoader.loadFont("/UI/SVN-Determination Sans.otf",20);
+    Font font =  FontLoader.loadFont("/UI/SVN-Determination Sans.otf",15);
 
     public Golem(GamePanel gp) {
         layer = 2;

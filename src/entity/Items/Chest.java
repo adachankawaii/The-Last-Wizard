@@ -15,7 +15,6 @@ public class Chest extends Entity {
         this.isTrigger = true;
         rectGet(0, 0, 48, 48);
         getNPCImage();
-        isItem = true;
         this.gp = gp;
         layer = 0;
     }

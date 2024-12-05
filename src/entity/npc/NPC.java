@@ -37,8 +37,7 @@ public class NPC extends Entity {
             setWords("Đừng bi quan như vậy,Thượng lộ bình an nhé, end");
         }
         else if(Objects.equals(objName, "Amireux")){
-            setWords(" Chà… ta biết là một ngày con sẽ đến được đây mà Lunar của ta,Ta là người đỡ đầu của con, là người bạn thân thiết với cha mẹ của con!, Trông con thật giống ba mẹ, chắc họ sẽ tự hào khi thấy con lắm, Con đến đây vì Dorry phải không?,Đây là chiếc lông quạ của Dorry,Hãy tìm kiếm thêm một bông artichoke để triệu hồi Dorry,end");
-        }
+            setWords(" Chà… ta biết là một ngày con sẽ đến được đây mà Lunar của ta, Ta là người đỡ đầu của con, là người bạn thân thiết với cha mẹ của con! Trông con thật giống ba mẹ, chắc họ sẽ tự hào khi thấy con lắm, Con đến đây vì Dorry phải không? Đây là chiếc lông quạ của Dorry, hãy tìm kiếm thêm một bông hoa Atiso để triệu hồi Dorry nhé!");        }
         gp.keyH.SpacePressed = false;
     }
 

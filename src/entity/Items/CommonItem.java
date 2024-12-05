@@ -11,6 +11,7 @@ import java.util.Objects;
 public class CommonItem extends Entity {
     GamePanel gp;
     String path;
+    int count = 0;
     public CommonItem(String name, GamePanel gp) {
         objName = name;
         collision = true;
@@ -54,20 +55,6 @@ public class CommonItem extends Entity {
                     gp.obj.remove(this);
                 }
             }
-        }if(Objects.equals(objName, "CrystalFragment2")){
-            for(int i= 0;i<gp.player.items.size();i++){
-                if(gp.player.items.get(i).objName.equals("CrystalFragment") || gp.player.items.get(i).objName.equals("AetherCrystal")){
-                    gp.obj.remove(this);
-                }
-            }
-        }if(Objects.equals(objName, "CrystalFragment3")){
-            for(int i= 0;i<gp.player.items.size();i++){
-                if(gp.player.items.get(i).objName.equals("AetherCrystal")){
-                    gp.obj.remove(this);
-                }
-            }
-        }
-        if(Objects.equals(objName, "AetherCrystal") && gp.done){
             int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
 
             for (int i = 0; i < bulletCount; i++) {
@@ -75,14 +62,104 @@ public class CommonItem extends Entity {
                 double angle = Math.toRadians(Math.random() * 360);
 
                 // Tính toán tọa độ mục tiêu cho từng viên đạn
-                int targetBulletX = (int) (worldX + 8*Math.cos(angle) * gp.tileSize);
-                int targetBulletY = (int) (worldY + 8*Math.sin(angle) * gp.tileSize);
+                int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
+                int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
 
-                Effect a = new Effect(null, 16,16,worldX ,worldY,40, gp, 15, 2,2, targetBulletX, targetBulletY);
+                Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
                 gp.obj.add(a);
             }
-            gp.player.combat = false;
-            gp.endgame = true;
+        }if(Objects.equals(objName, "CrystalFragment2")){
+            for(int i= 0;i<gp.player.items.size();i++){
+                if(gp.player.items.get(i).objName.equals("CrystalFragment") || gp.player.items.get(i).objName.equals("AetherCrystal")){
+                    gp.obj.remove(this);
+                }
+
+            }
+            int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+
+            for (int i = 0; i < bulletCount; i++) {
+                // Góc ngẫu nhiên từ 0 đến 360 độ
+                double angle = Math.toRadians(Math.random() * 360);
+
+                // Tính toán tọa độ mục tiêu cho từng viên đạn
+                int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
+                int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
+
+                Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
+                gp.obj.add(a);
+            }
+        }if(Objects.equals(objName, "CrystalFragment3")){
+            for(int i= 0;i<gp.player.items.size();i++){
+                if(gp.player.items.get(i).objName.equals("AetherCrystal")){
+                    gp.obj.remove(this);
+                }
+            }
+            int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+
+            for (int i = 0; i < bulletCount; i++) {
+                // Góc ngẫu nhiên từ 0 đến 360 độ
+                double angle = Math.toRadians(Math.random() * 360);
+
+                // Tính toán tọa độ mục tiêu cho từng viên đạn
+                int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
+                int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
+
+                Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
+                gp.obj.add(a);
+            }
+        }
+        if (Objects.equals(objName, "CrystalFragment3")){
+            int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+
+            for (int i = 0; i < bulletCount; i++) {
+                // Góc ngẫu nhiên từ 0 đến 360 độ
+                double angle = Math.toRadians(Math.random() * 360);
+
+                // Tính toán tọa độ mục tiêu cho từng viên đạn
+                int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
+                int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
+
+                Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
+                gp.obj.add(a);
+            }
+        }
+        if(Objects.equals(objName, "AetherCrystal")){
+            if(gp.done) {
+                int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+
+                for (int i = 0; i < bulletCount; i++) {
+                    // Góc ngẫu nhiên từ 0 đến 360 độ
+                    double angle = Math.toRadians(Math.random() * 360);
+
+                    // Tính toán tọa độ mục tiêu cho từng viên đạn
+                    int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
+                    int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
+
+                    Effect a = new Effect(null, 16, 16, worldX, worldY, 40, gp, 8, 2, 2, targetBulletX, targetBulletY);
+                    gp.obj.add(a);
+                }
+                if (count <= 100) {
+                    this.worldY -= 1;
+                    count++;
+                }
+                gp.player.combat = false;
+                gp.endgame = true;
+            }
+            else {
+                int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+
+                for (int i = 0; i < bulletCount; i++) {
+                    // Góc ngẫu nhiên từ 0 đến 360 độ
+                    double angle = Math.toRadians(Math.random() * 360);
+
+                    // Tính toán tọa độ mục tiêu cho từng viên đạn
+                    int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
+                    int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
+
+                    Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
+                    gp.obj.add(a);
+                }
+            }
         }
 
     }

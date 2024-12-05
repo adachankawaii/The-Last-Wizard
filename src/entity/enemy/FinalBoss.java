@@ -50,10 +50,9 @@ public class FinalBoss extends Entity {
         map.put("Bigbullet", 3);
         isEnemy = true;
         addWords(new String[]{"Hahahaha, thì ra tên nhãi nhép nhà ngươi cũng lết được xác đến đây rồi sao. Lũ lính canh và giám ngục thật vô dụng",
-                "Aiss, nhà ngươi cũng có phép thuật!!!!!!??? Chuyện gì đang xảy ra thế này!",
                 "Chẳng giấu gì với ngươi, chính ta là người giật dây đằng sau cho sự diệt chủng của lũ phù thủy ngu dốt các người,","mang trong mình sức mạnh như vậy nhưng lại không cai trị thế giới, đúng là ngu ngốc.","Chính vì vậy, ta đã thuyết phục đám mọi dân rằng các ngươi là những kẻ xấu xa, tàn bạo cần phải diệt chủng ngay lập tức.","Và dĩ nhiên, ta đã nằm quyền cai trị vương quốc này, bước tiếp theo chính là thế giới này kkkk.","Để sót ngươi đúng là một lỗ hổng trong kế hoạch của ta. Nhưng không sao, chính tay ta sẽ tiêu diệt nhà ngươi",
                 "Hãy xem đây.","end"});
-        addWords(new String[]{objName + ": " + "Không thể tin được, nhà ngươi sao lại có thứ sức mạnh phi lý đến vậy!","Lunar:....","end"});
+        addWords(new String[]{objName + ": " + "Không thể tin được, nhà ngươi sao lại có thứ sức mạnh phi lý đến vậy!","Lunar: Kết thúc mọi chuyện nào","end"});
         isBoss = true;
     }
     public void addWords(String[] inputWords) {
