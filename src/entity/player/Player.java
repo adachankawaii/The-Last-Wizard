@@ -179,7 +179,7 @@ public class Player extends Entity{
             // Giới hạn HP và Energy
             if (HP >= 10) HP = 10;
             if (Energy >= 200) Energy = 200;
-            //else if (Energy < 200) Energy = 200;
+            else if (Energy < 0) Energy = 0;
 
             // Kiểm tra các phím di chuyển
             if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed)) {

@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Vector;
 
 public class Effect extends Entity {
@@ -29,7 +30,9 @@ public class Effect extends Entity {
             if (Objects.equals(this.objName, "enemyBullet")) {
                 randomColor = new Color(255, 0, 0); // Tạo màu ngẫu nhiên từ RGB
             }
-
+            if(speed == 3 && lifeTime == 20){
+                randomColor = getRandomColor();
+            }
             g2d.setColor(randomColor);
             g2d.fillRect(0, 0, rectX/8, rectY/8); // Vẽ hình chữ nhật đỏ kích thước 100x100
 
@@ -59,6 +62,20 @@ public class Effect extends Entity {
     double scaleX, scaleY;
     int speed =0;
 
+    private Color getRandomColor() {
+        // Danh sách 4 màu: Xanh, Đỏ, Tím, Vàng
+        Color[] colors = {
+                new Color(0, 255, 0),    // Xanh lá
+                new Color(255, 0, 0),    // Đỏ
+                new Color(128, 0, 128),  // Tím
+                new Color(255, 255, 0)   // Vàng
+        };
+
+        // Tạo màu ngẫu nhiên
+        Random random = new Random();
+        int randomIndex = random.nextInt(colors.length); // Chọn chỉ số ngẫu nhiên từ 0 đến 3
+        return colors[randomIndex];
+    }
     @Override
     public void draw(Graphics2D g, GamePanel gp) {
         // Tính toán vị trí trên màn hình

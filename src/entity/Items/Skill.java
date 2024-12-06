@@ -74,8 +74,10 @@ public class Skill extends Entity {
             );
             b.death = false;
             gp.soundManager.play("wand");
+            gp.player.Energy -= 25;
             // Thêm viên đạn vào danh sách
             gp.obj.add(b);
+
         }
     }
     }
