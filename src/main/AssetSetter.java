@@ -2,6 +2,8 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
 import entity.Entity;
 import entity.Items.*;
 import entity.enemy.*;
@@ -19,7 +21,9 @@ public class AssetSetter {
 
     // ĐỌC TỪ FILE TXT TÊN OBJ, SỐ LƯỢNG, VỊ TRÍ TỌA ĐỘ CỦA CÁC OBJ
     public void setObject(String filePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream(filePath)))) {
+            // Đọc nội dung file) {
             String line;
     
             // Đọc từng dòng

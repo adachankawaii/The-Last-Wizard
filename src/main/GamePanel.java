@@ -91,7 +91,7 @@ public class GamePanel extends JPanel implements Runnable{
     ObjectSetter oSetter = new ObjectSetter(this);
     String [][][] voice = {{{"Trên tay bạn đang sở hữu một cây đũa phép vô cùng mạnh mẽ, kích chuột trái để có thể sử dụng phép thuật cơ bản.","Lunar: Trước khi rời khỏi nơi này, trong nhật ký tộc trưởng có nói đã cất giấu một báu vật tại lăng mộ.","Đầu tiên chúng ta phải vượt qua Rừng cấm!","Lunar: Cùng bắt đầu cuộc hành trình thôi!","Hệ thống: Trước đó, hãy đến với Guild Master để nhận nhiệm vụ!","Rừng cấm : Vượt qua khu rừng cấm đầy nguy hiểm với nhiều cạm bẫy phía trước!"}, {"Lunar: Tại sao chỗ này lại được gọi là rừng cấm nhỉ, trông chẳng khác gì một khu rừng bình thường cả.","Hệ thống: Không tự dưng nơi đây được gọi là rừng cấm, đừng để vẻ bề ngoài của nó làm bạn chủ quan. Nhìn kìa, đó chính là Smiley!!","Cẩn thận, chúng có khả năng tấn công và gây tổn thương cho bạn, hãy sử dụng bùa chú và phép thuật để đánh bại chúng."}, {"Đến lúc sử dụng phép thuật rồi, hãy sử dụng bình dame diện rộng!"}, {"Lunar: Chỉ có 4 tên thôi sao, hahaha","Lunar: Ôi không, tôi khinh thường chúng rồi!","Đến lúc sử dụng bình tàng hình rồi!"}, {"Để nâng cấp và có thể sử dụng nhiều chú thuật hơn","Hãy đến với hội quán và lấy về cho mình thật nhiều vật phẩm hữu ích nhé"}},{{"Lunar: Sao tối om thế này?","Đây là mê cung bóng đêm, cẩn thận với các xác chết bạn có thể gặp trên đường đi nhé"}, {"Lunar: May quá, cuối cùng cũng thoát khỏi đây rồi","Tiến vào thành phố nào!","Trong thành phố này tương truyền một câu đố không biết do ai đã để lại","Tuy nhiên đến giờ vẫn chưa có ai giải mã được. Hãy đến và xem xét!"}, {"Hãy đến trang viên Bly! Có thể chúng ta sẽ tiếp tục tìm thấy thứ gì ở đó!","Lunar: Thật là một trang viên rộng lớn","Chiếc cối xay gió kia trông có vẻ khả nghi, hãy đến đó xem thử!"}, {"Lunar: Phù, thật mệt mỏi. Mọi chuyện dần trở nên hấp dẫn rồi! Đi tiếp thôi!","Đợi chút có mảnh giấy gì đó"}},{{"Lunar: Cuối cùng chúng ta cũng đến được cung điện","Lunar: Chỗ này thật khiến tôi phải rùng mình, thật đáng sợ!","Cảnh giác, đây là hầm ngục! Bẫy có thể ở khắp nơi!","Dorry: Quạ quạ quạ","Lunar: Im lặng nào, Dorry"}},{{"Lunar: Lâu đài ở trước mặt chúng ta rồi"}}};      public MouseHandler mouseH = new MouseHandler(this);
     public int mouseX = 0, mouseY = 0;
-    int reloadTime = 0;
+    private int reloadTime = 0;
     public boolean done = false;
     Bar HPbar = new Bar(10,15, 15, 200, 20, this, new Color(255,0,0));
     Bar EnergyBar = new Bar(200,15, 15+20, 150, 10, this, new Color(0,200,255));
@@ -99,8 +99,8 @@ public class GamePanel extends JPanel implements Runnable{
     // Setup các sự vật trong game
     public void setupGame() {
         // Đọc đường dẫn tới file thông tin và nhập
-        String url = "res/maps/set_obj" + map +".txt";
-        String url1 = "res/maps/map" + map +"obj.txt";
+        String url = "/maps/set_obj" + map +".txt";
+        String url1 = "/maps/map" + map +"obj.txt";
         aSetter.setObject(url);
         oSetter.setObject(url1);
         tileMng = new TileManager(this);
