@@ -55,7 +55,7 @@ public class CommonItem extends Entity {
                     gp.obj.remove(this);
                 }
             }
-            int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+            int bulletCount = 2; // Số đạn từ 1 đến 5
 
             for (int i = 0; i < bulletCount; i++) {
                 // Góc ngẫu nhiên từ 0 đến 360 độ
@@ -65,7 +65,7 @@ public class CommonItem extends Entity {
                 int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
                 int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
 
-                Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
+                Effect a = new Effect(null, 16, 16, worldX, worldY, 20, gp, 3, 2, 2, targetBulletX, targetBulletY);
                 gp.obj.add(a);
             }
         }if(Objects.equals(objName, "CrystalFragment2")){
@@ -75,7 +75,7 @@ public class CommonItem extends Entity {
                 }
 
             }
-            int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+            int bulletCount = 2; // Số đạn từ 1 đến 5
 
             for (int i = 0; i < bulletCount; i++) {
                 // Góc ngẫu nhiên từ 0 đến 360 độ
@@ -85,7 +85,7 @@ public class CommonItem extends Entity {
                 int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
                 int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
 
-                Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
+                Effect a = new Effect(null, 16, 16, worldX, worldY, 20, gp, 3, 2, 2, targetBulletX, targetBulletY);
                 gp.obj.add(a);
             }
         }if(Objects.equals(objName, "CrystalFragment3")){
@@ -94,7 +94,7 @@ public class CommonItem extends Entity {
                     gp.obj.remove(this);
                 }
             }
-            int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+            int bulletCount = 2; // Số đạn từ 1 đến 5
 
             for (int i = 0; i < bulletCount; i++) {
                 // Góc ngẫu nhiên từ 0 đến 360 độ
@@ -104,12 +104,12 @@ public class CommonItem extends Entity {
                 int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
                 int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
 
-                Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
+                Effect a = new Effect(null, 16, 16, worldX, worldY, 20, gp, 3, 2, 2, targetBulletX, targetBulletY);
                 gp.obj.add(a);
             }
         }
-        if (Objects.equals(objName, "CrystalFragment3")){
-            int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+        if (Objects.equals(objName, "CrystalFragment")){
+            int bulletCount = 2; // Số đạn từ 1 đến 5
 
             for (int i = 0; i < bulletCount; i++) {
                 // Góc ngẫu nhiên từ 0 đến 360 độ
@@ -119,13 +119,13 @@ public class CommonItem extends Entity {
                 int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
                 int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
 
-                Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
+                Effect a = new Effect(null, 16, 16, worldX, worldY, 20, gp, 3, 2, 2, targetBulletX, targetBulletY);
                 gp.obj.add(a);
             }
         }
         if(Objects.equals(objName, "AetherCrystal")){
             if(gp.done) {
-                int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+                int bulletCount = 2; // Số đạn từ 1 đến 5
 
                 for (int i = 0; i < bulletCount; i++) {
                     // Góc ngẫu nhiên từ 0 đến 360 độ
@@ -135,7 +135,7 @@ public class CommonItem extends Entity {
                     int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
                     int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
 
-                    Effect a = new Effect(null, 16, 16, worldX, worldY, 40, gp, 8, 2, 2, targetBulletX, targetBulletY);
+                    Effect a = new Effect(null, 16, 16, worldX, worldY, 80, gp, 3, 2, 2, targetBulletX, targetBulletY);
                     gp.obj.add(a);
                 }
                 if (count <= 100) {
@@ -146,7 +146,7 @@ public class CommonItem extends Entity {
                 gp.endgame = true;
             }
             else {
-                int bulletCount = 1 + (int) (Math.random() * 5); // Số đạn từ 1 đến 5
+                int bulletCount = 2; // Số đạn từ 1 đến 5
 
                 for (int i = 0; i < bulletCount; i++) {
                     // Góc ngẫu nhiên từ 0 đến 360 độ
@@ -156,7 +156,7 @@ public class CommonItem extends Entity {
                     int targetBulletX = (int) (worldX + 8 * Math.cos(angle) * gp.tileSize);
                     int targetBulletY = (int) (worldY + 8 * Math.sin(angle) * gp.tileSize);
 
-                    Effect a = new Effect(null, 16, 16, worldX, worldY, 10, gp, 5, 2, 2, targetBulletX, targetBulletY);
+                    Effect a = new Effect(null, 16, 16, worldX, worldY, 20, gp, 3, 2, 2, targetBulletX, targetBulletY);
                     gp.obj.add(a);
                 }
             }
