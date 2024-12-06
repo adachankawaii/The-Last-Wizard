@@ -1,9 +1,7 @@
 package tile;
 
 import java.awt.Graphics2D;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import javax.imageio.ImageIO;
 import main.GamePanel;
 
@@ -34,10 +32,10 @@ public class TileManager {
                 tile[1].image = ImageIO.read(new File("res/tiles/map2/1.png"));
             } else if (gp.map == 3) {
                 tile[2] = new Tile();
-                tile[2].image = ImageIO.read(new File("res/tiles/map3/1.png"));
+                tile[2].image = ImageIO.read(new File("res/tiles/map3/2.png"));
             }else if (gp.map == 4) {
                 tile[2] = new Tile();
-                tile[2].image = ImageIO.read(new File("res/tiles/map4/1.png"));
+                tile[2].image = ImageIO.read(new File("res/tiles/map4/2.png"));
             }
         }catch (Exception e) {
             e.printStackTrace();

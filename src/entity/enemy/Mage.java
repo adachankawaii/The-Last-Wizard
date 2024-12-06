@@ -9,7 +9,6 @@ import java.util.Random;
 import entity.Entity;
 
 import entity.Items.Coin;
-import entity.Items.CommonItem;
 // import entity.bullet.NormalBullet;
 // import entity.Items.Coin;
 // import entity.bullet.Bullet;

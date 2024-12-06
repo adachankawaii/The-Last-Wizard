@@ -15,7 +15,7 @@ public class Main {
         GamePanel gp = new GamePanel();
         window.add(gp);
         window.pack(); // Giới hạn size của các obj
-        window.setResizable(false);
+        window.setResizable(true);
         // CÀI ĐẶT HIỂN THỊ
         window.setLocationRelativeTo(null); // Màn hình spawn ở center
         window.setVisible(true); // Hiển thị màn hình

@@ -14,7 +14,7 @@ NPC 1
 23,63
 GuildMaster 1
 18,78
+Treasure 1
+20,78
 Golem 1
 70,19
-Treasure 1
-25,80

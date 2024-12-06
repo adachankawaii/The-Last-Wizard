@@ -3,7 +3,6 @@ package entity.npc;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Vector;
 
 import entity.Entity;

@@ -6,7 +6,6 @@ import main.FontLoader;
 import main.GamePanel;
 
 import java.awt.*;
-import java.util.Objects;
 
 public class Chest extends Entity {
     public Chest(GamePanel gp) {

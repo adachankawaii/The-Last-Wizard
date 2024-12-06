@@ -43,18 +43,27 @@ public class NPC extends Entity {
 
     public void getNPCImage() {
         if(Objects.equals(objName, "Meraki")) {
-            String[] s = new String[7];
-            for (int i = 0; i < 6; i++) {
-                s[i] = "/npc/idle (" + (i + 1) + ").png";
-            }
-            importEachImage(s, true);
+            importEachImage(new String[]{"/npc/idle (1).png",
+            "/npc/idle (2).png", "/npc/idle (3).png",
+            "/npc/idle (4).png", "/npc/idle (5).png",
+            "/npc/idle (6).png", "/npc/idle (7).png"}, true);
+            // String[] s = new String[7];
+            // for (int i = 0; i < 6; i++) {
+            //     s[i] = "/npc/idle (" + (i + 1) + ").png";
+            // }
+            // importEachImage(s, true);
         }
         else if(Objects.equals(objName, "Amireux")){
-            String[] s = new String[9];
-            for (int i = 0; i < 9; i++) {
-                s[i] = "/npc/Idle/Idle" + (i+1) + ".png";
-            }
-            importEachImage(s, true);
+            importEachImage(new String[]{"/npc/Idle/Idle1.png",
+            "/npc/Idle/Idle2.png","/npc/Idle/Idle3.png",
+            "/npc/Idle/Idle4.png", "/npc/Idle/Idle5.png",
+            "/npc/Idle/Idle6.png", "/npc/Idle/Idle7.png",
+            "/npc/Idle/Idle8.png", "/npc/Idle/Idle9.png"}, true);
+            // String[] s = new String[9];
+            // for (int i = 0; i < 9; i++) {
+            //     s[i] = "/npc/Idle/Idle" + (i+1) + ".png";
+            // }
+            // importEachImage(s, true);
         }
     }
 

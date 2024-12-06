@@ -1,7 +1,6 @@
 package entity.Items;
 
 import entity.Entity;
-import entity.bullet.Bullet;
 import entity.effect.Effect;
 import main.GamePanel;
 
