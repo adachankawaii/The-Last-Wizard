@@ -32,9 +32,9 @@ public class NPC extends Entity {
         rectGet(0, 0, 48, 48);
         getNPCImage();
         if(Objects.equals(objName, "Meraki")) {
-            setWords("Chuyến hành trình của cậu bắt đầu rồi nhỉ,Cậu có hứa rằng sẽ sống sót trở về không, end");
-            setWords("Khẩu khí tốt đó chứ,Thượng lộ bình an nhé,end");
-            setWords("Đừng bi quan như vậy,Thượng lộ bình an nhé, end");
+            setWords("Tự nhiên hôm nay nắng đẹp quá,Chuyến hành trình của cậu bắt đầu rồi nhỉ,Phải sống sót quay trở về đó nhé, end");
+            setWords("Cậu phải hứa đâý nhé,Đừng nuốt lời đấy,end");
+            setWords(".....,Chúc cậu may mắn, end");
         }
         else if(Objects.equals(objName, "Amireux")){
             setWords(" Chà… ta biết là một ngày con sẽ đến được đây mà Lunar của ta, Ta là người đỡ đầu của con, là người bạn thân thiết với cha mẹ của con! Trông con thật giống ba mẹ, chắc họ sẽ tự hào khi thấy con lắm, Con đến đây vì Dorry phải không? Đây là chiếc lông quạ của Dorry, hãy tìm kiếm thêm một bông hoa Atiso để triệu hồi Dorry nhé!");        }
@@ -234,7 +234,7 @@ public class NPC extends Entity {
                 g2.drawString(objName + ": " + currentDialogue, textX, textY);
             }
             else if (gp.player.combat && timer <= 0) {
-                String prompt = "Press Space to interact";
+                String prompt = "Nhấn Space để tương tác";
                 int promptWidth = g2.getFontMetrics(new Font("Arial", Font.BOLD, 20)).stringWidth(prompt);
                 int promptX = (gp.screenWidth - promptWidth) / 2;
                 int promptY = gp.screenHeight - gp.tileSize - 40;

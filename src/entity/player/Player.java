@@ -340,7 +340,7 @@ public class Player extends Entity{
     int hasKey = 0;
     boolean close = false;
     void closeItem(Graphics2D g2){
-        String itemName = "Press E to loot";
+        String itemName = "Nhấn E để nhặt";
         g2.setFont(bigFont);
         g2.setColor(Color.WHITE);
 
@@ -514,7 +514,7 @@ public class Player extends Entity{
                 g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
                 g2.drawString(itemName, textX, textY);
 
-                // Nếu người chơi đứng gần item, hiển thị thông báo "Press E to loot"
+                // Nếu người chơi đứng gần item, hiển thị thông báo "Nhấn E để nhặt"
 
             }
             if (close) {

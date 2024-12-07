@@ -101,7 +101,7 @@ public class Board extends Entity {
             }
             else if (timer <= 0) {
                 g2.setFont(font);
-                String prompt = "Press Space to interact";
+                String prompt = "Nhấn Space để tương tác";
                 int promptWidth = g2.getFontMetrics(new Font("Arial", Font.BOLD, 20)).stringWidth(prompt);
                 int promptX = (gp.screenWidth - promptWidth) / 2;
                 int promptY = gp.screenHeight - gp.tileSize - 40;

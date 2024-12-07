@@ -189,7 +189,7 @@ public class GuildMaster extends Entity {
                 g2.drawString(objName + ": " + currentDialogue, textX, textY);
             }
             else if (gp.player.combat && timer <= 0) {
-                String prompt = "Press Space to interact";
+                String prompt = "Nhấn Space để tương tác";
                 int promptWidth = g2.getFontMetrics(bigFont).stringWidth(prompt);
                 int promptX = (gp.screenWidth - promptWidth) / 2;
                 int promptY = gp.screenHeight - gp.tileSize - 40;

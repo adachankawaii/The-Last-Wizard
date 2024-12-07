@@ -3,6 +3,8 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
 import entity.Items.ObjectMap1;
 
 public class ObjectSetter {
@@ -15,7 +17,8 @@ public class ObjectSetter {
 
     // ĐỌC TỪ FILE TXT TÊN OBJ, SỐ LƯỢNG, VỊ TRÍ TỌA ĐỘ CỦA CÁC OBJ
     public void setObject(String filePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream(filePath)))) {
             String line;
             int currentLayer = 0; // Đặt layer mặc định ban đầu là 0
 
