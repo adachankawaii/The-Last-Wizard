@@ -508,6 +508,7 @@ public class GamePanel extends JPanel implements Runnable{
                             }
                         }
                         if(!complete){
+
                             for (Entity object : objList) {
                                 if (object != null && Objects.equals(object.objName, "CombatWall")) {
                                     object.on = true;
@@ -518,6 +519,18 @@ public class GamePanel extends JPanel implements Runnable{
                             for (Entity object : objList) {
                                 if (object != null && Objects.equals(object.objName, "CombatWall")) {
                                     object.on = false;
+                                }
+                                if (object != null && Objects.equals(object.objName, "Bell")) {
+                                    isSpawn = true;
+                                }
+                            }
+                            for(Entity e : player.items){
+                                if (e != null && Objects.equals(e.objName, "Bell")) {
+                                    isSpawn = true;
+                                    break;
+                                }if (e != null && Objects.equals(e.objName, "CrystalFragment2")) {
+                                    isSpawn = true;
+                                    break;
                                 }
                             }
                             if(!isSpawn){
@@ -712,6 +725,27 @@ public class GamePanel extends JPanel implements Runnable{
             } else if (menuButton.contains(screenMouseX, screenMouseY)) {
                 pauseMenu = false;
                 startMenu = true;  // Quay lại màn hình startMenu
+                switch (map) {
+                    case 1:
+                        soundManager.stop("background");
+                        soundManager.stop("combat11");
+                        break;
+                    case 2:
+                        soundManager.stop("map21");
+                        soundManager.stop("combat12");
+                        break;
+                    case 3:
+                        soundManager.stop("map22");
+                        soundManager.stop("combat3");
+                        break;
+                    case 4:
+                        soundManager.stop("map4");
+                        soundManager.stop("combat4");
+                        break;
+                    default:
+                        // Xử lý trường hợp mặc định nếu map không phải là 1, 2, 3, hay 4
+                        break;
+                }
             }
         }
         else if(player.combat && !gameOver){

@@ -154,8 +154,9 @@ public class Portal extends Entity {
                         dialogueIndex = 0; // Chuyển sang đoạn hội thoại tương ứng
                         if(selectedChoice == 0){
                             int pos = -1; // Vị trí mặc định nếu không tìm thấy
+                            String[] itm = {"CrystalFragment1","CrystalFragment","AetherCrystal"};
                             for (int i = 0; i < gp.player.items.size(); i++) {
-                                if (gp.player.items.get(i).objName.contains("Crystal")) {
+                                if (gp.player.items.get(i).objName.contains(itm[gp.map-1])) {
                                     pos = i; // Lưu vị trí của item có chứa "Crystal"
                                     break;   // Dừng vòng lặp sau khi tìm thấy
                                 }
