@@ -179,9 +179,9 @@ public class AssetSetter {
 
         }
         else if(gp.map == 3) {
-            Placer p = new Placer(gp, "Box",20, 29* gp.tileSize, 46*gp.tileSize);
+            Placer p = new Placer(gp, "Key",20, 29* gp.tileSize, 46*gp.tileSize);
             gp.obj.add(p);
-            CommonItem box = new CommonItem("Box", gp);
+            CommonItem box = new CommonItem("Key", gp);
             box.worldX = 86*gp.tileSize;
             box.worldY = 86*gp.tileSize;
             gp.obj.add(box);

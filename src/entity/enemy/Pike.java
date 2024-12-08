@@ -40,7 +40,7 @@ public class Pike extends Entity{
     @Override
     public void draw(Graphics2D g2, GamePanel gp){
         if(!pike) drawObjImage(g2, gp);
-        rectDraw(g2);
+        //rectDraw(g2);
     }
 
 }

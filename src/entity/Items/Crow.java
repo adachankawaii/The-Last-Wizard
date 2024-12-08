@@ -3,6 +3,7 @@ package entity.Items;
 import entity.Entity;
 import entity.bullet.Bullet;
 // import entity.bullet.NormalBullet;
+import entity.bullet.NormalBullet;
 import entity.effect.Effect;
 import main.GamePanel;
 
@@ -24,7 +25,9 @@ public class Crow extends Entity {
         rectGet(-8, -8, 1, 1);
         getImage();
 
-    }
+        // Bắn từng luồng đạn
+
+        }
     void getImage(){
         importAndSlice("/item/crow.png", 3,0,0);
     }
@@ -40,6 +43,28 @@ public class Crow extends Entity {
         this.worldY = gp.player.worldY - 30;
         this.flip = gp.player.flip;
         if(count <= 20 && delay <= 0){
+            if(count % 10 == 0 ){
+                int bulletCount = 3; // Ví dụ: 5 viên đạn
+                double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
+
+                for (int i = 0; i < bulletCount; i++) {
+                    // Góc hiện tại của từng viên đạn
+                    double angle = Math.toRadians(180) + i * angleStep;
+
+                    // Tính toán tọa độ mục tiêu cho từng viên đạn
+                    int targetBulletX = (int) (worldX + Math.cos(angle) * 12 * gp.tileSize); // Khoảng cách từ tâm là 25
+                    int targetBulletY = (int) (worldY + Math.sin(angle) * 12 * gp.tileSize);
+
+                    // Tạo đối tượng đạn
+                    NormalBullet b = new NormalBullet("/bullet/bullet.png", "bullet",
+                            0, 0, 8 * 6, 8 * 6,
+                            (int) (worldX), (int) (worldY), 18, gp,
+                            0, 8, 1, 1,
+                            targetBulletX, targetBulletY);
+                    b.death = false;
+                    gp.obj.add(b);
+                }
+            }
             Bullet b = new Bullet("/bullet/bullet.png","bullet",12,12, 8, 8, worldX, worldY,20,gp ,0, 12, 1, 1, gp.mouseX, gp.mouseY);
             gp.obj.add(b);
             b.off = false;

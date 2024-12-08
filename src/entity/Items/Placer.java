@@ -62,6 +62,13 @@ public class Placer extends Entity {
     }
     @Override
     public void drawUI(Graphics2D g2, GamePanel gp){
+        int npcCenterX = worldX + gp.tileSize / 2;
+        int npcCenterY = worldY + gp.tileSize / 2;
+
+        int playerCenterX = gp.player.worldX + gp.tileSize / 2;
+        int playerCenterY = gp.player.worldY + gp.tileSize / 2;
+
+        double distance = Math.sqrt(Math.pow(npcCenterX - playerCenterX, 2) + Math.pow(npcCenterY - playerCenterY, 2));
         if(placed) {
             if(target <= 13) {
                 // Vẽ giá trị của target ở giữa ô
@@ -91,6 +98,26 @@ public class Placer extends Entity {
                 // Vẽ chuỗi
                 g2.drawString(targetStr, textX, textY);
             }
+        }
+        else if(distance <= gp.tileSize){
+            String prompt = "Đặt " + item + " vào vị trí để kích hoạt (chuột phải)";
+            int promptWidth = g2.getFontMetrics( bigFont).stringWidth(prompt);
+            int promptX = (gp.screenWidth - promptWidth) / 2;
+            int promptY = gp.screenHeight - gp.tileSize - 40;
+
+            int boxWidth = promptWidth + 20;
+            int boxHeight = 40;
+            int boxX = promptX - 10;
+            int boxY = promptY - 30;
+
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+            g2.setColor(Color.WHITE);
+            g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
+            g2.setFont(bigFont);
+            g2.setColor(Color.WHITE);
+            g2.drawString(prompt, promptX, promptY);
+
         }
     }
 }

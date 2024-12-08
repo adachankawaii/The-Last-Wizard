@@ -113,13 +113,13 @@ public class Bullet extends Entity {
         g.setTransform(old);
 
         // Vẽ vùng va chạm (vùng solidArea)
-        g.setColor(Color.RED);  // Màu của vùng va chạm
+        /*g.setColor(Color.RED);  // Màu của vùng va chạm
         g.drawRect(
                 screenX + solidArea.x,
                 screenY + solidArea.y,
                 solidArea.width,
                 solidArea.height
-        );
+        );*/
         specialDraw(g);
     }
 

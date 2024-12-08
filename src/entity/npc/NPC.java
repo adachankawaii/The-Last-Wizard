@@ -235,7 +235,7 @@ public class NPC extends Entity {
             }
             else if (gp.player.combat && timer <= 0) {
                 String prompt = "Nhấn Space để tương tác";
-                int promptWidth = g2.getFontMetrics(new Font("Arial", Font.BOLD, 20)).stringWidth(prompt);
+                int promptWidth = g2.getFontMetrics(bigFont).stringWidth(prompt);
                 int promptX = (gp.screenWidth - promptWidth) / 2;
                 int promptY = gp.screenHeight - gp.tileSize - 40;
 
@@ -248,7 +248,7 @@ public class NPC extends Entity {
                 g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
                 g2.setColor(Color.WHITE);
                 g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
-                g2.setFont(new Font("Arial", Font.BOLD, 20));
+                g2.setFont(bigFont);
                 g2.setColor(Color.WHITE);
                 g2.drawString(prompt, promptX, promptY);
 
