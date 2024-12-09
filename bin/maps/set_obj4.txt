@@ -1,2 +1,6 @@
 FinalBoss 1
 20,11
+HPBottle 4
+32,44 33,44 32,45 33,45
+ThrowingBottle 4
+26,44 27,44 26,45 27,45
