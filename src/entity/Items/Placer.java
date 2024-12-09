@@ -87,7 +87,7 @@ public class Placer extends Entity {
             else {
                 // Vẽ giá trị của target ở giữa ô
                 g2.setFont(bigFont); // Sử dụng font đã tải sẵn
-                g2.setColor(Color.RED); // Màu chữ
+                g2.setColor(Color.GREEN); // Màu chữ
                 String targetStr = "X"; // Chuyển target thành chuỗi
                 FontMetrics metrics = g2.getFontMetrics(bigFont);
 

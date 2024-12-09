@@ -44,7 +44,7 @@ public class Crow extends Entity {
         this.flip = gp.player.flip;
         if(count <= 20 && delay <= 0){
             if(count % 10 == 0 ){
-                int bulletCount = 3; // Ví dụ: 5 viên đạn
+                int bulletCount = 5; // Ví dụ: 5 viên đạn
                 double angleStep = Math.toRadians(360.0 / (bulletCount - 1)); // Bước góc (-180 đến 0 độ)
 
                 for (int i = 0; i < bulletCount; i++) {

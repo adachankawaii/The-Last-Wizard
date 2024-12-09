@@ -283,12 +283,15 @@ public class GamePanel extends JPanel implements Runnable{
     public boolean pauseMenu = false;
     private Rectangle restartButton;
     private Rectangle menuButton;
+    private Rectangle tutorial;
 
     // Khởi tạo vị trí và kích thước nút
     Vector<Integer> visited = new Vector<>();
     boolean startTalk = false;
     boolean inCombat = false;
     int index = 0;
+    public boolean description = false;
+    public int place = 0;
     public void update() {
         if (gameOver) {
             if(keyH.RPressed){
@@ -393,6 +396,7 @@ public class GamePanel extends JPanel implements Runnable{
                             if (object != null && Objects.equals(object.objName, "CombatWall")) {
                                 object.on = true;
                             }
+
                         }
                         for (Entity entity : objList) {
                             if (entity != null && entity.isEnemy && zone[i].contains(entity.worldX, entity.worldY)) {
@@ -415,6 +419,7 @@ public class GamePanel extends JPanel implements Runnable{
             boolean flag = false;
             for(int i = 0;i<zone.length;i++){
                 if (zone[i].contains(new Point(player.worldX, player.worldY)) && player.alpha >= 1f){
+                    place = i;
                     if(!visited.contains(i)){
                         visited.add(i);
                         startTalk = true;
@@ -445,6 +450,7 @@ public class GamePanel extends JPanel implements Runnable{
                                     object.on = true;
                                 }
                             }
+                            description = true;
                         }
                         else {
                             for (Entity object : objList) {
@@ -457,6 +463,7 @@ public class GamePanel extends JPanel implements Runnable{
                                 }
                             }
                             isSpawn = true;
+                            description = false;
                         }
                     }
                     else if(i == 2){
@@ -469,12 +476,14 @@ public class GamePanel extends JPanel implements Runnable{
                                     break;
                                 }
                             }
+
                         }
                         if(!complete){
                             for (Entity object : objList) {
                                 if (object != null && Objects.equals(object.objName, "CombatWall")) {
                                     object.on = true;
                                 }
+                                description = true;
                             }
                         }
                         else {
@@ -482,6 +491,7 @@ public class GamePanel extends JPanel implements Runnable{
                                 if (object != null && Objects.equals(object.objName, "CombatWall")) {
                                     object.on = false;
                                 }
+                                description = false;
                             }
                             if(!isSpawn){
                                 for(int j = 0;j<3;j++) {
@@ -514,6 +524,7 @@ public class GamePanel extends JPanel implements Runnable{
                                     object.on = true;
                                 }
                             }
+                            description = true;
                         }
                         else {
                             for (Entity object : objList) {
@@ -524,6 +535,7 @@ public class GamePanel extends JPanel implements Runnable{
                                     isSpawn = true;
                                 }
                             }
+                            description = false;
                             for(Entity e : player.items){
                                 if (e != null && Objects.equals(e.objName, "Bell")) {
                                     isSpawn = true;
@@ -1068,10 +1080,13 @@ public class GamePanel extends JPanel implements Runnable{
         int centerX = getWidth() /2;
         int centerY = getHeight() - 70;
 
-        restartButton = new Rectangle(centerX - buttonWidth - 20, centerY, buttonWidth, buttonHeight);
-        menuButton = new Rectangle(centerX + 20, centerY, buttonWidth, buttonHeight);
+        restartButton = new Rectangle(centerX - buttonWidth/2, centerY, buttonWidth, buttonHeight);
+        menuButton = new Rectangle(centerX - buttonWidth/2 - buttonWidth - 20, centerY, buttonWidth, buttonHeight);
+        tutorial = new Rectangle(centerX - buttonWidth/2 + buttonWidth + 20, centerY, buttonWidth, buttonHeight);
         g.setColor(new Color(0, 0, 0, 150));
         g.fillRect(0, 0, getWidth(), getHeight());
+        g.drawImage(loadImage("/UI/Map" + map + ".png"), 140,50,getWidth()- 280, getHeight() - 140,null);
+
         int screenMouseX = mouseX - (player.worldX - player.screenX);
         int screenMouseY = mouseY - (player.worldY - player.screenY);
         // Vẽ nút Restart
@@ -1084,6 +1099,16 @@ public class GamePanel extends JPanel implements Runnable{
         g.setFont(FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20));
         g.drawString("Restart", restartButton.x + 20, restartButton.y + 30);
 
+        g.setColor(Color.WHITE);
+        if (tutorial.contains(screenMouseX, screenMouseY)) {
+            g.setColor(Color.YELLOW); // Đổi màu khi hover
+            g.drawImage(loadImage("/UI/HD.png"), 140,50,getWidth()- 280, getHeight() - 140,null);
+        }
+        g.fillRect(tutorial.x, tutorial.y, tutorial.width, tutorial.height);
+        g.setColor(Color.BLACK);
+        g.setFont(FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20));
+        g.drawString("Control", tutorial.x + 20, tutorial.y + 30);
+
         // Vẽ nút Menu
         g.setColor(Color.WHITE);
         if (menuButton.contains(screenMouseX, screenMouseY)) {
@@ -1092,7 +1117,6 @@ public class GamePanel extends JPanel implements Runnable{
         g.fillRect(menuButton.x, menuButton.y, menuButton.width, menuButton.height);
         g.setColor(Color.BLACK);
         g.drawString("Menu", menuButton.x + 25, menuButton.y + 30);
-        g.drawImage(loadImage("/UI/Map" + map + ".png"), 140,50,getWidth()- 280, getHeight() - 140,null);
     }
     private float slideAlpha = 0f; // Độ trong suốt
 

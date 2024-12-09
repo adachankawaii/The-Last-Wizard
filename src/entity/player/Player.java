@@ -19,6 +19,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 // import java.util.Vector;
 
@@ -486,10 +487,53 @@ public class Player extends Entity{
     public void drawUI(Graphics2D g2, GamePanel gp){
         if(isDarken) drawTorchEffect(g2, gp.screenWidth/2, gp.screenHeight/2);
         if(combat && !isDead){
+            String prompt = "Bấm ESC để pause";
+            int promptWidth = g2.getFontMetrics(bigFont).stringWidth(prompt);
+            int promptX = (gp.screenWidth - promptWidth) / 2;
+            int promptY = 20;
+
+            int EboxWidth = promptWidth + 20;
+            int EboxHeight = 40;
+            int EboxX = promptX - 10;
+            int EboxY = promptY - 30;
+
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRoundRect(EboxX, EboxY, EboxWidth, EboxHeight, 15, 15);
+            g2.setColor(Color.WHITE);
+            g2.drawRoundRect(EboxX, EboxY, EboxWidth, EboxHeight, 15, 15);
+            g2.setFont(bigFont);
+            g2.setColor(Color.WHITE);
+            g2.drawString(prompt, promptX, promptY);
+
             // Kích thước và vị trí của khung
             if(!quests.isEmpty()) drawQuests(g2);
             drawItems(g2);  // Vẽ danh sách các item
+            if(gp.description){
+                String[] tmp = null;
+                if(gp.map == 2) {
+                    if (gp.place == 0) {
+                        tmp = new String[]{"Mê cung bóng đêm:,", "Hãy tìm đường thoát khỏi mê cung"};
+                    }
+                    if (gp.place == 1) {
+                        tmp = new String[]{"Câu đố của Dreamscapers:", "Tìm đáp án từ mảnh giấy và tương tác với bốn cột trụ để nhập đáp án"};
+                    }
+                    if (gp.place == 2) {
+                        tmp = new String[]{"Trang viên Bly:", "Tìm đáp án tù mảnh giấy", "Đặt Box vào từng vị trí tương ứng với đáp án"};
+                    }
+                    if (gp.place == 3) {
+                        tmp = new String[]{"Lá thư từ không ai cả:", "Tìm kiếm hai vật phẩm (Feather và Artichoke) cần thiết rồi đặt chúng vào vị trí"};
+                    }
+                    ArrayList<String> strings = new ArrayList<>(Arrays.asList(tmp));
 
+                    int maxWidth = 200;
+                    int startX = gp.screenWidth - 230;
+                    int startY = 50;
+                    int boxWidth = 220;
+                    int boxHeight = 150;
+
+                    drawStrings(g2, strings, maxWidth, startX, startY, boxWidth, boxHeight);
+                }
+            }
             // Hiển thị tên của item đang được chọn
             if (!items.isEmpty() && pointer < items.size() && itemTimer >= 0) {
                 String itemName = items.get(pointer).objName;
@@ -548,6 +592,68 @@ public class Player extends Entity{
             }
         }
 
+    }
+    public void drawStrings(Graphics2D g2, ArrayList<String> strings, int maxWidth, int startX, int startY, int boxWidth, int boxHeight) {
+        // Set font và màu sắc
+        g2.setFont(smallFont);
+        FontMetrics metrics = g2.getFontMetrics(smallFont);
+
+        // Vẽ khung nền
+        g2.setColor(new Color(0, 0, 0, 150)); // Nền đen với độ trong suốt
+        g2.fillRoundRect(startX - 10, startY - 30, boxWidth, boxHeight, 15, 15);
+
+        // Vẽ viền cho khung
+        g2.setColor(Color.WHITE);
+        g2.setStroke(new BasicStroke(2)); // Độ dày của viền
+        g2.drawRoundRect(startX - 10, startY - 30, boxWidth, boxHeight, 15, 15);
+
+        int currentY = startY; // Vị trí Y để vẽ từng chuỗi
+        for (String str : strings) {
+            // Kiểm tra nếu chuỗi dài hơn chiều rộng cho phép
+            if (metrics.stringWidth(str) > maxWidth) {
+                // Cắt chuỗi thành nhiều dòng nếu cần thiết
+                ArrayList<String> wrappedLines = wrapString(str, metrics, maxWidth);
+                for (String line : wrappedLines) {
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(line, startX, currentY);
+                    currentY += metrics.getHeight(); // Xuống dòng
+                }
+            } else {
+                // Chuỗi vừa khung, vẽ bình thường
+                g2.setColor(Color.WHITE);
+                g2.drawString(str, startX, currentY);
+                currentY += metrics.getHeight(); // Xuống dòng
+            }
+
+            // Ngừng vẽ nếu nội dung vượt quá chiều cao của khung
+            if (currentY > startY + boxHeight - metrics.getHeight()) {
+                g2.setColor(Color.RED);
+                g2.drawString("...", startX, currentY); // Hiển thị dấu "..." nếu nội dung bị cắt
+                break;
+            }
+        }
+    }
+
+    // Hàm cắt chuỗi thành các dòng phù hợp với chiều rộng tối đa
+    private ArrayList<String> wrapString(String str, FontMetrics metrics, int maxWidth) {
+        ArrayList<String> lines = new ArrayList<>();
+        String[] words = str.split(" ");
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : words) {
+            if (metrics.stringWidth(currentLine.toString() + word) > maxWidth) {
+                lines.add(currentLine.toString());
+                currentLine = new StringBuilder(word + " ");
+            } else {
+                currentLine.append(word).append(" ");
+            }
+        }
+
+        if (!currentLine.isEmpty()) {
+            lines.add(currentLine.toString().trim());
+        }
+
+        return lines;
     }
 
     // Thêm phương thức để thêm nhiệm vụ

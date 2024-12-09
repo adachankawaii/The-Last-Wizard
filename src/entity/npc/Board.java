@@ -15,7 +15,6 @@ import javax.imageio.ImageIO;
 public class Board extends Entity {
     int timer = 0;
     GamePanel gp;
-
     Font smallFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 15);
     Font bigFont = FontLoader.loadFont("/UI/SVN-Determination Sans.otf", 20);
     BufferedImage imgs = null;
