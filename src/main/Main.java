@@ -9,7 +9,7 @@ public class Main {
         JFrame window = new JFrame();
         window.setTitle("The Last Wizard");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Sẽ kết thúc game khi đóng
-        window.setResizable(true); // Có thể thay đổi độ lớn cửa sổ hay k
+        window.setResizable(false); // Có thể thay đổi độ lớn cửa sổ hay k
 
         // TẠO GAME PANEL
         GamePanel gp = new GamePanel();
